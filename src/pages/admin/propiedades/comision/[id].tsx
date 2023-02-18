@@ -8,7 +8,8 @@ import {
   InputAdornment,
   FormControl,
   Select,
-  MenuItem
+  MenuItem,
+  Button
 } from "@mui/material";
 import {AdminLayout} from "../../../../../components/layouts";
 import {axiosInstance} from "../../../../../utils";
@@ -17,7 +18,7 @@ import {useRouter} from "next/router";
 import NextLink from "next/link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import {useForm} from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 interface FormValues {
@@ -63,7 +64,7 @@ export default function ComissionPropertyPage() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors }
+    formState: {errors}
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: 'all'
@@ -91,8 +92,7 @@ export default function ComissionPropertyPage() {
       }
     } catch (e) {
       enqueueSnackbar('No se pudo registrar la informacion, ocurrio un error!', {variant: 'error'})
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
@@ -128,10 +128,10 @@ export default function ComissionPropertyPage() {
     // idSeller: getUser().id
   })
 
-  function percentage(num: any, per: any): string {
-    const number = typeof(num) === 'string' ? Number(num) : num;
-    const percentage = typeof(per) === 'string' ? Number(per) : per;
-    const result = (number / 100) * percentage;
+  function percentage(num: any, per: any, isSpecial: boolean = false): string {
+    const number = typeof (num) === 'string' ? Number(num) : num;
+    const percentage = typeof (per) === 'string' ? Number(per) : per;
+    const result = isSpecial ?  (((number / 100) * percentage) / 2) : (number / 100) * percentage;
     return result.toString();
   }
 
@@ -142,18 +142,19 @@ export default function ComissionPropertyPage() {
   }, [id])
 
   React.useEffect(() => {
-    const per =
-      comissionPercentageWatched === 'Otro'
-        ? percentage(customComissionPercentageWatched, finalPriceWatched)
-        : percentage(comissionPercentageWatched, finalPriceWatched);
-    setValue('commisionRoyaltySeller', percentage(commisionRoyaltyWatched, per))
-    if (comissionPercentageWatched === 'Otro') {
-      setValue('commissionSeller', percentage(customComissionPercentageWatched, finalPriceWatched) )
-    } else {
-      setValue('customCommission', '')
-      setValue('commissionSeller', percentage(comissionPercentageWatched, finalPriceWatched) )
-    }
-  }, [comissionPercentageWatched, customComissionPercentageWatched, finalPriceWatched, commisionRoyaltyWatched])
+    const commissionSeller = comissionPercentageWatched === 'Otro' ?  percentage(customComissionPercentageWatched, finalPriceWatched, true) : percentage(comissionPercentageWatched, finalPriceWatched, true)
+    const commissionRyaltySeller = comissionPercentageWatched === 'Otro' ? percentage(commisionRoyaltyWatched, percentage(customComissionPercentageWatched, finalPriceWatched, true)) : percentage(commisionRoyaltyWatched, percentage(comissionPercentageWatched, finalPriceWatched, true))
+    setValue('commissionSeller', commissionSeller)
+    setValue('commisionRoyaltySeller', commissionRyaltySeller)
+
+    //  TODO Todo el valor queda atrasado....
+
+  }, [
+    comissionPercentageWatched,
+    customComissionPercentageWatched,
+    finalPriceWatched,
+    commisionRoyaltyWatched
+  ])
 
   return (
     <AdminLayout title='Cierre de venta externo'>
@@ -161,210 +162,231 @@ export default function ComissionPropertyPage() {
         {/*TODO hacer un componente de breadcrumb*/}
         <Box display='flex' alignItems='center' mb={4}>
           <NextLink href='/admin/propiedades'>Propiedades</NextLink>
-          <ArrowRightIcon sx={{ color: 'gray' }} />
+          <ArrowRightIcon sx={{color: 'gray'}}/>
           <Typography> Cierre de venta externo</Typography>
         </Box>
         {
           propertyData && !loading &&
-          <>
-            <Box>
-              <Typography align='center' variant='h3' color='primary'>VENTA CERRADO CON EXTERNO</Typography>
-              {propertyData && <Typography align='center' fontWeight='bold' style={{color: 'gray'}}>{propertyData.property?.code}</Typography>}
-            </Box>
+          <form onSubmit={onSubmit}>
+            <>
+              <Box>
+                <Typography align='center' variant='h3' color='primary'>VENTA CERRADO CON EXTERNO</Typography>
+                {propertyData && <Typography align='center' fontWeight='bold'
+                                             style={{color: 'gray'}}>{propertyData.property?.code}</Typography>}
+              </Box>
 
-            <Grid container spacing={2} sx={{mt: 10}}>
-              <Grid item xs={12} md={4}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Precio final</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  placeholder='0.00'
-                  InputProps={{
-                    endAdornment:
-                      <InputAdornment position="end">$</InputAdornment>
-                  }}
-                  {...register('finalPrice')}
-                  error={Boolean(errors?.finalPrice)}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.finalPrice?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Porcentage Comisión Cobrada</Typography>
-                <FormControl fullWidth>
-                  <Select
+              <Grid container spacing={2} sx={{mt: 10}}>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Precio final</Typography>
+                  <TextField
                     color='secondary'
-                    disabled={!finalPriceWatched}
-                    {...register('commission')}
-                    error={Boolean(errors?.commission)}
-                  >
-                    <MenuItem value='5'>5%</MenuItem>
-                    <MenuItem value='Otro'>Otro</MenuItem>
-                  </Select>
-                </FormControl>
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.commission?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                {comissionPercentageWatched === 'Otro' &&
-                  <>
-                    <Typography fontWeight='bold' sx={{mb: 1}}>Porcentage Comisión Cobrada</Typography>
-                    <TextField
+                    fullWidth
+                    placeholder='0.00'
+                    InputProps={{
+                      endAdornment:
+                        <InputAdornment position="end">$</InputAdornment>
+                    }}
+                    {...register('finalPrice')}
+                    error={Boolean(errors?.finalPrice)}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.finalPrice?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Porcentage Comisión Cobrada</Typography>
+                  <FormControl fullWidth>
+                    <Select
                       color='secondary'
-                      fullWidth
-                      placeholder='0%'
-                      {...register('customCommission')}
-                      error={Boolean(errors?.customCommission)}
-                      variant="outlined"
-                    />
-                  </>
-                }
+                      disabled={!finalPriceWatched}
+                      {...register('commission')}
+                      error={Boolean(errors?.commission)}
+                    >
+                      <MenuItem value='5'>5%</MenuItem>
+                      <MenuItem value='Otro'>Otro</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.commission?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  {comissionPercentageWatched === 'Otro' &&
+                    <>
+                      <Typography fontWeight='bold' sx={{mb: 1}}>Porcentage Comisión Cobrada</Typography>
+                      <TextField
+                        color='secondary'
+                        fullWidth
+                        placeholder='0%'
+                        {...register('customCommission')}
+                        error={Boolean(errors?.customCommission)}
+                        variant="outlined"
+                      />
+                    </>
+                  }
+                </Grid>
               </Grid>
-            </Grid>
-            <Divider sx={{my: 5}}/>
-            <Typography variant='h5'>Comisión de Venta</Typography>
-            <Typography variant='caption' sx={{mb: 3}}>Seleccione la comision asociada al inmueble</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Comisión Captador</Typography>
-                <TextField
-                  sx={{
-                    backgroundColor: '#e9ecef'
-                  }}
-                  color='secondary'
-                  fullWidth
-                  disabled
-                  placeholder='0.00'
-                  {...register('commissionSeller')}
-                  error={Boolean(errors?.commissionSeller)}
-                  InputProps={{
-                    endAdornment:
-                      <InputAdornment position="end">%</InputAdornment>
-                  }}
-                  variant="outlined"
-                />
+              <Divider sx={{my: 5}}/>
+              <Typography variant='h5'>Comisión de Venta</Typography>
+              <Typography variant='caption' sx={{mb: 3}}>Seleccione la comision asociada al inmueble</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Comisión Captador</Typography>
+                  <TextField
+                    sx={{
+                      backgroundColor: '#e9ecef'
+                    }}
+                    color='secondary'
+                    fullWidth
+                    disabled
+                    placeholder='0.00'
+                    {...register('commissionSeller')}
+                    error={Boolean(errors?.commissionSeller)}
+                    InputProps={{
+                      endAdornment:
+                        <InputAdornment position="end">%</InputAdornment>
+                    }}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>% Que Aplica Nivel Captador </Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    placeholder='0.00'
+                    {...register('commisionRoyalty')}
+                    error={Boolean(errors?.commisionRoyalty)}
+                    InputProps={{
+                      endAdornment:
+                        <InputAdornment position="end">%</InputAdornment>
+                    }}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.commisionRoyalty?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Royalty Captador</Typography>
+                  <TextField
+                    color='secondary'
+                    sx={{
+                      backgroundColor: '#e9ecef',
+                    }}
+                    fullWidth
+                    disabled
+                    {...register('commisionRoyaltySeller')}
+                    error={Boolean(errors?.commisionRoyaltySeller)}
+                    placeholder='0.00'
+                    InputProps={{
+                      endAdornment:
+                        <InputAdornment position="end">%</InputAdornment>
+                    }}
+                    variant="outlined"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>% Que Aplica Nivel Captador </Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  placeholder='0.00'
-                  {...register('commisionRoyalty')}
-                  error={Boolean(errors?.commisionRoyalty)}
-                  InputProps={{
-                    endAdornment:
-                      <InputAdornment position="end">%</InputAdornment>
-                  }}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.commisionRoyalty?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Royalty Captador</Typography>
-                <TextField
-                  color='secondary'
-                  sx={{
-                    backgroundColor: '#e9ecef',
-                  }}
-                  fullWidth
-                  disabled
-                  {...register('commisionRoyaltySeller')}
-                  error={Boolean(errors?.commisionRoyaltySeller)}
-                  placeholder='0.00'
-                  InputProps={{
-                    endAdornment:
-                      <InputAdornment position="end">%</InputAdornment>
-                  }}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
 
-            <Divider sx={{my: 5}}/>
-            <Typography variant='h5' sx={{mb: 3}}>Asesor Inmobiliario Externo</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Nombres</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  {...register('externalFistName')}
-                  error={Boolean(errors?.externalFistName)}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.externalFistName?.message}</Typography>
+              <Divider sx={{my: 5}}/>
+              <Typography variant='h5' sx={{mb: 3}}>Asesor Inmobiliario Externo</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Nombres</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    {...register('externalFistName')}
+                    error={Boolean(errors?.externalFistName)}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.externalFistName?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Apellidos</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    {...register('externalLastName')}
+                    error={Boolean(errors?.externalLastName)}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.externalLastName?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>C.I.</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    {...register('externalIdentification')}
+                    error={Boolean(errors?.externalIdentification)}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.externalIdentification?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Empresa</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    {...register('externalCompany')}
+                    error={Boolean(errors?.externalCompany)}
+                    variant="outlined"
+                  />
+                  <Typography variant='caption' fontWeight='bold'
+                              sx={{color: '#FF0000'}}>{errors?.externalCompany?.message}</Typography>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Teléfono</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    {...register('externalPhoneNumber')}
+                    error={Boolean(errors?.externalPhoneNumber)}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Observaciones</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    multiline
+                    rows={5}
+                    {...register('externalObservations')}
+                    error={Boolean(errors?.externalObservations)}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <Typography fontWeight='bold' sx={{mb: 1}}>Royalty total de ingresos Vision Inmobiliaria</Typography>
+                  <TextField
+                    color='secondary'
+                    fullWidth
+                    sx={{
+                      backgroundColor: '#e9ecef',
+                    }}
+                    disabled
+                    {...register('commisionRoyaltySeller')}
+                    error={Boolean(errors?.commisionRoyaltySeller)}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} md={9} />
+                <Grid item xs={6} sx={{ mt:5 }}>
+                  <Button fullWidth variant='outlined'>
+                    Cancelar
+                  </Button>
+                </Grid>
+                <Grid item xs={6} sx={{ mt:5 }}>
+                  <Button fullWidth variant='contained'>
+                    Guardar cambios
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Apellidos</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  {...register('externalLastName')}
-                  error={Boolean(errors?.externalLastName)}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.externalLastName?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>C.I.</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  {...register('externalIdentification')}
-                  error={Boolean(errors?.externalIdentification)}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.externalIdentification?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Empresa</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  {...register('externalCompany')}
-                  error={Boolean(errors?.externalCompany)}
-                  variant="outlined"
-                />
-                <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.externalCompany?.message}</Typography>
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Teléfono</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  {...register('externalPhoneNumber')}
-                  error={Boolean(errors?.externalPhoneNumber)}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Observaciones</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  multiline
-                  rows={5}
-                  {...register('externalObservations')}
-                  error={Boolean(errors?.externalObservations)}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <Typography fontWeight='bold' sx={{mb: 1}}>Royalty total de ingresos Vision Inmobiliaria</Typography>
-                <TextField
-                  color='secondary'
-                  fullWidth
-                  sx={{
-                    backgroundColor: '#e9ecef',
-                  }}
-                  disabled
-                  {...register('commisionRoyaltySeller')}
-                  error={Boolean(errors?.commisionRoyaltySeller)}
-                  variant="outlined"
-                />
-              </Grid>
-            </Grid>
-          </>
+            </>
+          </form>
         }
         {loading && <p>cargando...</p>}
       </Box>

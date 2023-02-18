@@ -56,11 +56,11 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
 
   }
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      router.push('/admin/propiedades/comision/2901')
-    }, 2000)
-  }, [])
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     router.push('/admin/propiedades/comision/2901')
+  //   }, 2000)
+  // }, [])
 
   return (
     <>
