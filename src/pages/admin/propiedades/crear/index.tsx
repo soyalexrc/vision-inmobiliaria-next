@@ -33,6 +33,8 @@ export default function CreateNewPropertyPage() {
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const methods = useForm<Property>({
     defaultValues: {
+      // @ts-ignore
+      // TODO corregir este tipado
       files: [...PROPERTY_FILES_INITIAL_VALUE]
     }
   });

@@ -39,7 +39,7 @@ export function FilesForm() {
                     />
                   </Grid>
                   {
-                    field.imageData > 0 &&
+                    field.imageData  &&
                     <Box display='flex' alignItems='center' justifyContent='space-between'>
                       <Box display='flex' alignItems='center'>
                         {

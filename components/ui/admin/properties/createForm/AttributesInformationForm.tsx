@@ -68,7 +68,7 @@ export function AttributesInformationForm() {
                   <FormControl fullWidth>
                     <Select  defaultValue=''  {...register(`attributes[${index}].value`)}>
                       {
-                        field.values.split('#').map((option: string, index: number) => (
+                        field.values?.split('#').map((option: string, index: number) => (
                           <MenuItem key={`${option}-${index}`} value={option}>{option}</MenuItem>
 
                         ))

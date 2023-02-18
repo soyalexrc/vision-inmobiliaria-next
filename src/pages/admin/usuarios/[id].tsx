@@ -138,7 +138,7 @@ export default function EditOwnerPage() {
         setValue('profession', profession, {});
         setValue('city', city, {});
         setValue('state', state, {});
-        setValue('image', image, {});
+        setValue('imageData', image, {});
         setValue('password', decryptValue(masterCryptoKey, password), {});
         setValue('userType', user_type, {});
         setValue('firstName', first_name, {});
