@@ -7,7 +7,8 @@ import {
   useMediaQuery,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Icon
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HandymanIcon from '@mui/icons-material/Handyman';
@@ -24,9 +25,70 @@ import {
   AttributesInformationForm,
   NegotiationInformationForm,
   PublicationSourceForm,
-  FilesForm
+  FilesForm,
+  LocationInformationForm
 } from "../../../../../components/ui/admin/properties/createForm";
 import {PROPERTY_FILES_INITIAL_VALUE} from "../../../../../utils/mock-data";
+
+interface PanelProps {
+  id: string;
+  title: string;
+  state: string;
+  icon: JSX.Element;
+  content: JSX.Element;
+}
+
+const panels: PanelProps[] = [
+  {
+    id: 'panel1',
+    state: propertyAccordionStatus.generalInformation,
+    title: 'Informacion general',
+    icon:  <HandymanIcon /> ,
+    content: < GeneralInformationForm/>
+  },
+  {
+    id: 'panel2',
+    state: propertyAccordionStatus.locationInformation,
+    title: 'Ubicacion de inmueble',
+    icon: < LocationOnIcon/>,
+    content: < LocationInformationForm/>
+  },
+  {
+    id: 'panel3',
+    state: propertyAccordionStatus.imagesInformation,
+    title: 'Fotografias y videos de inmueble',
+    icon: < PermMediaIcon/>,
+    content: <p>hello from images</p>
+  },
+  {
+    id: 'panel4',
+    state: propertyAccordionStatus.attributesInformation,
+    title: 'Caracteristicas del inmueble',
+    icon: < ListAltIcon/>,
+    content: < AttributesInformationForm/>
+  },
+  {
+    id: 'panel5',
+    state: propertyAccordionStatus.clientDataInformation,
+    title: 'Datos de negociacion y cliente',
+    icon: < HandshakeIcon/>,
+    content: < NegotiationInformationForm/>
+  },
+  {
+    id: 'panel6',
+    state: propertyAccordionStatus.filesInformation,
+    title: 'Documentos legales',
+    icon: < ArticleIcon/>,
+    content: < FilesForm/>
+  },
+  {
+    id: 'panel7',
+    state: propertyAccordionStatus.publicationSourceInformation,
+    title: 'Fuente de publicacion',
+    icon: < ArticleIcon/>,
+    content: < PublicationSourceForm/>
+  },
+]
 
 
 export default function CreateNewPropertyPage() {
@@ -56,145 +118,38 @@ export default function CreateNewPropertyPage() {
         </Box>
         <FormProvider {...methods}>
           <form onSubmit={onSubmit}>
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.generalInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.generalInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='general-information-panel-content'
-                id='general-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <HandymanIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Informacion General</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <GeneralInformationForm/>
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.locationInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.locationInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='location-information-panel-content'
-                id='location-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <LocationOnIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Ubicacion de inmueble</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <p>Ubicacion de inmueble </p>
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.imagesInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.imagesInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='images-information-panel-content'
-                id='images-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <PermMediaIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Fotografias y videos de inmueble</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <p>Fotografias y videos de inmueble </p>
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.attributesInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.attributesInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='attributes-information-panel-content'
-                id='attributes-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <ListAltIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Caracteristicas del inmueble</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <AttributesInformationForm/>
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.clientDataInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.clientDataInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='client-data-information-panel-content'
-                id='client-data-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <HandshakeIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Datos de negociacion y cliente</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <NegotiationInformationForm />
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.filesInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.filesInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='files-information-panel-content'
-                id='files-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <ArticleIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Documentos legales</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <FilesForm />
-              </AccordionDetails>
-            </Accordion>
-
-            <Accordion
-              expanded={expanded === propertyAccordionStatus.publicationSourceInformation}
-              onChange={handleChangePanel(propertyAccordionStatus.publicationSourceInformation)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon color='secondary'/>}
-                aria-controls='publication-source-information-panel-content'
-                id='publication-source-information-panel'
-                sx={{p: 3}}
-              >
-                <Box display='flex' alignItems='center'>
-                  <ArticleIcon color='secondary' sx={{mr: 2}}/>
-                  <Typography variant='h6'>Fuente de publicacion</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <PublicationSourceForm />
-              </AccordionDetails>
-            </Accordion>
+            {
+              panels.map(element => (
+                <Accordion
+                  key={element.id}
+                  expanded={expanded === element.state}
+                  onChange={handleChangePanel(element.state)}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon sx={{color: expanded === element.state ? '#fff' : 'secondary.main'}}/>}
+                    aria-controls='general-information-panel-content'
+                    id='general-information-panel'
+                    sx={{
+                      px: 3,
+                      py: expanded === element.state ? 0 : 2,
+                      backgroundColor: expanded === element.state ? 'primary.main' : '#fff',
+                      mb: expanded === element.state ? 2 : 0
+                  }}
+                  >
+                    <Box display='flex' alignItems='center'>
+                      <Icon sx={{ mr: 3, color: expanded === element.state ? '#fff' : 'secondary.main' }}>
+                        {element.icon}
+                      </Icon>
+                      {/*<HandymanIcon sx={{mr: 2, color: expanded === element.state ? '#fff' : 'secondary.main'}}/>*/}
+                      <Typography variant='h6' color={expanded === element.state ? '#fff' : 'secondary'}>{element.title}</Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {element.content}
+                  </AccordionDetails>
+                </Accordion>
+              ))
+            }
 
             <button type='submit'> submit</button>
           </form>

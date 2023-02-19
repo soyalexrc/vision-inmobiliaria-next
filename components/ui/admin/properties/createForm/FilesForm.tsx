@@ -70,8 +70,8 @@ export function FilesForm() {
                   <FormControl fullWidth>
                     <Select  defaultValue=''  {...register(`files[${index}].value`)}>
                       {
-                        field.values.split('#').map((option: string, index: number) => (
-                          <MenuItem key={`${option}${index}`} value={option}>{option}</MenuItem>
+                        field.values?.split('#').map((option: string, index: number) => (
+                          <MenuItem key={option + index} value={option}>{option}</MenuItem>
                         ))
                       }
                     </Select>

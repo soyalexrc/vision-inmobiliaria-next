@@ -64,6 +64,9 @@ export interface PropertyFile {
 interface PropertyLocation {
   avenue: string;
   buildingNumber: string;
+  isClosedStreet: string;
+  location: string;
+  howToGet: string;
   buildingShoppingcenter: string;
   city: string;
   country: string;
