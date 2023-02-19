@@ -14,7 +14,7 @@ const {toggleModal} = React.useContext(ConfirmationContext)
 
   return (
     <IconButton onClick={handleOnClick}>
-      <DeleteIcon />
+      <DeleteIcon sx={props.sx} />
     </IconButton>
   )
 };

@@ -5,6 +5,7 @@ export interface Property {
   location: PropertyLocation;
   property: PropertyGeneralData;
   publicationSoruce: PublicationSourceData;
+  images: PropertyImage[];
 }
 
 export interface PropertyAttribute {
@@ -115,5 +116,12 @@ interface PublicationSourceData {
   mercadolibre: boolean;
   conlallave: boolean;
   whatsapp: boolean
+
+}
+
+interface PropertyImage {
+  id: string;
+  imageData: string;
+  imageType: string;
 
 }

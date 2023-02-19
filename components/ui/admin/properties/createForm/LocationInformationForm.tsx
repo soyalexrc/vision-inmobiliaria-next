@@ -56,8 +56,7 @@ export function LocationInformationForm() {
         </FormControl>
       </Grid>
       <Grid item xs={12} md={3}>
-        <Typography fontWeight='bold' sx={{mb: 1 }}>Estado</Typography>
-
+        <Typography fontWeight='bold'>Estado</Typography>
         <ControlledAutocomplete
           name="location.state"
           options={states}

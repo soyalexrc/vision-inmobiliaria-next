@@ -18,7 +18,6 @@ export function FilesForm() {
     name: 'files'
   })
 
-  console.log(fields);
   return (
     <Grid container spacing={4}>
       {
