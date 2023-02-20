@@ -22,6 +22,7 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import {RHFSelect} from "../../../../components/ui/forms";
 
 interface FormValues {
   firstName: string;
@@ -49,7 +50,7 @@ export default function EditOwnerPage() {
   const router = useRouter();
   const id = router.query?.id;
   const {enqueueSnackbar} = useSnackbar()
-  const {register, handleSubmit, formState: {errors}, setValue} = useForm<FormValues>({
+  const {register, handleSubmit, control, formState: {errors}, setValue} = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: 'all'
   });
@@ -194,17 +195,16 @@ export default function EditOwnerPage() {
                                     sx={{color: '#FF0000'}}>{errors?.birthday?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <Typography sx={{mb: 1}}>Es inversor?</Typography>
-                        <FormControl fullWidth>
-                          <Select
-                            label="Es inversor?"
-                            {...register('isInvestor')}
-                            error={Boolean(errors?.isInvestor)}
-                          >
-                            <MenuItem value='Si'>Si</MenuItem>
-                            <MenuItem value='No'>No</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <RHFSelect
+                          name='isInvestor'
+                          label='Es inversor?'
+                          defaultValue={'No'}
+                          control={control}
+                        >
+                          <MenuItem value='Si'>Si</MenuItem>
+                          <MenuItem value='No'>No</MenuItem>
+
+                        </RHFSelect>
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.isInvestor?.message}</Typography>
                       </Grid>

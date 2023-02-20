@@ -8,11 +8,8 @@ import {
   Grid,
   TextField,
   MenuItem,
-  InputLabel,
-  Select,
   InputAdornment,
   IconButton,
-  FormControl,
   Paper,
   useMediaQuery
 } from "@mui/material";
@@ -28,7 +25,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import {encryptValue, decryptValue, masterCryptoKey} from '../../../../utils'
 import * as yup from "yup";
 import {useForm} from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {RHFSelect} from "../../../../components/ui/forms";
 
 interface FormValues {
   birthday: string,
@@ -83,9 +81,11 @@ export default function EditOwnerPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
     setValue,
-    watch } = useForm<FormValues>({
+    control,
+    watch
+  } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: 'all',
     defaultValues: {
@@ -141,6 +141,7 @@ export default function EditOwnerPage() {
         setValue('imageData', image, {});
         setValue('password', decryptValue(masterCryptoKey, password), {});
         setValue('userType', user_type, {});
+        setValue('username', username, {});
         setValue('firstName', first_name, {});
         setValue('lastName', last_name, {});
         setValue('phonNumber1', phone_number1, {});
@@ -156,6 +157,7 @@ export default function EditOwnerPage() {
       setLoadingData(false);
     }
   }
+
   async function editUser(data: any) {
     const fullObj = {...data};
     fullObj.password = encryptValue(masterCryptoKey, data.password)
@@ -165,10 +167,10 @@ export default function EditOwnerPage() {
       const response = await axiosInstance.put('user/updateData', fullObj);
       if (response.status === 200) {
         router.back()
-        enqueueSnackbar('Se edito el usuario con exito!', {variant: 'success'} )
+        enqueueSnackbar('Se edito el usuario con exito!', {variant: 'success'})
       }
     } catch (e) {
-      enqueueSnackbar('Error!', {variant: 'error'} )
+      enqueueSnackbar('Error!', {variant: 'error'})
     } finally {
       setLoading(false);
     }
@@ -247,7 +249,8 @@ export default function EditOwnerPage() {
                           label='Email'
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.email?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.email?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -259,7 +262,8 @@ export default function EditOwnerPage() {
                           {...register('username')}
                           error={Boolean(errors?.username)}
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.username?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.username?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -280,7 +284,8 @@ export default function EditOwnerPage() {
                               </InputAdornment>,
                           }}
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.password?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.password?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -292,7 +297,8 @@ export default function EditOwnerPage() {
                           {...register('firstName')}
                           error={Boolean(errors?.firstName)}
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.firstName?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.firstName?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -304,7 +310,8 @@ export default function EditOwnerPage() {
                           {...register('lastName')}
                           error={Boolean(errors?.lastName)}
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.lastName?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.lastName?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <Box mt={2}>
@@ -317,7 +324,8 @@ export default function EditOwnerPage() {
                             error={Boolean(errors?.phonNumber1)}
                             variant="outlined"
                           />
-                          <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.phonNumber1?.message}</Typography>
+                          <Typography variant='caption' fontWeight='bold'
+                                      sx={{color: '#FF0000'}}>{errors?.phonNumber1?.message}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -331,24 +339,24 @@ export default function EditOwnerPage() {
                             {...register('phonNumber2')}
                             error={Boolean(errors?.phonNumber2)}
                           />
-                          <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.phonNumber2?.message}</Typography>
+                          <Typography variant='caption' fontWeight='bold'
+                                      sx={{color: '#FF0000'}}>{errors?.phonNumber2?.message}</Typography>
                         </Box>
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <Typography sx={{ mb: 1 }}>Tipo de usuario</Typography>
-                        <FormControl fullWidth sx={{my: 2}}>
-                          <Select
-                            {...register('userType')}
-                            error={Boolean(errors?.userType)}
-                            defaultValue=''
-                          >
-                            <MenuItem value='Administrador'>Administrador</MenuItem>
-                            <MenuItem value='Coordinador de servicios'>Coordinador de servicios</MenuItem>
-                            <MenuItem value='Asesor inmobiliario Vision'>Asesor inmobiliario Vision</MenuItem>
-                            <MenuItem value='Asesor inmobiliario externo'>Asesor inmobiliario externo</MenuItem>
-                          </Select>
-                        </FormControl>
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.userType?.message}</Typography>
+                        <RHFSelect
+                          name='userType'
+                          label='Tipo de usuario'
+                          defaultValue={'Administrador'}
+                          control={control}
+                        >
+                          <MenuItem value='Administrador'>Administrador</MenuItem>
+                          <MenuItem value='Coordinador de servicios'>Coordinador de servicios</MenuItem>
+                          <MenuItem value='Asesor inmobiliario Vision'>Asesor inmobiliario Vision</MenuItem>
+                          <MenuItem value='Asesor inmobiliario externo'>Asesor inmobiliario externo</MenuItem>
+                        </RHFSelect>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.userType?.message}</Typography>
                       </Grid>
 
 
@@ -358,7 +366,7 @@ export default function EditOwnerPage() {
                   <Container maxWidth='md' sx={{py: 5}}>
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={6}>
-                        <Typography sx={{ marginBottom: '4px'}}>Fecha de nacimiento</Typography>
+                        <Typography sx={{marginBottom: '4px'}}>Fecha de nacimiento</Typography>
                         <TextField
                           fullWidth
                           type='date'
@@ -366,7 +374,8 @@ export default function EditOwnerPage() {
                           error={Boolean(errors?.birthday)}
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.birthday?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.birthday?.message}</Typography>
                       </Grid>
 
                       <Grid item xs={12} md={6}>
@@ -379,7 +388,8 @@ export default function EditOwnerPage() {
                           error={Boolean(errors?.profession)}
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.profession?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.profession?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -392,7 +402,8 @@ export default function EditOwnerPage() {
                           label='Municipio'
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.city?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.city?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -404,9 +415,10 @@ export default function EditOwnerPage() {
                           label='Estado'
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.state?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.state?.message}</Typography>
                       </Grid>
-                      <Grid item xs={12} >
+                      <Grid item xs={12}>
                         <TextField
                           fullWidth
                           rows={4}
@@ -418,7 +430,8 @@ export default function EditOwnerPage() {
                           label='Direccion fiscal'
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold' sx={{ color: '#FF0000' }}>{errors?.fiscalAddress?.message}</Typography>
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.fiscalAddress?.message}</Typography>
                       </Grid>
 
 
@@ -470,9 +483,15 @@ export default function EditOwnerPage() {
                       </Grid>
                     </Grid>
 
-                    <Grid item xs={12} sx={{display: 'flex', justifyContent: 'space-between', mt: 5, flexWrap: 'wrap', flexDirection: largeScreen ? 'row' : 'column-reverse'}}>
+                    <Grid item xs={12} sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mt: 5,
+                      flexWrap: 'wrap',
+                      flexDirection: largeScreen ? 'row' : 'column-reverse'
+                    }}>
                       <Button
-                        sx={{ mt: !largeScreen ? 3 : 0 }}
+                        sx={{mt: !largeScreen ? 3 : 0}}
                         fullWidth={!largeScreen}
                         onClick={() => router.back()}
                         variant='outlined'

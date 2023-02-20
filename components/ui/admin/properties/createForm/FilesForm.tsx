@@ -12,8 +12,9 @@ import {
 } from '@mui/material'
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import {PropertyFile} from "../../../../../interfaces/properties";
+import {RHFSelect} from "../../../forms";
 export function FilesForm() {
-  const {register} = useFormContext()
+  const {register, control} = useFormContext()
   const {fields} = useFieldArray({
     name: 'files'
   })
@@ -65,16 +66,18 @@ export function FilesForm() {
             } else {
               return (
                 <Grid item xs={12} md={3} key={field.id}>
-                  <Typography fontWeight='bold' sx={{mb: 1}}>{field.label}</Typography>
-                  <FormControl fullWidth>
-                    <Select  defaultValue=''  {...register(`files[${index}].value`)}>
-                      {
-                        field.values?.split('#').map((option: string, index: number) => (
-                          <MenuItem key={option + index} value={option}>{option}</MenuItem>
-                        ))
-                      }
-                    </Select>
-                  </FormControl>
+                  <RHFSelect
+                    name={`files[${index}].value`}
+                    label={field.label}
+                    defaultValue={''}
+                    control={control}
+                  >
+                    {
+                      field.values?.split('#').map((option: string, index: number) => (
+                        <MenuItem key={option + index} value={option}>{option}</MenuItem>
+                      ))
+                    }
+                  </RHFSelect>
                 </Grid>
               )
             }

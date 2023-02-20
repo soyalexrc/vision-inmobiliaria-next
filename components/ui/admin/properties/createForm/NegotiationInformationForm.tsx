@@ -11,9 +11,10 @@ import {
   InputAdornment
 } from "@mui/material";
 import {useFormContext} from "react-hook-form";
+import {RHFSelect} from "../../../forms";
 
 export function NegotiationInformationForm() {
-  const {register} = useFormContext()
+  const {register, control} = useFormContext()
 
   return (
     <Grid container spacing={4}>
@@ -28,15 +29,17 @@ export function NegotiationInformationForm() {
         />
       </Grid>
       <Grid item xs={12} md={3}>
-        <Typography fontWeight='bold' sx={{mb: 1}}>Recibe como medio de pago</Typography>
-        <FormControl fullWidth>
-          <Select defaultValue='' {...register('clientData.partOfPayment')}>
-            <MenuItem value='Vehiculo'>Vehiculo</MenuItem>
-            <MenuItem value='Inmueble Valor Menor'>Inmueble Valor Menor</MenuItem>
-            <MenuItem value='Ambos'>Ambos</MenuItem>
-            <MenuItem value='Solo Dinero'>Solo Dinero</MenuItem>
-          </Select>
-        </FormControl>
+        <RHFSelect
+          name='clientData.partOfPayment'
+          label='Recibe como medio de pago'
+          defaultValue={'Inmueble Valor Menor'}
+          control={control}
+        >
+          <MenuItem value='Vehiculo'>Vehiculo</MenuItem>
+          <MenuItem value='Inmueble Valor Menor'>Inmueble Valor Menor</MenuItem>
+          <MenuItem value='Ambos'>Ambos</MenuItem>
+          <MenuItem value='Solo Dinero'>Solo Dinero</MenuItem>
+        </RHFSelect>
       </Grid>
       <Grid item xs={12} md={3}>
         <Typography fontWeight='bold' sx={{mb: 1}}>Porcentaje de comision</Typography>

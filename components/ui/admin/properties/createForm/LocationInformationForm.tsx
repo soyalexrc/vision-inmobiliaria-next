@@ -4,64 +4,39 @@ import {
   Grid,
   Box,
   Typography,
-  FormControl,
-  Select,
   Autocomplete,
   TextField,
   MenuItem
 } from '@mui/material';
 import {states} from "@/../utils/mock-data";
+import {RHFSelect, RHFAutocomplete} from "../../../forms";
 
 
 export function LocationInformationForm() {
-  const {register, watch, setValue} = useFormContext()
+  const {register, watch, setValue, control} = useFormContext()
 
   const propertyTypeWached = watch('property.propertyType')
 
-  const ControlledAutocomplete = (
-    { options = [],
-      renderInput,
-      getOptionLabel,
-      ignored,
-      defaultValue,
-      name,
-      renderOption
-    } : any) => {
-    return (
-      <Controller
-        render={({ ...props }) => (
-          <Autocomplete
-            options={options}
-            getOptionLabel={getOptionLabel}
-            renderOption={renderOption}
-            renderInput={renderInput}
-            onChange={(e, data) => setValue('location.state', data)}
-            {...props}
-          />
-        )}
-        defaultValue={defaultValue}
-        name={name}
-      />
-    );
-  }
+
 
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} md={3}>
-        <Typography fontWeight='bold' sx={{mb: 1 }}>Pais</Typography>
-        <FormControl fullWidth >
-          <Select {...register('location.country')} defaultValue=''>
-            <MenuItem value='Venezuela'>Venezuela</MenuItem>
-          </Select>
-        </FormControl>
+        <RHFSelect
+          name='property.country'
+          label='Pais'
+          defaultValue={'Venezuela'}
+          control={control}
+        >
+          <MenuItem value='Venezuela'>Venezuela</MenuItem>
+        </RHFSelect>
       </Grid>
       <Grid item xs={12} md={3}>
-        <Typography fontWeight='bold'>Estado</Typography>
-        <ControlledAutocomplete
+        <Typography fontWeight='bold' sx={{ marginBottom: -1 }}>Estado</Typography>
+        <RHFAutocomplete
           name="location.state"
           options={states}
           getOptionLabel={(option: any) => option}
-          renderInput={(params: any) => <TextField {...params} margin="normal" />}
           defaultValue={null}
         />
 
@@ -155,26 +130,28 @@ export function LocationInformationForm() {
         </Grid>
       }
       <Grid item xs={12} md={2}>
-        <Typography fontWeight='bold' sx={{mb: 1 }}>Es calle cerrada ?</Typography>
-
-        <FormControl fullWidth ><Select{...register('location.isClosedStreet')} defaultValue=''>
-            <MenuItem value='Si'>Si</MenuItem>
-            <MenuItem value='No'>No</MenuItem>
-          </Select>
-        </FormControl>
+        <RHFSelect
+          name='property.isClosedStreet'
+          label='Es calle cerrada ?'
+          defaultValue={'No'}
+          control={control}
+        >
+          <MenuItem value='Si'>Si</MenuItem>
+          <MenuItem value='No'>No</MenuItem>
+        </RHFSelect>
       </Grid>
       <Grid item xs={12} md={2}>
-        <Typography fontWeight='bold' sx={{mb: 1 }}>Ubicacion</Typography>
-
-        <FormControl fullWidth >
-          <Select{...register('location.location')} defaultValue=''>
-            <MenuItem value=''></MenuItem>
-            <MenuItem value='A pie de calle'>A pie de calle</MenuItem>
-            <MenuItem value='Centro comercial'>Centro comercial</MenuItem>
-            <MenuItem value='Conjunto residencial'>Conjunto residencial</MenuItem>
-            <MenuItem value='Torre de oficinas'>Torre de oficinas</MenuItem>
-          </Select>
-        </FormControl>
+        <RHFSelect
+          name='property.location'
+          label='Ubicacion'
+          defaultValue={'A pie de calle'}
+          control={control}
+        >
+          <MenuItem value='A pie de calle'>A pie de calle</MenuItem>
+          <MenuItem value='Centro comercial'>Centro comercial</MenuItem>
+          <MenuItem value='Conjunto residencial'>Conjunto residencial</MenuItem>
+          <MenuItem value='Torre de oficinas'>Torre de oficinas</MenuItem>
+        </RHFSelect>
       </Grid>
       <Grid item xs={12} md={2}>
         <Typography fontWeight='bold' sx={{mb: 1 }}>Numero</Typography>

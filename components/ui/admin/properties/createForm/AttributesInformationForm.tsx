@@ -4,10 +4,11 @@ import {useFieldArray, useFormContext} from "react-hook-form";
 import {axiosInstance} from "../../../../../utils";
 import {PropertyAttribute} from "../../../../../interfaces/properties";
 import {Divider, FormControl, Grid, MenuItem, Select, TextField, Typography} from "@mui/material";
+import {RHFSelect} from "../../../forms";
 
 export function AttributesInformationForm() {
   const {enqueueSnackbar} = useSnackbar()
-  const {register, watch, setValue} = useFormContext()
+  const {register, watch, setValue, control} = useFormContext()
   const {fields, insert} = useFieldArray({name: 'attributes'})
   const propertyTypeWached = watch('property.propertyType');
 
@@ -67,17 +68,18 @@ export function AttributesInformationForm() {
             } else {
               return (
                 <Grid item xs={12} md={3} key={field.id}>
-                  <Typography fontWeight='bold' sx={{mb: 1}}>{field.label}</Typography>
-                  <FormControl fullWidth>
-                    <Select  defaultValue=''  {...register(`attributes[${index}].value`)}>
-                      {
-                        field.values?.split('#').map((option: string, index: number) => (
-                          <MenuItem key={`${option}-${index}`} value={option}>{option}</MenuItem>
-
-                        ))
-                      }
-                    </Select>
-                  </FormControl>
+                  <RHFSelect
+                    name={`attributes[${index}].value`}
+                    label={field.label}
+                    defaultValue={''}
+                    control={control}
+                  >
+                    {
+                      field.values?.split('#').map((option: string, index: number) => (
+                        <MenuItem key={`${option}-${index}`} value={option}>{option}</MenuItem>
+                      ))
+                    }
+                  </RHFSelect>
                 </Grid>
               )
             }
