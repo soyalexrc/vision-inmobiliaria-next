@@ -10,11 +10,19 @@ import PollIcon from '@mui/icons-material/Poll';
 
 interface AdminMenu {
   title: string;
-  path: string;
+  path?: string;
   value: string;
   icon: JSX.Element;
   id: number;
-  roles: string[]
+  roles: string[],
+  children?: AdminMenuSubPath[]
+}
+
+interface AdminMenuSubPath {
+  title: string;
+  path: string;
+  value: string;
+  id: number;
 }
 
 export const ADMIN_MENU_ITEMS: AdminMenu[] = [
@@ -84,10 +92,29 @@ export const ADMIN_MENU_ITEMS: AdminMenu[] = [
   },
   {
     title: "Formatos",
-    path: "/admin/formatos",
     icon: <PollIcon style={{ color: "white" }} />,
     value: "formatos",
     id: 7,
     roles: ["Administrador"],
+    children: [
+      {
+        title: 'Clientes',
+        path: '/admin/formatos/clientes',
+        id: 71,
+        value: 'formatos-clientes'
+      },
+      {
+        title: 'Flujo de efectivo',
+        path: '/admin/formatos/flujo-de-efectivo',
+        id: 71,
+        value: 'formatos-flujo-efectivo'
+      },
+      {
+        title: 'Calculo de comisiones',
+        path: '/admin/formatos/calculo-de-comisiones',
+        id: 71,
+        value: 'formatos-calculo-comisiones'
+      },
+    ]
   },
 ];

@@ -12,6 +12,8 @@ interface UIContextProps {
   endDragging: () => void;
   setIsAddingEntry: (value: boolean) => void;
   isDragging: boolean;
+  adminPanelOpen: string;
+  setAdminPanelName: (value: string) => void;
 }
 
 export const UIContext = React.createContext({} as UIContextProps)

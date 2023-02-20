@@ -9,6 +9,7 @@ type UIActionType =
   | { type: 'UI - Set IsAddingEntry', payload: boolean }
   | { type: 'UI - Start Dragging' }
   | { type: 'UI - End Dragging' }
+  | { type: 'UI - Set Admin Panel Name', payload: string }
 
 export const uiReducer = (state: UIState, action: UIActionType): UIState => {
   switch (action.type) {
@@ -51,6 +52,12 @@ export const uiReducer = (state: UIState, action: UIActionType): UIState => {
       return {
         ...state,
         isDragging: false
+      }
+
+    case 'UI - Set Admin Panel Name':
+      return {
+        ...state,
+        adminPanelOpen: action.payload
       }
 
     default:

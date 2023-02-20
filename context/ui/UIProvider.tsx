@@ -6,13 +6,15 @@ export interface UIState {
   isAddingEntry: boolean;
   isDragging: boolean;
   adminMenuOpen: boolean;
+  adminPanelOpen: string;
 }
 
 const UI_INITIAL_STATE: UIState = {
   sideMenuOpen: false,
   adminMenuOpen: false,
   isAddingEntry: false,
-  isDragging: false
+  isDragging: false,
+  adminPanelOpen: ''
 }
 
 export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
@@ -27,6 +29,13 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
 
   const setIsAddingEntry = (value: boolean) => dispatch({ type: 'UI - Set IsAddingEntry', payload: value })
 
+  const setAdminPanelName = (value: string) => {
+    if (state.adminPanelOpen === value) {
+      dispatch({type: 'UI - Set Admin Panel Name', payload: ''})
+    } else {
+      dispatch({type: 'UI - Set Admin Panel Name', payload: value})
+    }
+  }
 
   const providerValue = React.useMemo(() => ({
     ...state,
@@ -36,7 +45,8 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
     startDragging,
     endDragging,
     closeAdminMenu,
-    openAdminMenu
+    openAdminMenu,
+    setAdminPanelName
   }), [state])
   return (
     <UIContext.Provider value={providerValue}>

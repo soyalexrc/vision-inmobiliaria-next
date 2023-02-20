@@ -4,8 +4,16 @@ import {
   Divider,
   Drawer,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  Collapse,
+  List,
+  ListItemText,
+  ListItemIcon,
+  ListItemButton
 } from "@mui/material";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import CircleIcon from '@mui/icons-material/Circle';
 import {styled} from '@mui/material/styles';
 import {UIContext} from "../../../context/ui";
 import {AuthContext} from "../../../context/auth";
@@ -25,7 +33,7 @@ const DrawerHeader = styled('div')(({theme}: any) => ({
 
 export function AdminSidebar() {
   const router = useRouter()
-  const {adminMenuOpen, closeAdminMenu} = React.useContext(UIContext)
+  const {adminMenuOpen, closeAdminMenu, adminPanelOpen, setAdminPanelName} = React.useContext(UIContext)
   const {currentUser} = React.useContext(AuthContext)
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
 
@@ -82,34 +90,95 @@ export function AdminSidebar() {
         </Box>
       </DrawerHeader>
           {
-            ADMIN_MENU_ITEMS.filter(x => x.roles?.includes(currentUser?.user_type)).map((route) => (
-              <Box
-                onClick={() => router.push(route.path)}
-                key={route.id}
-                sx={{
-                  cursor: 'pointer',
-                  minHeight: 48,
-                  display: 'flex',
-                  color: 'white',
-                  justifyContent: 'initial',
-                  backgroundColor: router.pathname === route.path ? 'rgba(255,255,255, 0.1)' : 'transparent',
-                  "&:hover": {
-                    backgroundColor: 'rgba(255,255,255, 0.1)',
-                  },
-                  p: 2.5,
-                }}
-              >
-                <Box
-                  sx={{
-                    mr: 3,
-                    justifyContent: 'center',
-                  }}
-                >
-                  {route.icon}
-                </Box>
-                <Typography> {route.title}</Typography>
-              </Box>
-            ))
+            ADMIN_MENU_ITEMS.filter(x => x.roles?.includes(currentUser?.user_type)).map((route) => {
+              if (!route.children) {
+                return (
+                  <Box
+                    onClick={() => router.push(route.path!)}
+                    key={route.id}
+                    sx={{
+                      cursor: 'pointer',
+                      minHeight: 48,
+                      display: 'flex',
+                      color: 'white',
+                      justifyContent: 'initial',
+                      backgroundColor: router.pathname === route.path ? 'rgba(255,255,255, 0.1)' : 'transparent',
+                      "&:hover": {
+                        backgroundColor: 'rgba(255,255,255, 0.1)',
+                      },
+                      p: 2.5,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        mr: 3,
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {route.icon}
+                    </Box>
+                    <Typography> {route.title}</Typography>
+                  </Box>
+                )
+              } else {
+                return (
+                  <>
+                    <Box
+                      onClick={() => setAdminPanelName(route.value)}
+                      key={route.id}
+                      sx={{
+                        cursor: 'pointer',
+                        minHeight: 48,
+                        display: 'flex',
+                        color: 'white',
+                        justifyContent: 'space-between',
+                        backgroundColor:  adminPanelOpen === route.value ? 'rgba(255,255,255, 0.1)' : 'transparent',
+                        "&:hover": {
+                          backgroundColor: 'rgba(255,255,255, 0.1)',
+                        },
+                        p: 2.5,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
+                      >
+                        {route.icon}
+                      <Typography sx={{ ml: 3 }}> {route.title}</Typography>
+                      </Box>
+                      {adminPanelOpen === route.value ? <ExpandLess /> : <ExpandMore />}
+                    </Box>
+                    <Collapse in={adminPanelOpen === route.value} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {
+                          route.children.map(child => (
+                            <ListItemButton
+                              key={child.id}
+                              sx={{
+                                pl: 4,
+                                backgroundColor: router.pathname.includes(child.path!)  ? 'rgba(255,255,255, 0.1)' : 'transparent',
+                                "&:hover": {
+                                  backgroundColor: 'rgba(255,255,255, 0.1)',
+                                },
+                                py: 2
+                            }}
+                              onClick={() => router.push(child.path)}
+                            >
+                              <ListItemIcon>
+                                <CircleIcon sx={{ color: '#fff', fontSize: '10px' }} />
+                              </ListItemIcon>
+                              <ListItemText sx={{ color: '#fff' }} primary={child.title} />
+                            </ListItemButton>
+                          ))
+                        }
+                      </List>
+                    </Collapse>
+                  </>
+                )
+              }
+            })
           }
 
         <Divider/>
