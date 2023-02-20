@@ -4,41 +4,7 @@ import {GetServerSideProps} from "next";
 import {parseCookie} from "../../../../utils";
 import {Box, Typography, Tabs, Tab} from '@mui/material';
 import {PropertiesList, AttributesList} from "../../../../components/ui/admin/properties";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const {children, value, index, ...other} = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{p: 3}}>
-          <Box>{children}</Box>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
+import {a11yProps, TabPanel} from "../../../../components/ui/tabs";
 
 export default function PropertiesPage() {
   const [tab, setTab] = React.useState<number>(0)

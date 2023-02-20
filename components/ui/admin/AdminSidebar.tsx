@@ -106,7 +106,8 @@ export function AdminSidebar() {
                       "&:hover": {
                         backgroundColor: 'rgba(255,255,255, 0.1)',
                       },
-                      p: 2.5,
+                      px: 2.5,
+                      py: 1.3
                     }}
                   >
                     <Box
@@ -136,7 +137,8 @@ export function AdminSidebar() {
                         "&:hover": {
                           backgroundColor: 'rgba(255,255,255, 0.1)',
                         },
-                        p: 2.5,
+                        px: 2.5,
+                        py: 1.3
                       }}
                     >
                       <Box
@@ -162,7 +164,7 @@ export function AdminSidebar() {
                                 "&:hover": {
                                   backgroundColor: 'rgba(255,255,255, 0.1)',
                                 },
-                                py: 2
+                                py: 1.3
                             }}
                               onClick={() => router.push(child.path)}
                             >
