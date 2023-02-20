@@ -8,15 +8,20 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Icon
+  Icon,
+  Grid,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useForm, FormProvider} from "react-hook-form";
 import {Property} from "../../../../../interfaces/properties";
 import {panels, PROPERTY_FILES_INITIAL_VALUE} from "../../../../../utils/mock-data";
+import {useRouter} from "next/router";
+import {axiosInstance} from "../../../../../utils";
+import {useSnackbar} from "notistack";
 
 
 export default function CreateNewPropertyPage() {
+  const router = useRouter();
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const methods = useForm<Property>({
     defaultValues: {
@@ -25,11 +30,27 @@ export default function CreateNewPropertyPage() {
       files: [...PROPERTY_FILES_INITIAL_VALUE]
     }
   });
-  const onSubmit = methods.handleSubmit((data: any) => console.log(data));
+  const onSubmit = methods.handleSubmit((data: Property) => createNewProperty(data));
   const [expanded, setExpanded] = React.useState<string | boolean>(false);
-
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const {enqueueSnackbar} = useSnackbar()
   const handleChangePanel = (panel: string) => (event: any, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false)
+  }
+
+  const createNewProperty = async (data: Property) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post('property/addNewData', data);
+      if (response.status === 200) {
+        enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
+        router.back()
+      }
+    } catch (err) {
+      enqueueSnackbar("Ocurrio un error", {variant: 'error'})
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -42,7 +63,7 @@ export default function CreateNewPropertyPage() {
                   variant='outlined' color='primary'>Vista previa</Button>
         </Box>
         <FormProvider {...methods}>
-          <form onSubmit={onSubmit}>
+          <form>
             {
               panels.map(element => (
                 <Accordion
@@ -59,14 +80,15 @@ export default function CreateNewPropertyPage() {
                       py: expanded === element.state ? 0 : 2,
                       backgroundColor: expanded === element.state ? 'primary.main' : '#fff',
                       mb: expanded === element.state ? 2 : 0
-                  }}
+                    }}
                   >
                     <Box display='flex' alignItems='center'>
-                      <Icon sx={{ mr: 3, color: expanded === element.state ? '#fff' : 'secondary.main' }}>
+                      <Icon sx={{mr: 3, color: expanded === element.state ? '#fff' : 'secondary.main'}}>
                         {element.icon}
                       </Icon>
                       {/*<HandymanIcon sx={{mr: 2, color: expanded === element.state ? '#fff' : 'secondary.main'}}/>*/}
-                      <Typography variant='h6' color={expanded === element.state ? '#fff' : 'secondary'}>{element.title}</Typography>
+                      <Typography variant='h6'
+                                  color={expanded === element.state ? '#fff' : 'secondary'}>{element.title}</Typography>
                     </Box>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -75,8 +97,19 @@ export default function CreateNewPropertyPage() {
                 </Accordion>
               ))
             }
-
-            <button type='submit'> submit</button>
+            <Grid container spacing={2} sx={{mt: 3}}>
+              <Grid item xs={6}>
+                <Button onClick={() => router.back()} fullWidth variant='outlined' color='primary'>Cancelar</Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  disabled={loading}
+                  fullWidth
+                  onClick={onSubmit}
+                  variant='contained'
+                  color='primary'>{loading ? 'Registrando informacion' : 'Registrar propiedad'}</Button>
+              </Grid>
+            </Grid>
           </form>
         </FormProvider>
 

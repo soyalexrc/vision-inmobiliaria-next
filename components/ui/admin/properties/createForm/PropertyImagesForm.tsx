@@ -54,7 +54,8 @@ export function PropertyImagesForm() {
             obj.imageType = files[i].type;
             obj.imageData = reader.result;
             obj.id = uuidv4();
-            // const dataImage = await uploadFile(obj);
+            const dataImage = await uploadFile(obj);
+            // TODO validar imagenes del server que no estan exisitiendo bajo path
             const objImage = {
               id: null,
               imageData: reader.result,
@@ -87,7 +88,6 @@ export function PropertyImagesForm() {
     setPrevIndex(index)
   };
 
-  console.log(fields);
 
   return (
     <>

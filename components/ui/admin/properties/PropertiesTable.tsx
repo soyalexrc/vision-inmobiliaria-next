@@ -104,7 +104,7 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
                   }
                 }}
               >
-                <TableCell sx={{px: 5}}>{index}</TableCell>
+                <TableCell sx={{px: 5}}>{index + 1}</TableCell>
                 <TableCell sx={{px: 5}}>{row.code}</TableCell>
                 <TableCell>
                   <Typography>20/02/2022</Typography>

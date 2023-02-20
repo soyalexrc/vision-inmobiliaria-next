@@ -1,19 +1,20 @@
 import React from 'react';
 import {useSnackbar} from "notistack";
-import {FieldArrayWithId, FieldValues, useFieldArray, useFormContext} from "react-hook-form";
+import {useFieldArray, useFormContext} from "react-hook-form";
 import {axiosInstance} from "../../../../../utils";
 import {PropertyAttribute} from "../../../../../interfaces/properties";
 import {Divider, FormControl, Grid, MenuItem, Select, TextField, Typography} from "@mui/material";
 
 export function AttributesInformationForm() {
   const {enqueueSnackbar} = useSnackbar()
-  const {register, setValue, watch} = useFormContext()
+  const {register, watch, setValue} = useFormContext()
   const {fields, insert} = useFieldArray({name: 'attributes'})
   const propertyTypeWached = watch('property.propertyType');
 
   const getAttributes = async () => {
     try {
       const response = await axiosInstance.get(`/attribute/getAllDataByPropertyType?propertyType=${propertyTypeWached}`)
+      console.log('response', response);
       if (response.status === 200) {
         console.log(response.data);
         fillArrayOfAttributes(response.data);
@@ -32,9 +33,11 @@ export function AttributesInformationForm() {
 
   React.useEffect(() => {
     if (propertyTypeWached) {
+      setValue('attributes', [])
       getAttributes()
     }
   }, [propertyTypeWached])
+
 
   return (
     <Grid container spacing={4}>

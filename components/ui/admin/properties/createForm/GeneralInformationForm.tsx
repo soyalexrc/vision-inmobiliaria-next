@@ -7,6 +7,7 @@ export function GeneralInformationForm() {
 
   const propertyTypeWached = watch('property.propertyType')
   const operationTypeWached = watch('property.operationType')
+
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} md={6}>
