@@ -55,10 +55,11 @@ export function PropertyImagesForm() {
             obj.imageData = reader.result;
             obj.id = uuidv4();
             const dataImage = await uploadFile(obj);
+            console.log('dataImage', dataImage);
             // TODO validar imagenes del server que no estan exisitiendo bajo path
             const objImage = {
               id: null,
-              imageData: reader.result,
+              imageData: `http://100.42.69.119:3000/images/${dataImage}`,
               imageType: files[i].type
             }
             // Add image to some store or state...
