@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import {PropertiesTable} from "./PropertiesTable";
 import {PropertiesFiltersDrawer} from "./PropertiesFilterDrawer";
+import axios from 'axios';
 
 export function PropertiesList() {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -40,7 +41,8 @@ export function PropertiesList() {
   async function getProperties(data: any) {
     try {
       setLoading(true);
-      const response = await axiosInstance.post('/property/getallDataFilter', data);
+      // const response = await axiosInstance.post('/property/getallDataFilter', data);
+      const response = await axios.post('/api/properties', data);
       if (response.status === 200) {
         setProperties(response.data)
       }

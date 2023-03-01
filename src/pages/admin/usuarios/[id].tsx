@@ -27,6 +27,7 @@ import * as yup from "yup";
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {RHFSelect} from "../../../../components/ui/forms";
+import axios from 'axios';
 
 interface FormValues {
   birthday: string,
@@ -45,8 +46,8 @@ interface FormValues {
   socialYoutube: string,
   phonNumber1: string,
   phonNumber2: string,
-  imageData: string,
-  imageType: string,
+  imageData: string | null,
+  imageType: string | null,
   lastName: string,
   firstName: string,
   fiscalAddress: string
@@ -68,8 +69,6 @@ const schema = yup.object({
   socialYoutube: yup.string(),
   phonNumber1: yup.string().required('Este campo es requerido'),
   phonNumber2: yup.string(),
-  imageData: yup.string(),
-  imageType: yup.string(),
   lastName: yup.string().required('Este campo es requerido'),
   firstName: yup.string().required('Este campo es requerido'),
   fiscalAddress: yup.string().required('Este campo es requerido')
@@ -100,15 +99,16 @@ export default function EditOwnerPage() {
   const emailWatched = watch('email');
   const userNameWatched = watch('username');
   const userTypeWatched = watch('userType');
+  const imageDataWatched = watch('imageData');
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const [loading, setLoading] = React.useState<boolean>(false)
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
-  const [image, setImage] = React.useState<string>('')
+  const [image, setImage] = React.useState<any>('')
 
   async function getUserById() {
     try {
-      const response = await axiosInstance.get(`user/getById?id=${id}`);
+      const response = await axios.get(`/api/users/${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {
           first_name,
@@ -129,7 +129,6 @@ export default function EditOwnerPage() {
           birthday,
           image,
           user_type,
-
         } = response.data.recordset[0];
         setValue('socialFacebook', social_facebook, {});
         setValue('socialInstagram', social_instagram, {});
@@ -138,7 +137,6 @@ export default function EditOwnerPage() {
         setValue('profession', profession, {});
         setValue('city', city, {});
         setValue('state', state, {});
-        setValue('imageData', image, {});
         setValue('password', decryptValue(masterCryptoKey, password), {});
         setValue('userType', user_type, {});
         setValue('username', username, {});
@@ -149,7 +147,10 @@ export default function EditOwnerPage() {
         setValue('email', email, {});
         setValue('birthday', birthday, {});
         setValue('fiscalAddress', fiscal_address, {});
+        setValue('imageData', image, {});
+        setImage(`/images/users/${image}`);
       }
+
     } catch (err) {
       console.log(err);
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
@@ -158,13 +159,15 @@ export default function EditOwnerPage() {
     }
   }
 
+
   async function editUser(data: any) {
+    console.log('here')
     const fullObj = {...data};
     fullObj.password = encryptValue(masterCryptoKey, data.password)
-    fullObj.id = null;
+    fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axiosInstance.put('user/updateData', fullObj);
+      const response = await axios.put(`/api/users/${id}`, fullObj);
       if (response.status === 200) {
         router.back()
         enqueueSnackbar('Se edito el usuario con exito!', {variant: 'success'})
@@ -176,20 +179,32 @@ export default function EditOwnerPage() {
     }
   }
 
-  function handleImageUpload(e: any) {
-    const {files} = e.target;
-    const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onload = () => {
-      setImage(JSON.stringify(reader.result));
-      setValue('imageType', files[0].type);
-      setValue('imageData', files[0]);
+  async function uploadFile(e: any) {
+    try {
+      setLoading(true);
+      const {files} = e.target;
+      const reader = new FileReader();
+      await reader.readAsDataURL(files[0]);
+      reader.onload = async () => {
+        const response = await axios.post('/api/files', {imageData: reader.result, imageType: files[0].type, alias: 'users', imageName: files[0].name});
+        if (response.status === 201) {
+          console.log(response)
+          enqueueSnackbar('Se cargo el archivo  con exito!', {variant: 'success'})
+          setValue('imageData', response.data)
+          setImage(reader.result)
+          // setImage(`/public/images/users/${response.data}`)
+        }
+      }
+
+    } catch (err) {} finally {
+      setLoading(false);
     }
   }
 
   React.useEffect(() => {
     getUserById()
   }, [])
+
 
   return (
     <AdminLayout title='Editar usuario | Vision inmobiliaria'>
@@ -223,7 +238,7 @@ export default function EditOwnerPage() {
                       />
                       <Button component="label" sx={{mt: 2}}>
                         Subir Fotografia
-                        <input hidden accept="image/*" type="file" onChange={handleImageUpload}/>
+                        <input hidden accept="image/*" type="file" onChange={uploadFile}/>
                       </Button>
                     </Box>
                     <Divider sx={{borderWidth: '2px', my: 3}}/>
@@ -503,8 +518,9 @@ export default function EditOwnerPage() {
                         fullWidth={!largeScreen}
                         type='submit'
                         variant='contained'
+                        onClick={onSubmit}
                       >
-                        Registrar usuario
+                        {loading ? 'Guardando cambios...' : 'Guardar cambios'}
                       </Button>
                     </Grid>
                   </Container>

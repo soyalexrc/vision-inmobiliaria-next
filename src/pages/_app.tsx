@@ -6,16 +6,33 @@ import {UIProvider} from "../../context/ui";
 import {SnackbarProvider} from 'notistack';
 import {AuthProvider} from "../../context/auth";
 import {ConfirmationProvider} from "../../context/confirmation";
+import Script from "next/script";
+
+const propertyId = '63bdab1947425128790cb8cf';
+const tawkId = '1gmee8ng9';
 
 export default function App({Component, pageProps}: AppProps) {
   return (
-    <SnackbarProvider maxSnack={3} anchorOrigin={{vertical: 'top', horizontal: 'right'}} >
+    <SnackbarProvider maxSnack={3} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
       <ConfirmationProvider>
         <AuthProvider>
           <UIProvider>
             <ThemeProvider theme={lightTheme}>
               <CssBaseline/>
               <Component {...pageProps} />
+              <Script id="tawk" strategy="lazyOnload">
+                {`
+                  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+                  (function(){
+                  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                  s1.async=true;
+                  s1.src='https://embed.tawk.to/${propertyId}/${tawkId}';
+                  s1.charset='UTF-8';
+                  s1.setAttribute('crossorigin','*');
+                  s0.parentNode.insertBefore(s1,s0);
+                  })();  
+                `}
+              </Script>
             </ThemeProvider>
           </UIProvider>
         </AuthProvider>

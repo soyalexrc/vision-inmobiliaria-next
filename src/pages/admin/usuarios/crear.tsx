@@ -28,6 +28,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NextLink from "next/link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import axios from "axios";
 interface FormValues {
   birthday: string,
   username: string,
@@ -46,7 +47,7 @@ interface FormValues {
   phonNumber1: string,
   phonNumber2: string,
   imageData: string,
-  imageType: string,
+  imageType: string | null,
   lastName: string,
   firstName: string,
   fiscalAddress: string
@@ -102,32 +103,43 @@ export default function CreateNewUserPage() {
   const userTypeWatched = watch('userType');
   const [loading, setLoading] = React.useState<boolean>(false)
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
-  const [image, setImage] = React.useState<string>('')
+  const [image, setImage] = React.useState<any>('')
 
-  function handleImageUpload(e: any) {
-    const {files} = e.target;
-    const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onload = () => {
-      setImage(JSON.stringify(reader.result));
-      setValue('imageType', files[0].type);
-      setValue('imageData', files[0]);
-    }
-  }
   async function createUser(data: any) {
     const fullObj = {...data};
     fullObj.password = encryptValue(masterCryptoKey, data.password)
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axiosInstance.post('user/addNewData', fullObj);
-      if (response.status === 200) {
+      const response = await axios.post('/api/users', fullObj);
+      if (response.status === 201) {
         enqueueSnackbar('Se creo el usuario con exito!', {variant: 'success'} )
         router.back()
       }
     } catch (e) {
       enqueueSnackbar('Error!', {variant: 'error'} )
     } finally {
+      setLoading(false);
+    }
+  }
+
+  async function uploadFile(e: any) {
+    try {
+      setLoading(true);
+      const {files} = e.target;
+      const reader = new FileReader();
+      await reader.readAsDataURL(files[0]);
+      reader.onload = async () => {
+        const response = await axios.post('/api/files', {imageData: reader.result, imageType: files[0].type, alias: 'users', imageName: files[0].name});
+        if (response.status === 201) {
+          console.log(response)
+          enqueueSnackbar('Se cargo el archivo  con exito!', {variant: 'success'})
+          setValue('imageData', response.data)
+          setImage(reader.result)
+        }
+      }
+
+    } catch (err) {} finally {
       setLoading(false);
     }
   }
@@ -160,7 +172,7 @@ export default function CreateNewUserPage() {
                   />
                   <Button component="label" sx={{mt: 2}}>
                     Subir Fotografia
-                    <input hidden accept="image/*" type="file" onChange={handleImageUpload}/>
+                    <input hidden accept="image/*" type="file" onChange={uploadFile}/>
                   </Button>
                 </Box>
                 <Divider sx={{borderWidth: '2px', my: 3}}/>

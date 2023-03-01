@@ -2,6 +2,7 @@ import React from 'react';
 import {AdminLayout} from "../../../../components/layouts";
 import {GetServerSideProps} from "next";
 import {axiosInstance, parseCookie} from "../../../../utils";
+import axios from 'axios';
 import {Box, Button, Grid, IconButton, InputAdornment, TextField, Typography, useMediaQuery} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,7 +21,7 @@ export default function UsersListPage() {
   async function getUsers() {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/user/getAllData');
+      const response = await axios.get('/api/users');
       if (response.status === 200) {
         setUsers(response.data)
       }
@@ -33,9 +34,10 @@ export default function UsersListPage() {
   async function deleteOwner(id: number | string) {
     try {
       setLoading(true);
-      const response = await axiosInstance.delete(`/owner/deleteData?id=${id}`);
+      // const response = await axiosInstance.delete(`/owner/deleteData?id=${id}`);
+      const response = await axios.delete(`/api/users/${id}`);
       if (response.status === 200) {
-        enqueueSnackbar('Se elimino el propietario con exito!', {variant: 'success'} )
+        enqueueSnackbar(response.data.message, {variant: 'success'} )
         getUsers()
       }
     } catch (e) {

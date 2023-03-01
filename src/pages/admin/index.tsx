@@ -4,6 +4,7 @@ import {GetServerSideProps} from "next";
 import {parseCookie} from '../../../utils'
 
 export default function DashboardPage() {
+
   return (
     <AdminLayout title='Admin - Vision Inmobiliaria'>
       <>
@@ -13,7 +14,7 @@ export default function DashboardPage() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async({req}) => {
+export const getServerSideProps: GetServerSideProps = async ({req}) => {
   if (!parseCookie('isAuthenticated', req.headers.cookie!)) {
     return {
       redirect: {
