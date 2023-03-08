@@ -1,35 +1,31 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {db} from '@/../database';
-import {Owner, SqlResponse, User} from "../../../../interfaces";
-import {v4 as uuid4} from 'uuid';
-import path from 'path';
+import { SqlResponse, ExternalAdviser} from "../../../../interfaces";
 import {queriesOwner as queries} from '@/../database/queries'
-import fs from 'fs';
 
-
-type DataUser =
+type DataExternalAdviser =
   | { message: string; }
   | SqlResponse
-  | Owner
+  | ExternalAdviser
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<DataUser>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataExternalAdviser>) {
 
   switch (req.method) {
     case 'GET':
-      return getOwner(req, res);
+      return getExternalAdviser(req, res);
 
     case 'PUT':
-      return updateOwner(req, res);
+      return updateExternalAdviser(req, res);
 
     case 'DELETE':
-      return deleteOwner(req, res)
+      return deleteExternalAdviser(req, res)
 
     default:
       return res.status(400).json({message: 'Endpoint no existe'})
   }
 }
 
-const getOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const getExternalAdviser = async (req: NextApiRequest, res: NextApiResponse<DataExternalAdviser>) => {
   const {id} = req.query;
 
   const pool: any = await db.poolPromise;
@@ -40,7 +36,7 @@ const getOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => 
     res.status(200).json(result)
   }
 }
-const updateOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const updateExternalAdviser = async (req: NextApiRequest, res: NextApiResponse<DataExternalAdviser>) => {
   try {
 
     const pool = await db.poolPromise;
@@ -61,7 +57,7 @@ const updateOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) 
     res.status(500).json({message: 'Ocurrio un error'})
   }
 }
-const deleteOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const deleteExternalAdviser = async (req: NextApiRequest, res: NextApiResponse<DataExternalAdviser>) => {
   try {
     const pool = await db.poolPromise;
     const result = await pool.request()

@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useRouter} from "next/router";
 import {useSnackbar} from "notistack";
+import {User} from '../../../../interfaces'
 import {
   Box,
   Button,
@@ -29,29 +30,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import NextLink from "next/link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import axios from "axios";
-interface FormValues {
-  birthday: string,
-  username: string,
-  city: string,
-  email: string,
-  id: number | null,
-  state: string,
-  userType: string,
-  password: string,
-  profession: string,
-  socialFacebook: string,
-  company: string,
-  socialInstagram: string,
-  socialTwitter: string,
-  socialYoutube: string,
-  phonNumber1: string,
-  phonNumber2: string,
-  imageData: string,
-  imageType: string | null,
-  lastName: string,
-  firstName: string,
-  fiscalAddress: string
-}
+
 
 const schema = yup.object({
   birthday: yup.string().required('Este campo es requerido'),
@@ -86,7 +65,7 @@ export default function CreateNewUserPage() {
     formState: { errors },
     setValue,
     watch
-  } = useForm<FormValues>({
+  } = useForm<User>({
     resolver: yupResolver(schema),
     mode: 'all',
     defaultValues: {

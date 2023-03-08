@@ -1,29 +1,29 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {db} from '@/../database';
 import {queriesOwner as queries} from '@/../database/queries';
-import {Owner, SqlResponse} from '@/../interfaces'
+import {Ally, SqlResponse} from '@/../interfaces'
 
-type DataOwners =
+type DataAlly =
   | { message: string; }
-  | Owner[]
-  | Owner
+  | Ally[]
+  | Ally
   | SqlResponse
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<DataOwners>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataAlly>) {
 
   switch (req.method) {
     case 'GET':
-      return getOwners(req, res);
+      return getAllies(req, res);
 
     case 'POST':
-      return createOwner(req, res)
+      return createAlly(req, res)
 
     default:
       return res.status(400).json({message: 'Endpoint no existe'})
   }
 }
 
-export const getOwners = async (req: NextApiRequest, res: NextApiResponse<DataOwners>) => {
+export const getAllies = async (req: NextApiRequest, res: NextApiResponse<DataAlly>) => {
   const pool = await db.poolPromise;
   const result = await pool.request()
     .input('type', db.sql.VarChar, req.query?.type)
@@ -32,7 +32,7 @@ export const getOwners = async (req: NextApiRequest, res: NextApiResponse<DataOw
   res.status(200).json(result.recordset)
 }
 
-const createOwner = async (req: NextApiRequest, res: NextApiResponse<DataOwners>) => {
+const createAlly = async (req: NextApiRequest, res: NextApiResponse<DataAlly>) => {
   try {
 
     const pool = await db.poolPromise;

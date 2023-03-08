@@ -23,17 +23,8 @@ import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {RHFSelect} from "../../../../components/ui/forms";
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isInvestor: string
-  birthday: string;
-  id: number | null;
-  type: string;
-}
+import {Owner} from "../../../../interfaces";
+import axios from "axios";
 
 
 const schema = yup.object({
@@ -50,7 +41,7 @@ export default function EditOwnerPage() {
   const router = useRouter();
   const id = router.query?.id;
   const {enqueueSnackbar} = useSnackbar()
-  const {register, handleSubmit, control, formState: {errors}, setValue} = useForm<FormValues>({
+  const {register, handleSubmit, control, formState: {errors}, setValue} = useForm<Owner>({
     resolver: yupResolver(schema),
     mode: 'all'
   });
@@ -58,12 +49,11 @@ export default function EditOwnerPage() {
 
 
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
-  // const {loading, createOwner} = useCreateOwner()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   async function getOwnerById() {
     try {
-      const response = await axiosInstance.get(`owner/getById?id=${id}`);
+      const response = await axios.get(`/api/owners/${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {first_name, last_name, phone, isInvestor, email, birthday} = response.data.recordset[0];
         setValue('firstName', first_name, {});
@@ -86,7 +76,7 @@ export default function EditOwnerPage() {
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axiosInstance.put('owner/updateData', fullObj);
+      const response = await axios.put(`/api/owners/${id}`, fullObj);
       if (response.status === 200) {
         enqueueSnackbar('Se creo el propietario con exito!', {variant: 'success'})
         router.back()

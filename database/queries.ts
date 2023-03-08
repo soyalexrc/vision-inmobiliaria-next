@@ -16,11 +16,11 @@ export const queriesLocation = {
 }
 
 export const queriesOwner = {
-  "getAll" : "SELECT *  FROM [dbo].[property_client_data]",
+  "getAll" : "SELECT *  FROM [dbo].[owner] WHERE type = @type",
   "getById" : "SELECT * FROM [dbo].[owner] WHERE id = @id",
-  "add" :"INSERT INTO [dbo].[owner] (first_name, last_name, phone, email, birthday) OUTPUT Inserted.ID VALUES (@first_name, @last_name, @phone, @email, @birthday); ",
+  "add" :"INSERT INTO [dbo].[owner] (first_name, last_name, phone, email, birthday, isInvestor, type) OUTPUT Inserted.ID VALUES (@first_name, @last_name, @phone, @email, @birthday, @isInvestor, @type); ",
   "delete" : "DELETE FROM [dbo].[owner] WHERE id = @id",
-  "update" : "UPDATE [dbo].[owner] SET first_name = @first_name, last_name = @last_name, phone = @phone, email = @email, birthday = @birthday WHERE id = @id"
+  "update" : "UPDATE [dbo].[owner] SET first_name = @first_name, last_name = @last_name, phone = @phone, email = @email, birthday = @birthday, isInvestor = @isInvestor, type = @type WHERE id = @id"
 }
 
 export const queriesProperty = {
@@ -36,16 +36,19 @@ export const queriesProperty = {
   "getLocationByPropertyId" : "SELECT * FROM [dbo].[property_location] WHERE property_id = @property_id",
   "getClientDataByPropertyId" : "SELECT * FROM [dbo].[property_client_data] WHERE property_id = @property_id",
   "getHistoricByPropertyId" : "SELECT * FROM [dbo].[historic] WHERE property_id = @property_id",
+  "getRequestDeleteByPropertyId" : "SELECT * FROM [dbo].[request_delete] WHERE propertyId = @propertyId",
   "getUserByIdCaptador" : "SELECT * FROM [dbo].[user] WHERE id = @id",
   "getUserByIdVendedor" : "SELECT * FROM [dbo].[user] WHERE id = @id",
   "getLastUpdatedDate" : "select TOP 1 * from historic WHERE property_id = @property_id ORDER BY id DESC",
+  "getPropertyCount" : "select count(*) as count from [dbo].[property]",
   "add" :"INSERT INTO [dbo].[property] (company, user_id, code, operation_type, property_type, property_condition, footage_ground, footage_building, description, price, property_status, seller_id) OUTPUT Inserted.ID VALUES (@company, @user_id, @code, @operation_type, @property_type, @property_condition, @footage_ground, @footage_building, @description, @price, @property_status, @seller_id);",
   "addAttribute" :"INSERT INTO [dbo].[property_atribute_values] (property_id, property_attribute_id, value) OUTPUT Inserted.ID VALUES (@property_id, @property_attribute_id, @value);",
   "addImage" :"INSERT INTO [dbo].[property_image] (property_id, image) OUTPUT Inserted.ID VALUES (@property_id, @image);",
   "addFile" :"INSERT INTO [dbo].[property_file] (property_id, fileName, name) OUTPUT Inserted.ID VALUES (@property_id, @fileName, @name);",
   "addLocation" :"INSERT INTO [dbo].[property_location] (property_id, country, state, municipality, urbanization, avenue, street, building_shoppingcenter, building_number, floor, reference_point, hot_to_get, trunk_number, parking_number, trunk_level, parking_level, city) OUTPUT Inserted.ID VALUES (@property_id, @country, @state, @municipality, @urbanization, @avenue, @street, @building_shoppingcenter, @building_number, @floor, @reference_point, @hot_to_get, @trunk_number, @parking_number, @trunk_level, @parking_level, @city);",
   "addHistoric" :"INSERT INTO [dbo].[historic] (status, comments, property_id, user_id, username) OUTPUT Inserted.ID VALUES (@status, @comments, @property_id, @user_id, @username);",
-  "addClientData" :"INSERT INTO [dbo].[property_client_data] (property_id, property_origin, document_condition, cadastral_file, main_living_place, power, power_condition, mortgage, part_of_payment, commission, commission_seller, observations, first_name, last_name, phone, email, birthday, contact_first_name, contact_last_name, contact_phone, contact_email, attorney_first_name, attorney_last_name, attorney_phone, attorney_email) OUTPUT Inserted.ID VALUES (@property_id, @property_origin, @document_condition, @cadastral_file, @main_living_place, @power, @power_condition, @mortgage, @part_of_payment, @commission, @commission_seller, @observations, @first_name, @last_name, @phone, @email, @birthday, @contact_first_name, @contact_last_name, @contact_phone, @contact_email, @attorney_first_name, @attorney_last_name, @attorney_phone, @attorney_email);",
+  "addRequestDelete" :"INSERT INTO [dbo].[request_delete] (propertyId, username, message) OUTPUT Inserted.ID VALUES (@propertyId, @username, @message);",
+  "addClientData" :"INSERT INTO [dbo].[property_client_data] (property_id, property_origin, document_condition, cadastral_file, main_living_place, power, power_condition, mortgage, part_of_payment, commission, commission_seller, observations, commision_persentage, first_name, last_name, phone, email, birthday, contact_first_name, contact_last_name, contact_phone, contact_email, attorney_first_name, attorney_last_name, attorney_phone, attorney_email) OUTPUT Inserted.ID VALUES (@property_id, @property_origin, @document_condition, @cadastral_file, @main_living_place, @power, @power_condition, @mortgage, @part_of_payment, @commission, @commission_seller, @observations, @commision_persentage, @first_name, @last_name, @phone, @email, @birthday, @contact_first_name, @contact_last_name, @contact_phone, @contact_email, @attorney_first_name, @attorney_last_name, @attorney_phone, @attorney_email);",
   "delete" : "DELETE FROM [dbo].[property] WHERE id = @id",
   "updateCreatedDate" : "UPDATE [dbo].[property] SET created_date = @created_date WHERE id = @id",
   "updateStatus" : "UPDATE [dbo].[property] SET property_status = @property_status WHERE id = @id",
@@ -82,6 +85,7 @@ export const queries = {
   "deleteUser" : "DELETE FROM [dbo].[user_info] WHERE name = @userName",
   "updateUserDetails" : "UPDATE [dbo].[user_info] SET password = @newPassword WHERE name = @userName"
 }
+
 
 
 

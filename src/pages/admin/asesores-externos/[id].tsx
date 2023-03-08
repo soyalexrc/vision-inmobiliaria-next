@@ -19,17 +19,8 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isInvestor: string
-  birthday: string;
-  id: number | null;
-  type: string;
-}
+import {ExternalAdviser} from "../../../../interfaces";
+import axios from "axios";
 
 const schema = yup.object({
   firstName: yup.string().required('Este campo es requerido'),
@@ -37,7 +28,7 @@ const schema = yup.object({
   birthday: yup.string().required('Este campo es requerido'),
   email: yup.string().required('Este campo es requerido'),
   phone: yup.string().required('Este campo es requerido'),
-  isInvestor: yup.string(),
+  isInvestor: yup.string().nullable(),
 }).required();
 
 
@@ -46,16 +37,16 @@ export default function EditAdviserPage() {
   const id = router.query?.id;
   const { enqueueSnackbar } = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
-  const {register, handleSubmit, formState: {errors}, setValue} = useForm<FormValues>({
+  const {register, handleSubmit, formState: {errors}, setValue} = useForm<ExternalAdviser>({
     resolver: yupResolver(schema),
-    mode: 'all'
+    mode: 'all',
   });
   const onSubmit = handleSubmit((data) => editAdviser(data));
   const [loading, setLoading] = React.useState<boolean>(false)
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   async function getAdviserById() {
     try {
-      const response = await axiosInstance.get(`owner/getById?id=${id}`);
+      const response = await axios.get(`/api/external-advisers/${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {first_name, last_name, phone, isInvestor, email, birthday} = response.data.recordset[0];
         setValue('firstName', first_name, {});
@@ -65,6 +56,8 @@ export default function EditAdviserPage() {
         setValue('email', email, {});
         setValue('birthday', birthday, {});
       }
+      console.log('state', );
+
     } catch (err) {
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
     } finally {
@@ -73,12 +66,13 @@ export default function EditAdviserPage() {
   }
 
   async function editAdviser(data: any) {
+    console.log('here')
     const fullObj = {...data};
     fullObj.type = 'Asesores Externos'
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axiosInstance.put('owner/updateData', fullObj);
+      const response = await axios.put(`/api/external-advisers/${id}`, fullObj);
       if (response.status === 200) {
         enqueueSnackbar('Se creo el asesor con exito!', {variant: 'success'} )
         router.back()
@@ -90,9 +84,14 @@ export default function EditAdviserPage() {
     }
   }
 
+
   React.useEffect(() => {
     getAdviserById()
   }, [])
+
+  React.useEffect(() => {
+    console.log('erros', errors);
+  }, [errors])
 
   return (
     <AdminLayout title='Editar asesor | Vision inmobiliaria'>

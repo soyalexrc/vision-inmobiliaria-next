@@ -19,9 +19,12 @@ import {
 import {ClientsTable} from "./";
 import {ClientsFilterDrawer} from "./";
 import {FORMAT_CLIENTS, Formatclients} from "../../../../utils/mock-data";
+import axios from "axios";
+import {useSnackbar} from "notistack";
 
 export function ClientsList() {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const {enqueueSnackbar} = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState('')
@@ -34,9 +37,18 @@ export function ClientsList() {
     pageSize: 5
   });
 
-  function getProperties() {
-    setClients(FORMAT_CLIENTS)
-  }
+  async function getProperties() {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/formats/clients');
+      if (response.status === 200) {
+        setClients(response.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
+    } finally {
+      setLoading(false);
+    }  }
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -71,6 +83,23 @@ export function ClientsList() {
       filters,
     }))
   }
+
+
+  async function deleteData(id: number | string) {
+    try {
+      setLoading(true);
+      const response = await axios.delete(`/api/formats/clients/${id}`);
+      if (response.status === 200) {
+        enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
+        getProperties()
+      }
+    } catch (e) {
+      enqueueSnackbar('Error!', {variant: 'error'} )
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   return (
     <Box sx={{width: '100%', p: 2}}>
@@ -120,7 +149,7 @@ export function ClientsList() {
         {loading && <LinearProgress/>}
       </Box>
       {/*  Properties Table*/}
-      <ClientsTable clients={clients} loading={loading}  />
+      <ClientsTable clients={clients} loading={loading} onDelete={(id) => deleteData(id)} />
       {
         (!clients || clients.length) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>

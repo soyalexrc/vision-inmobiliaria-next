@@ -17,10 +17,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
 import {Formatclients} from "../../../../utils/mock-data";
+import axios from "axios";
+import {useSnackbar} from "notistack";
 
 interface PropertiesTableProps {
   loading: boolean;
   clients: Formatclients[];
+  onDelete: (id: number | string) => void;
 }
 
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
@@ -29,7 +32,7 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 }));
 
 
-export function ClientsTable({loading, clients}: PropertiesTableProps) {
+export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
   const router = useRouter()
 
@@ -194,14 +197,14 @@ export function ClientsTable({loading, clients}: PropertiesTableProps) {
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>
                     <Tooltip title='Editar propiedad'>
-                      <IconButton onClick={() => router.push(`/admin/propiedades/editar/${row.id}`)}>
+                      <IconButton onClick={() => router.push(`/admin/formatos/clientes/${row.id}`)}>
                         <EditIcon/>
                       </IconButton>
                     </Tooltip>
                     <DeleteButton
                       title='Se eliminara la siguiente propiedad'
                       element={`sample`}
-                      onClick={() => console.log(row.id)}
+                      onClick={() => onDelete(row.id)}
                     />
                   </Box>
                 </TableCell>

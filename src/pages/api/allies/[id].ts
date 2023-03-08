@@ -7,29 +7,29 @@ import {queriesOwner as queries} from '@/../database/queries'
 import fs from 'fs';
 
 
-type DataUser =
+type DataAlly =
   | { message: string; }
   | SqlResponse
   | Owner
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<DataUser>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataAlly>) {
 
   switch (req.method) {
     case 'GET':
-      return getOwner(req, res);
+      return getAlly(req, res);
 
     case 'PUT':
-      return updateOwner(req, res);
+      return updateAlly(req, res);
 
     case 'DELETE':
-      return deleteOwner(req, res)
+      return deleteAlly(req, res)
 
     default:
       return res.status(400).json({message: 'Endpoint no existe'})
   }
 }
 
-const getOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const getAlly = async (req: NextApiRequest, res: NextApiResponse<DataAlly>) => {
   const {id} = req.query;
 
   const pool: any = await db.poolPromise;
@@ -40,7 +40,7 @@ const getOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => 
     res.status(200).json(result)
   }
 }
-const updateOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const updateAlly = async (req: NextApiRequest, res: NextApiResponse<DataAlly>) => {
   try {
 
     const pool = await db.poolPromise;
@@ -61,15 +61,15 @@ const updateOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) 
     res.status(500).json({message: 'Ocurrio un error'})
   }
 }
-const deleteOwner = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
+const deleteAlly = async (req: NextApiRequest, res: NextApiResponse<DataAlly>) => {
+  const {id} = req.query;
+
   try {
     const pool = await db.poolPromise;
-    const result = await pool.request()
-      .input('id', db.sql.VarChar, req.query?.id)
-      .query(queries.delete);
-    res.status(200).json(result)
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({message: 'Ocurrio un error'})
+    const result = await pool.request().input('id', db.sql.VarChar, id).query(queries.delete)
+    res.status(200).json({message: 'Se elimino el usuario con exito!'})
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({message: 'Ocurrio un error!'})
   }
 }

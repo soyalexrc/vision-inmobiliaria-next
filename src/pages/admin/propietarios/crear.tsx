@@ -22,18 +22,8 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isInvestor: string
-  birthday: string;
-  id: number | null;
-  type: string;
-}
-
+import {Owner} from "../../../../interfaces";
+import axios from 'axios';
 
 const schema = yup.object({
   firstName: yup.string().required('Este campo es requerido'),
@@ -47,7 +37,7 @@ const schema = yup.object({
 export default function CreateNewOwnerPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState<boolean>()
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver: yupResolver(schema), mode: 'all' });
+  const { register, handleSubmit, formState: { errors } } = useForm<Owner>({ resolver: yupResolver(schema), mode: 'all' });
   const onSubmit = handleSubmit((data) => createOwner(data));
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const {enqueueSnackbar} = useSnackbar()
@@ -58,8 +48,8 @@ export default function CreateNewOwnerPage() {
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axiosInstance.post('owner/addNewData', fullObj);
-      if (response.status === 200) {
+      const response = await axios.post('/api/owners', fullObj);
+      if (response.status === 201) {
         enqueueSnackbar('Se creo el propietario con exito!', {variant: 'success'})
         router.back()
       }

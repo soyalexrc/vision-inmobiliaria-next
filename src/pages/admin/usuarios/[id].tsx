@@ -28,30 +28,8 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {RHFSelect} from "../../../../components/ui/forms";
 import axios from 'axios';
+import {User} from '@/../interfaces'
 
-interface FormValues {
-  birthday: string,
-  username: string,
-  city: string,
-  email: string,
-  id: number | null,
-  state: string,
-  userType: string,
-  password: string,
-  profession: string,
-  socialFacebook: string,
-  company: string,
-  socialInstagram: string,
-  socialTwitter: string,
-  socialYoutube: string,
-  phonNumber1: string,
-  phonNumber2: string,
-  imageData: string | null,
-  imageType: string | null,
-  lastName: string,
-  firstName: string,
-  fiscalAddress: string
-}
 
 const schema = yup.object({
   birthday: yup.string().required('Este campo es requerido'),
@@ -84,7 +62,7 @@ export default function EditOwnerPage() {
     setValue,
     control,
     watch
-  } = useForm<FormValues>({
+  } = useForm<User>({
     resolver: yupResolver(schema),
     mode: 'all',
     defaultValues: {

@@ -11,13 +11,10 @@ type DataProperties =
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<DataProperties>) {
 
-  switch(req.method) {
+  switch (req.method) {
     case 'POST':
-      if (req.body.filters) {
-        return getProperties(req, res)
-      } else  {
-        return createProperty(req, res)
-      }
+      return getProperties(req, res)
+
     default:
       return res.status(400).json({message: 'Endpoint no existe'})
   }
@@ -80,7 +77,7 @@ const getProperties = async (req: NextApiRequest, res: NextApiResponse) => {
             let values = filter.name;
             values = values.replace('Otro ', '');
             console.log(parseFloat(values.split(' - ')));
-            resultFilters += "CAST(p.price as DECIMAL(9,2)) >= "+values.split(' - ')[0]+" and CAST(p.price as DECIMAL(9,2)) <= " + values.split(' - ')[1];
+            resultFilters += "CAST(p.price as DECIMAL(9,2)) >= " + values.split(' - ')[0] + " and CAST(p.price as DECIMAL(9,2)) <= " + values.split(' - ')[1];
           }
         }
         if (filter.parameter === 'state') {
@@ -131,8 +128,8 @@ const getProperties = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (option === null) {
       result += ' ORDER BY p.created_date DESC' +
-        '    OFFSET '+ ((req.body.pageNumber - 1) * req.body.pageSize) +' ROWS' +
-        '    FETCH NEXT '+ req.body.pageSize +' ROWS ONLY'
+        '    OFFSET ' + ((req.body.pageNumber - 1) * req.body.pageSize) + ' ROWS' +
+        '    FETCH NEXT ' + req.body.pageSize + ' ROWS ONLY'
     }
 
     console.log(result);
@@ -246,9 +243,7 @@ const getProperties = async (req: NextApiRequest, res: NextApiResponse) => {
     })
   } catch (error: any) {
     res.status(500);
-    res.send(error.message)
+    res.status(500).json(JSON.stringify(error.message))
   }
 }
-const createProperty = async (req: NextApiRequest, res: NextApiResponse) => {
 
-}

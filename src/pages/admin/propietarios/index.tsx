@@ -17,6 +17,7 @@ import {OwnersTable} from "../../../../components/ui/admin/owners";
 import {axiosInstance, parseCookie} from "../../../../utils";
 import {useSnackbar} from "notistack";
 import {GetServerSideProps} from "next";
+import axios from 'axios'
 
 export default function OwnersListPage() {
   const {enqueueSnackbar}  = useSnackbar()
@@ -29,8 +30,8 @@ export default function OwnersListPage() {
   async function getOwners() {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
-      // const response = await axios.get('/api/owners');
+      // const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
+      const response = await axios.get('/api/owners?type=Propietarios');
       if (response.status === 200) {
         setOwners(response.data)
       }

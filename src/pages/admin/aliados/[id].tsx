@@ -19,17 +19,8 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isInvestor: string
-  birthday: string;
-  id: number | null;
-  type: string;
-}
+import {Ally} from "../../../../interfaces";
+import axios from "axios";
 
 const schema = yup.object({
   firstName: yup.string().required('Este campo es requerido'),
@@ -44,7 +35,7 @@ export default function EditAllyPage() {
   const router = useRouter();
   const id = router.query?.id;
   const { enqueueSnackbar } = useSnackbar()
-  const {register, handleSubmit, formState: {errors}, setValue} = useForm<FormValues>({
+  const {register, handleSubmit, formState: {errors}, setValue} = useForm<Ally>({
     resolver: yupResolver(schema),
     mode: 'all'
   });
@@ -54,7 +45,7 @@ export default function EditAllyPage() {
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   async function getAllyById() {
     try {
-      const response = await axiosInstance.get(`owner/getById?id=${id}`);
+      const response = await axios.get(`/api/allies/${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {first_name, last_name, phone, isInvestor, email, birthday} = response.data.recordset[0];
         setValue('firstName', first_name, {});
@@ -77,7 +68,7 @@ export default function EditAllyPage() {
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axiosInstance.put('owner/updateData', fullObj);
+      const response = await axios.put(`/api/allies/${id}`, fullObj);
       if (response.status === 200) {
         router.back()
         enqueueSnackbar('Se edito el aliado con exito!', {variant: 'success'} )

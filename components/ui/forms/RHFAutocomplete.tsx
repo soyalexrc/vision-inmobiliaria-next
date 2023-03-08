@@ -20,7 +20,7 @@ export const RHFAutocomplete = (
           getOptionLabel={getOptionLabel}
           renderOption={renderOption}
           renderInput={(params: any) => <TextField {...params} margin="normal" />}
-          onChange={onChange}
+          onChange={(values, value) => onChange(value)}
           value={value}
         />
       )}

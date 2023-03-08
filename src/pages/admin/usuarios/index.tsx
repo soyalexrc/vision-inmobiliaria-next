@@ -1,7 +1,7 @@
 import React from 'react';
 import {AdminLayout} from "../../../../components/layouts";
 import {GetServerSideProps} from "next";
-import {axiosInstance, parseCookie} from "../../../../utils";
+import {parseCookie} from "../../../../utils";
 import axios from 'axios';
 import {Box, Button, Grid, IconButton, InputAdornment, TextField, Typography, useMediaQuery} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -34,7 +34,6 @@ export default function UsersListPage() {
   async function deleteOwner(id: number | string) {
     try {
       setLoading(true);
-      // const response = await axiosInstance.delete(`/owner/deleteData?id=${id}`);
       const response = await axios.delete(`/api/users/${id}`);
       if (response.status === 200) {
         enqueueSnackbar(response.data.message, {variant: 'success'} )

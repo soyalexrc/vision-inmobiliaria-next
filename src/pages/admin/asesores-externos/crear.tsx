@@ -18,18 +18,9 @@ import {useSnackbar} from "notistack";
 import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isInvestor: string
-  birthday: string;
-  id: number | null;
-  type: string;
-}
+import * as yup from "yup"
+import {ExternalAdviser} from "../../../../interfaces";
+import axios from "axios";
 
 const schema = yup.object({
   firstName: yup.string().required('Este campo es requerido'),
@@ -44,7 +35,7 @@ const schema = yup.object({
 export default function CreateNewAdviser() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar()
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({ resolver: yupResolver(schema), mode: 'all' });
+  const { register, handleSubmit, formState: { errors } } = useForm<ExternalAdviser>({ resolver: yupResolver(schema), mode: 'all' });
   const onSubmit = handleSubmit((data) => createAdviser(data));
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const [loading, setLoading] = React.useState<boolean>()
@@ -55,8 +46,8 @@ export default function CreateNewAdviser() {
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axiosInstance.post('owner/addNewData', fullObj);
-      if (response.status === 200) {
+      const response = await axios.post('/api/external-advisers', fullObj);
+      if (response.status === 201) {
         enqueueSnackbar('Se creo el asesor con exito!', {variant: 'success'} )
         router.back()
       }

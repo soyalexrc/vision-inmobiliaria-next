@@ -44,11 +44,16 @@ const getUser = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
 const deleteUser = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {
   const {id} = req.query;
 
-  console.log(id);
+  try {
+    const pool = await db.poolPromise;
+    const result = await pool.request().input('id', db.sql.VarChar, id).query(queries.delete)
+    res.status(200).json({message: 'Se elimino el usuario con exito!'})
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({message: 'Ocurrio un error!'})
+  }
 
-  const pool = await db.poolPromise;
-  const result = await pool.request().input('id', db.sql.VarChar, id).query(queries.delete)
-  res.status(200).json({message: 'Se elimino el usuario con exito!'})
+
 }
 
 const updateUser = async (req: NextApiRequest, res: NextApiResponse<DataUser>) => {

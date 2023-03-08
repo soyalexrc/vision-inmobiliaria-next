@@ -1,29 +1,29 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
+import {NextApiRequest, NextApiResponse} from "next";
+import {SqlResponse, ExternalAdviser} from "../../../../interfaces";
 import {db} from '@/../database';
 import {queriesOwner as queries} from '@/../database/queries';
-import {Owner, SqlResponse} from '@/../interfaces'
 
-type DataOwners =
+type DataExternalAdvisers =
   | { message: string; }
-  | Owner[]
-  | Owner
+  | ExternalAdviser[]
+  | ExternalAdviser
   | SqlResponse
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<DataOwners>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<DataExternalAdvisers>) {
 
   switch (req.method) {
     case 'GET':
-      return getOwners(req, res);
+      return getExternalAdvisers(req, res);
 
     case 'POST':
-      return createOwner(req, res)
+      return createExternalAdviser(req, res)
 
     default:
       return res.status(400).json({message: 'Endpoint no existe'})
   }
 }
 
-export const getOwners = async (req: NextApiRequest, res: NextApiResponse<DataOwners>) => {
+const getExternalAdvisers = async(req: NextApiRequest, res: NextApiResponse<DataExternalAdvisers>)  => {
   const pool = await db.poolPromise;
   const result = await pool.request()
     .input('type', db.sql.VarChar, req.query?.type)
@@ -31,8 +31,7 @@ export const getOwners = async (req: NextApiRequest, res: NextApiResponse<DataOw
 
   res.status(200).json(result.recordset)
 }
-
-const createOwner = async (req: NextApiRequest, res: NextApiResponse<DataOwners>) => {
+const createExternalAdviser = async(req: NextApiRequest, res: NextApiResponse<DataExternalAdvisers>)  => {
   try {
 
     const pool = await db.poolPromise;
@@ -70,4 +69,3 @@ const createOwner = async (req: NextApiRequest, res: NextApiResponse<DataOwners>
     return res.status(500).json({message: 'Algo salio mal, revisar consola del servidor...'})
   }
 }
-

@@ -36,7 +36,7 @@ export function LocationInformationForm() {
         <RHFAutocomplete
           name="location.state"
           options={states}
-          getOptionLabel={(option: any) => option}
+          getOptionLabel={(option: any) => option || ''}
           defaultValue={null}
         />
 

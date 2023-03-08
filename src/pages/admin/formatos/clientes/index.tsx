@@ -1,8 +1,8 @@
 import React from 'react';
-import {AdminLayout} from "../../../../components/layouts";
+import {AdminLayout} from "../../../../../components/layouts";
 import {Box, Tab, Tabs} from "@mui/material";
-import {ClientsList, ClientsChart} from "../../../../components/ui/admin/formats";
-import {a11yProps, TabPanel} from "../../../../components/ui/tabs";
+import {ClientsList, ClientsChart} from "../../../../../components/ui/admin/formats";
+import {a11yProps, TabPanel} from "../../../../../components/ui/tabs";
 
 
 export default function ClientsPage() {

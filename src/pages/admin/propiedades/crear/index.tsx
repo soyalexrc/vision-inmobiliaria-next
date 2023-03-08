@@ -18,6 +18,7 @@ import {panels, PROPERTY_FILES_INITIAL_VALUE} from "../../../../../utils/mock-da
 import {useRouter} from "next/router";
 import {axiosInstance} from "../../../../../utils";
 import {useSnackbar} from "notistack";
+import axios from "axios";
 
 
 export default function CreateNewPropertyPage() {
@@ -30,7 +31,7 @@ export default function CreateNewPropertyPage() {
       files: [...PROPERTY_FILES_INITIAL_VALUE]
     }
   });
-  const onSubmit = methods.handleSubmit((data: Property) => createNewProperty(data));
+  const onSubmit = methods.handleSubmit((data) => createNewProperty(data));
   const [expanded, setExpanded] = React.useState<string | boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const {enqueueSnackbar} = useSnackbar()
@@ -41,8 +42,8 @@ export default function CreateNewPropertyPage() {
   const createNewProperty = async (data: Property) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post('property/addNewData', data);
-      if (response.status === 200) {
+      const response = await axios.post('/api/properties/create', data);
+      if (response.status === 201) {
         enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
         router.back()
       }

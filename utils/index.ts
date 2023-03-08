@@ -4,4 +4,5 @@ export * as constants from './constants'
 export * from './parse-cookie';
 export * from './crypto';
 export * from './redirect';
+export * from './sleep';
 export * from './format';

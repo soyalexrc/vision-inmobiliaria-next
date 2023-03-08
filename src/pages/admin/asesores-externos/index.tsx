@@ -17,6 +17,7 @@ import {axiosInstance, parseCookie} from "../../../../utils";
 import {useSnackbar} from "notistack";
 import {GetServerSideProps} from "next";
 import {AdvisersTable} from "../../../../components/ui/admin/advisers";
+import axios from "axios";
 
 export default function AdvisersListPage() {
   const {enqueueSnackbar}  = useSnackbar()
@@ -29,7 +30,7 @@ export default function AdvisersListPage() {
   async function getAdvisers() {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/owner/getAllData?type=Asesores%20Externos');
+      const response = await axios.get('/api/external-advisers?type=Asesores%20Externos');
       if (response.status === 200) {
         setAdvisers(response.data)
       }
@@ -42,9 +43,9 @@ export default function AdvisersListPage() {
   async function deleteAdviser(id: number | string) {
     try {
       setLoading(true);
-      const response = await axiosInstance.delete(`/owner/deleteData?id=${id}`);
+      const response = await axios.delete(`/api/external-advisers/${id}`);
       if (response.status === 200) {
-        enqueueSnackbar('Se elimino el propietario con exito!', {variant: 'success'} )
+        enqueueSnackbar('Se elimino el asesor con exito!', {variant: 'success'} )
         getAdvisers()
       }
     } catch (e) {

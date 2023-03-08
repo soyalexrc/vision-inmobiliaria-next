@@ -1,11 +1,23 @@
 export interface User {
+  userName?: string;
+  firstName?: string;
+  lastName?: string;
+  userType?: string;
+  phonNumber1?: string;
+  phonNumber2?: string;
+  fiscalAddress?: string;
+  socialFacebook?: string;
+  socialInstagram?: string;
+  socialTwitter?: string;
+  socialYoutube?: string;
   birthday: string;
   city: string;
   email: string;
   first_name: string;
+  company: string;
   fiscal_address: string;
   id: number;
-  image: string | null;
+  imageData: string | null;
   last_name: string;
   password: string;
   phone_number1: string;
