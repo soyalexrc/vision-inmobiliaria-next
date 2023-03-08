@@ -15,13 +15,14 @@ export interface AuthState {
 const AUTH_INITIAL_STATE: AuthState = {
   isAuthenticated: false,
   currentUser: {
+    company: '',
     birthday: '',
     city: '',
     email: '',
     first_name: '',
     fiscal_address: '',
     id: 0,
-    image: null,
+    imageData: null,
     last_name: '',
     password: '',
     phone_number1: '',

@@ -79,7 +79,7 @@ export function AdminSidebar() {
             currentTarget.onerror = null;
             currentTarget.src = '/images/no-image.jpg'
           }}
-          src={currentUser.image ? currentUser.image : '/images/no-image.jpg'}
+          src={currentUser.imageData ? currentUser.imageData : '/images/no-image.jpg'}
           width={40}
           height={40}
           sx={{borderRadius: 100}}
