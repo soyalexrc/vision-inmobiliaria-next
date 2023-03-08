@@ -23,7 +23,7 @@ export function LocationInformationForm() {
     <Grid container spacing={4}>
       <Grid item xs={12} md={3}>
         <RHFSelect
-          name='property.country'
+          name='location.country'
           label='Pais'
           defaultValue={'Venezuela'}
           control={control}
