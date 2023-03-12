@@ -91,6 +91,9 @@ export function PropertiesList() {
 
   React.useEffect(() => {
     getProperties(filtersData);
+  }, [])
+
+  React.useEffect(() => {
     getOwners()
   }, [])
 
