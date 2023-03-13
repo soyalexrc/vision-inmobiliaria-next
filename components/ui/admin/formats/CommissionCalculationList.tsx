@@ -19,9 +19,12 @@ import {
 import {CommissionCalculationTable} from "./";
 import {ClientsFilterDrawer} from "./";
 import {FORMAT_COMMISSION_CALCULATION, FormatCommissionCalculation} from "../../../../utils/mock-data";
+import {axiosInstance} from "../../../../utils";
+import {useSnackbar} from "notistack";
 
 export function CommissionCalculationList() {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { enqueueSnackbar} = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState('')
@@ -34,8 +37,19 @@ export function CommissionCalculationList() {
     pageSize: 5
   });
 
-  function getProperties() {
-    setData(FORMAT_COMMISSION_CALCULATION)
+
+  async function getProperties() {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get('format/commission/getAllData');
+      if (response.status === 200) {
+        setData(response.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleChangePage = (event: any, newPage: any) => {
@@ -71,6 +85,22 @@ export function CommissionCalculationList() {
       filters,
     }))
   }
+
+  async function deleteData(id: number | string) {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.delete(`format/commission/deleteData?id=${id}`);
+      if (response.status === 200) {
+        enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
+        getProperties()
+      }
+    } catch (e) {
+      enqueueSnackbar('Error!', {variant: 'error'} )
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   return (
     <Box sx={{width: '100%', p: 2}}>
@@ -120,7 +150,7 @@ export function CommissionCalculationList() {
         {loading && <LinearProgress/>}
       </Box>
       {/*  Properties Table*/}
-      <CommissionCalculationTable data={data} loading={loading}  />
+      <CommissionCalculationTable data={data} loading={loading}  onDelete={(id) => deleteData(id)}  />
       {
         (!data || data.length) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>

@@ -19,7 +19,7 @@ import {
 import {ClientsTable} from "./";
 import {ClientsFilterDrawer} from "./";
 import {FORMAT_CLIENTS, Formatclients} from "../../../../utils/mock-data";
-import axios from "axios";
+import {axiosInstance} from "@/../utils";
 import {useSnackbar} from "notistack";
 
 export function ClientsList() {
@@ -40,7 +40,7 @@ export function ClientsList() {
   async function getProperties() {
     try {
       setLoading(true);
-      const response = await axios.get('/api/formats/clients');
+      const response = await axiosInstance.get('format/client/getAllData');
       if (response.status === 200) {
         setClients(response.data)
       }
@@ -48,7 +48,8 @@ export function ClientsList() {
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
     } finally {
       setLoading(false);
-    }  }
+    }
+  }
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -88,7 +89,7 @@ export function ClientsList() {
   async function deleteData(id: number | string) {
     try {
       setLoading(true);
-      const response = await axios.delete(`/api/formats/clients/${id}`);
+      const response = await axiosInstance.delete(`format/client/deleteData?id=${id}`);
       if (response.status === 200) {
         enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
         getProperties()
@@ -130,7 +131,7 @@ export function ClientsList() {
           </Grid>
           <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/propiedades/crear')}>
+                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/formatos/clientes/crear')}>
               <AddIcon/>
               registro
             </Button>

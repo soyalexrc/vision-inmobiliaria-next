@@ -21,6 +21,7 @@ import {FormatCashFlow} from "../../../../utils/mock-data";
 interface CashFlowTableProps {
   loading: boolean;
   data: FormatCashFlow[];
+  onDelete: (id: number | string) => void;
 }
 
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
@@ -29,7 +30,7 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 }));
 
 
-export function CashFlowTable({loading, data}: CashFlowTableProps) {
+export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
   const router = useRouter()
 
@@ -122,7 +123,7 @@ export function CashFlowTable({loading, data}: CashFlowTableProps) {
                     <DeleteButton
                       title='Se eliminara la siguiente propiedad'
                       element={`sample`}
-                      onClick={() => console.log(row.id)}
+                      onClick={() => onDelete(row.id)}
                     />
                   </Box>
                 </TableCell>

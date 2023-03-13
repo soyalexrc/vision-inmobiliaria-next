@@ -19,6 +19,8 @@ import {
 import {CashFlowTable} from "./";
 import {ClientsFilterDrawer} from "./";
 import {FormatCashFlow, CASH_FLOW} from "../../../../utils/mock-data";
+import {axiosInstance} from "../../../../utils";
+import {useSnackbar} from "notistack";
 
 export function CashFlowList() {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -26,6 +28,7 @@ export function CashFlowList() {
   const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState('')
   const router = useRouter();
+  const {enqueueSnackbar} = useSnackbar()
   const [filtersDrawer, setFiltersDrawer] = React.useState(false);
   const [data, setData] = React.useState<FormatCashFlow[]>([]);
   const [filtersData, setFiltersData] = React.useState<any>({
@@ -34,8 +37,18 @@ export function CashFlowList() {
     pageSize: 5
   });
 
-  function getProperties() {
-    setData(CASH_FLOW)
+  async function getProperties() {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get('format/cashFlow/getAllData');
+      if (response.status === 200) {
+        setData(response.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleChangePage = (event: any, newPage: any) => {
@@ -70,6 +83,22 @@ export function CashFlowList() {
       ...prevState,
       filters,
     }))
+  }
+
+
+  async function deleteData(id: number | string) {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.delete(`format/cashFlow/deleteData?id=${id}`);
+      if (response.status === 200) {
+        enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
+        getProperties()
+      }
+    } catch (e) {
+      enqueueSnackbar('Error!', {variant: 'error'} )
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -120,7 +149,7 @@ export function CashFlowList() {
         {loading && <LinearProgress/>}
       </Box>
       {/*  Properties Table*/}
-      <CashFlowTable data={data} loading={loading}  />
+      <CashFlowTable data={data} loading={loading} onDelete={(id) => deleteData(id)} />
       {
         (!data || data.length) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>

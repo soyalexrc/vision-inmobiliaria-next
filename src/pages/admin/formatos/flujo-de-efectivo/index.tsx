@@ -1,8 +1,8 @@
 import React from 'react';
-import {AdminLayout} from "../../../../components/layouts";
+import {AdminLayout} from "../../../../../components/layouts";
 import {Box, Tab, Tabs} from "@mui/material";
-import {a11yProps, TabPanel} from "../../../../components/ui/tabs";
-import {CashFlowChart, CashFlowList} from "../../../../components/ui/admin/formats";
+import {a11yProps, TabPanel} from "../../../../../components/ui/tabs";
+import {CashFlowChart, CashFlowList} from "../../../../../components/ui/admin/formats";
 
 export default function CashFlowPage() {
   const [tab, setTab] = React.useState<number>(0)

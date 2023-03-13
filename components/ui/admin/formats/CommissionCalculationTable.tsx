@@ -21,6 +21,7 @@ import {FormatCommissionCalculation} from "../../../../utils/mock-data";
 interface PropertiesTableProps {
   loading: boolean;
   data: FormatCommissionCalculation[];
+  onDelete: (id: number | string) => void;
 }
 
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
@@ -29,7 +30,7 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 }));
 
 
-export function CommissionCalculationTable({loading, data}: PropertiesTableProps) {
+export function CommissionCalculationTable({loading, data, onDelete}: PropertiesTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
   const router = useRouter()
 
@@ -213,7 +214,7 @@ export function CommissionCalculationTable({loading, data}: PropertiesTableProps
                     <DeleteButton
                       title='Se eliminara la siguiente propiedad'
                       element={`sample`}
-                      onClick={() => console.log(row.id)}
+                      onClick={() => onDelete(row.id)}
                     />
                   </Box>
                 </TableCell>
