@@ -16,7 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 // import {AuthContext} from "../../../../context/auth";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
-import {Formatclients} from "../../../../utils/mock-data";
+import {Formatclients} from "../../../../interfaces";
 import axios from "axios";
 import {useSnackbar} from "notistack";
 
@@ -44,6 +44,7 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
             <TableRow>
               <TableHeaderItem>Nº</TableHeaderItem>
               <TableHeaderItem>Propiedad</TableHeaderItem>
+              <TableHeaderItem align='center'>Inquilino</TableHeaderItem>
               <TableHeaderItem>Contacto</TableHeaderItem>
               <TableHeaderItem>Ubicacion</TableHeaderItem>
               <TableHeaderItem>Canon</TableHeaderItem>
@@ -83,6 +84,11 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
               >
                 <TableCell sx={{px: 5}}>{index + 1}</TableCell>
                 <TableCell>{row.property}</TableCell>
+                <TableCell>
+                  <Box width={150} display='flex' justifyContent='center'>
+                    {row.tenant}
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <Box width={180}>
                     {row.contact}
@@ -131,62 +137,62 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.january.text}
+                    {row.january}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.february.text}
+                    {row.february}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.march.text}
+                    {row.march}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.april.text}
+                    {row.april}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.may.text}
+                    {row.may}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.june.text}
+                    {row.june}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.july.text}
+                    {row.july}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.august.text}
+                    {row.august}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.september.text}
+                    {row.september}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.october.text}
+                    {row.october}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.november.text}
+                    {row.november}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={180}>
-                    {row.december.text}
+                    {row.december}
                   </Box>
                 </TableCell>
                 <TableCell>

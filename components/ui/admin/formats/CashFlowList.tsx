@@ -130,7 +130,7 @@ export function CashFlowList() {
           </Grid>
           <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/propiedades/crear')}>
+                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/formatos/flujo-de-efectivo/crear')}>
               <AddIcon/>
               registro
             </Button>

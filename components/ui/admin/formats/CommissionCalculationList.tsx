@@ -18,9 +18,10 @@ import {
 } from "@mui/material";
 import {CommissionCalculationTable} from "./";
 import {ClientsFilterDrawer} from "./";
-import {FORMAT_COMMISSION_CALCULATION, FormatCommissionCalculation} from "../../../../utils/mock-data";
+import {FORMAT_COMMISSION_CALCULATION} from "../../../../utils/mock-data";
 import {axiosInstance} from "../../../../utils";
 import {useSnackbar} from "notistack";
+import {FormatCommissionCalculation} from "../../../../interfaces";
 
 export function CommissionCalculationList() {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -131,7 +132,7 @@ export function CommissionCalculationList() {
           </Grid>
           <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/propiedades/crear')}>
+                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/formatos/calculo-de-comisiones/crear')}>
               <AddIcon/>
               registro
             </Button>

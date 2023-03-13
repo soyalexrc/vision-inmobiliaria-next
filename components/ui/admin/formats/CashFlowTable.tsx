@@ -16,7 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 // import {AuthContext} from "../../../../context/auth";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
-import {FormatCashFlow} from "../../../../utils/mock-data";
+import {FormatCashFlow} from "../../../../interfaces";
 
 interface CashFlowTableProps {
   loading: boolean;
@@ -116,7 +116,7 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>
                     <Tooltip title='Editar propiedad'>
-                      <IconButton onClick={() => router.push(`/admin/propiedades/editar/${row.id}`)}>
+                      <IconButton onClick={() => router.push(`/admin/formatos/flujo-de-efectivo/${row.id}`)}>
                         <EditIcon/>
                       </IconButton>
                     </Tooltip>

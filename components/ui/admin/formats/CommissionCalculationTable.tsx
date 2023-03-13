@@ -16,7 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 // import {AuthContext} from "../../../../context/auth";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
-import {FormatCommissionCalculation} from "../../../../utils/mock-data";
+import {FormatCommissionCalculation} from "../../../../interfaces";
 
 interface PropertiesTableProps {
   loading: boolean;
@@ -207,7 +207,7 @@ export function CommissionCalculationTable({loading, data, onDelete}: Properties
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>
                     <Tooltip title='Editar propiedad'>
-                      <IconButton onClick={() => router.push(`/admin/propiedades/editar/${row.id}`)}>
+                      <IconButton onClick={() => router.push(`/admin/formatos/calculo-de-comisiones/${row.id}`)}>
                         <EditIcon/>
                       </IconButton>
                     </Tooltip>

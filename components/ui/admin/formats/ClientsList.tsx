@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from "@mui/icons-material/Add";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import {Formatclients} from '@/../interfaces'
 import {
   Box,
   LinearProgress,
@@ -18,7 +19,6 @@ import {
 } from "@mui/material";
 import {ClientsTable} from "./";
 import {ClientsFilterDrawer} from "./";
-import {FORMAT_CLIENTS, Formatclients} from "../../../../utils/mock-data";
 import {axiosInstance} from "@/../utils";
 import {useSnackbar} from "notistack";
 
