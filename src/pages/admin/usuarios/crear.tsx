@@ -90,8 +90,8 @@ export default function CreateNewUserPage() {
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axios.post('/api/users', fullObj);
-      if (response.status === 201) {
+      const response = await axiosInstance.post('user/addNewData', fullObj);
+      if (response.status === 200) {
         enqueueSnackbar('Se creo el usuario con exito!', {variant: 'success'} )
         router.back()
       }
@@ -149,7 +149,7 @@ export default function CreateNewUserPage() {
                       currentTarget.src = '/images/no-image.jpg'
                     }}
                   />
-                  <Button component="label" sx={{mt: 2}}>
+                  <Button component="label" sx={{mt: 2, display: 'none'}}>
                     Subir Fotografia
                     <input hidden accept="image/*" type="file" onChange={uploadFile}/>
                   </Button>

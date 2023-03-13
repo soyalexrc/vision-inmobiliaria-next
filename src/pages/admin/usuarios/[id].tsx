@@ -86,7 +86,7 @@ export default function EditOwnerPage() {
 
   async function getUserById() {
     try {
-      const response = await axios.get(`/api/users/${id}`);
+      const response = await axiosInstance.get(`user/getById?id=${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {
           first_name,
@@ -139,13 +139,12 @@ export default function EditOwnerPage() {
 
 
   async function editUser(data: any) {
-    console.log('here')
     const fullObj = {...data};
     fullObj.password = encryptValue(masterCryptoKey, data.password)
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axios.put(`/api/users/${id}`, fullObj);
+      const response = await axiosInstance.put(`user/updateData`, fullObj);
       if (response.status === 200) {
         router.back()
         enqueueSnackbar('Se edito el usuario con exito!', {variant: 'success'})

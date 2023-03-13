@@ -30,7 +30,7 @@ export default function AlliesListPage() {
   async function getAllies() {
     try {
       setLoading(true);
-      const response = await axios.get('/api/allies?type=Aliados');
+      const response = await axiosInstance.get('owner/getAllData?type=Aliados');
       if (response.status === 200) {
         setAllies(response.data)
       }
@@ -43,7 +43,7 @@ export default function AlliesListPage() {
   async function deleteAlly(id: number | string) {
     try {
       setLoading(true);
-      const response = await axios.delete(`/api/allies/${id}`);
+      const response = await axiosInstance.delete(`owner/deleteData?id=${id}`);
       if (response.status === 200) {
         enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
         getAllies()

@@ -30,7 +30,7 @@ export default function AdvisersListPage() {
   async function getAdvisers() {
     try {
       setLoading(true);
-      const response = await axios.get('/api/external-advisers?type=Asesores%20Externos');
+      const response = await axiosInstance.get('owner/getAllData?type=Asesores%20Externoss');
       if (response.status === 200) {
         setAdvisers(response.data)
       }
@@ -43,7 +43,7 @@ export default function AdvisersListPage() {
   async function deleteAdviser(id: number | string) {
     try {
       setLoading(true);
-      const response = await axios.delete(`/api/external-advisers/${id}`);
+      const response = await axiosInstance.delete(`owner/deleteData?id=${id}`);
       if (response.status === 200) {
         enqueueSnackbar('Se elimino el asesor con exito!', {variant: 'success'} )
         getAdvisers()

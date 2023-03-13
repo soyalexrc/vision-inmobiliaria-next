@@ -45,7 +45,7 @@ export default function EditAllyPage() {
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   async function getAllyById() {
     try {
-      const response = await axios.get(`/api/allies/${id}`);
+      const response = await axiosInstance.get(`owner/getById?id=${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {first_name, last_name, phone, isInvestor, email, birthday} = response.data.recordset[0];
         setValue('firstName', first_name, {});
@@ -68,7 +68,7 @@ export default function EditAllyPage() {
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axios.put(`/api/allies/${id}`, fullObj);
+      const response = await axiosInstance.put(`owner/updateData`, fullObj);
       if (response.status === 200) {
         router.back()
         enqueueSnackbar('Se edito el aliado con exito!', {variant: 'success'} )

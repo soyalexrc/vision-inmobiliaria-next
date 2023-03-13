@@ -46,8 +46,8 @@ export default function CreateNewAdviser() {
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axios.post('/api/external-advisers', fullObj);
-      if (response.status === 201) {
+      const response = await axiosInstance.post('owner/addNewData', fullObj);
+      if (response.status === 200) {
         enqueueSnackbar('Se creo el asesor con exito!', {variant: 'success'} )
         router.back()
       }
