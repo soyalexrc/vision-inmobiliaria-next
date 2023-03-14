@@ -70,8 +70,16 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     }
   }
 
-  const deleteProperty = async (id: number) => {
-
+  async function deleteProperty(id: number | string) {
+    try {
+      const response = await axiosInstance.delete(`property/deleteData?id=${id}`)
+      if (response.status === 200) {
+        enqueueSnackbar('Se elimino la propiedad con exito!', {variant: 'success'})
+        reload()
+      }
+    } catch (err) {
+      enqueueSnackbar('No se pudo eliminar la propiedad, ocurrio un error!', {variant: 'error'})
+    }
   }
 
   const handleOpenStatusModal = (row: Property) => {
@@ -262,12 +270,6 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
           </TableBody>
         </Table>
       </TableContainer>
-      {/*<ChangeStatusModal*/}
-      {/*  data={row}*/}
-      {/*  open={statusModal}*/}
-      {/*  setOpen={setStatusModal}*/}
-      {/*  trigger={() => setComissionModal(true)}*/}
-      {/*/>*/}
       {/*<ComissionModal*/}
       {/*  data={row}*/}
       {/*  open={comissionModal}*/}
