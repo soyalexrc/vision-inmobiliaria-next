@@ -23,7 +23,6 @@ import {useForm} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {Owner} from "../../../../interfaces";
-import axios from 'axios';
 
 const schema = yup.object({
   firstName: yup.string().required('Este campo es requerido'),
@@ -48,7 +47,7 @@ export default function CreateNewOwnerPage() {
     fullObj.id = null;
     try {
       setLoading(true);
-      const response = await axios.post('/api/owners', fullObj);
+      const response = await axiosInstance.post('owner/addNewData', fullObj);
       if (response.status === 201) {
         enqueueSnackbar('Se creo el propietario con exito!', {variant: 'success'})
         router.back()

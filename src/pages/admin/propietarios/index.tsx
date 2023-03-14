@@ -30,8 +30,7 @@ export default function OwnersListPage() {
   async function getOwners() {
     try {
       setLoading(true);
-      // const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
-      const response = await axios.get('/api/owners?type=Propietarios');
+      const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
       if (response.status === 200) {
         setOwners(response.data)
       }

@@ -41,8 +41,7 @@ export function PropertiesList() {
   async function getProperties(data: any) {
     try {
       setLoading(true);
-      // const response = await axiosInstance.post('/property/getallDataFilter', data);
-      const response = await axios.post('/api/properties', data);
+      const response = await axiosInstance.post('/property/getallDataFilter', data);
       if (response.status === 200) {
         setProperties(response.data)
       }

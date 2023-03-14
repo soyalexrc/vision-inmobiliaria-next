@@ -24,7 +24,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {RHFSelect} from "../../../../components/ui/forms";
 import {Owner} from "../../../../interfaces";
-import axios from "axios";
 
 
 const schema = yup.object({
@@ -53,7 +52,7 @@ export default function EditOwnerPage() {
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   async function getOwnerById() {
     try {
-      const response = await axios.get(`/api/owners/${id}`);
+      const response = await axiosInstance.get(`/owner/getById?id=${id}`);
       if (response.status === 200 && response.data.recordset.length > 0) {
         const {first_name, last_name, phone, isInvestor, email, birthday} = response.data.recordset[0];
         setValue('firstName', first_name, {});
@@ -76,7 +75,7 @@ export default function EditOwnerPage() {
     fullObj.id = id;
     try {
       setLoading(true);
-      const response = await axios.put(`/api/owners/${id}`, fullObj);
+      const response = await axiosInstance.put(`/owner/updateData`, fullObj);
       if (response.status === 200) {
         enqueueSnackbar('Se creo el propietario con exito!', {variant: 'success'})
         router.back()
