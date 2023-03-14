@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import {CashFlowTable} from "./";
 import {ClientsFilterDrawer} from "./";
-import {FormatCashFlow, CASH_FLOW} from "../../../../utils/mock-data";
+import {FormatCashFlow} from "../../../../interfaces";
 import {axiosInstance} from "../../../../utils";
 import {useSnackbar} from "notistack";
 
