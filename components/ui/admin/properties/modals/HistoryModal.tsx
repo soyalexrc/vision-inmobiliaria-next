@@ -15,7 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 
 
-export function HistoryModal({setOpen, open, data}: any) {
+export function HistoryModal({close, open, data}: any) {
 
   function formatDate(dateStr: string) {
     const date = dateStr.split('T')[0];
@@ -27,12 +27,12 @@ export function HistoryModal({setOpen, open, data}: any) {
     <Dialog
       fullScreen
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={close}
       aria-labelledby="responsive-dialog-title"
     >
       <Box display='flex' justifyContent='flex-end' p={2}>
         <IconButton>
-          <CloseIcon onClick={() => setOpen(false)}/>
+          <CloseIcon onClick={close}/>
         </IconButton>
       </Box>
       { data &&
@@ -71,7 +71,7 @@ export function HistoryModal({setOpen, open, data}: any) {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button variant='contained' fullWidth onClick={() => setOpen(false)}>
+            <Button variant='contained' fullWidth onClick={close}>
               Cerrar
             </Button>
           </DialogActions>

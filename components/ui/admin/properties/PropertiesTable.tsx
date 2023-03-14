@@ -23,7 +23,7 @@ import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
 import {useSnackbar} from "notistack";
 import {Property} from "../../../../interfaces";
-import {HistoryModal, ChangeStatusModal} from "./";
+import {HistoryModal, ChangeStatusModal, CommissionModal} from "./";
 
 interface PropertiesTableProps {
   loading: boolean;
@@ -42,11 +42,12 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const [previewModal, setPreviewModal] = React.useState<boolean>(false);
   const [statusModal, setStatusModal] = React.useState<boolean>(false);
   const [historyModal, setHistoryModal] = React.useState<boolean>(false);
-  const [comissionModal, setComissionModal] = React.useState<boolean>(false);
+  const [commissionModal, setCommissionModal] = React.useState<boolean>(false);
   const [propertyDetailLoading, setPropertyDetailLoading] = React.useState<boolean>(false);
   const [propertyDetail, setPropertyDetail] = React.useState<any>({});
   const [historyInfo, setHistoryInfo] = React.useState<any[]>([]);
   const [statusInfo, setStatusInfo] = React.useState<{}>({});
+  const [commissionInfo, setCommissionInfo] = React.useState<{}>({});
   const {currentUser} = React.useContext(AuthContext)
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
@@ -98,6 +99,11 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     } catch (e) {
       enqueueSnackbar('No se consiguio informacion de esta propiedad, ocurrio un error!', {variant: 'error'})
     }
+  }
+
+  const handleOpenCommissionModal = () => {
+    setCommissionInfo(statusInfo);
+    setCommissionModal(true)
   }
 
   // React.useEffect(() => {
@@ -277,8 +283,9 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
       {/*  trigger={() => setComissionModal(true)}*/}
       {/*/>*/}
 
-      <HistoryModal open={historyModal} setOpen={() => setHistoryModal(false)} data={historyInfo} />
-      <ChangeStatusModal open={statusModal} setOpen={() => setStatusModal(false)} data={statusInfo} trigger={() => reload()} reload={() => reload()} />
+      <HistoryModal open={historyModal} close={() => setHistoryModal(false)} data={historyInfo} />
+      <ChangeStatusModal open={statusModal} close={() => setStatusModal(false)} data={statusInfo} trigger={handleOpenCommissionModal} reload={() => reload()} />
+      <CommissionModal open={commissionModal} data={commissionInfo} close={() => setCommissionModal(false)} reload={() => reload()}/>
     </>
   )
 }

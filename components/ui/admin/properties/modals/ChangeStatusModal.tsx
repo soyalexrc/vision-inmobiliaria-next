@@ -17,7 +17,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import {axiosInstance} from "../../../../../utils";
 import {useSnackbar} from "notistack";
 
-export function ChangeStatusModal({setOpen, open, data, trigger, reload}: any) {
+export function ChangeStatusModal({close, open, data, trigger, reload}: any) {
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const { enqueueSnackbar} = useSnackbar()
 
@@ -37,9 +37,9 @@ export function ChangeStatusModal({setOpen, open, data, trigger, reload}: any) {
     await updateStatusProperty(id, value, payload)
     if (value === 'Cerrado por Externo') {
       console.log('handle trigger')
-      // trigger()
+      trigger()
     }
-    setOpen(false);
+    close();
   }
 
 
@@ -73,12 +73,12 @@ export function ChangeStatusModal({setOpen, open, data, trigger, reload}: any) {
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={close}
       aria-labelledby="responsive-dialog-title"
     >
       <Box display='flex' justifyContent='flex-end' p={2}>
         <IconButton>
-          <CloseIcon onClick={() => setOpen(false)}/>
+          <CloseIcon onClick={close}/>
         </IconButton>
       </Box>
       {data &&
@@ -103,7 +103,7 @@ export function ChangeStatusModal({setOpen, open, data, trigger, reload}: any) {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button variant='contained' fullWidth onClick={() => setOpen(false)}>
+            <Button variant='contained' fullWidth onClick={close}>
               Cerrar
             </Button>
           </DialogActions>
