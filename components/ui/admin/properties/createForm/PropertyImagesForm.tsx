@@ -59,7 +59,7 @@ export function PropertyImagesForm() {
             // TODO validar imagenes del server que no estan exisitiendo bajo path
             const objImage = {
               id: null,
-              imageData: `http://100.42.69.119:3000/images/${dataImage}`,
+              imageData: dataImage,
               imageType: files[i].type
             }
             // Add image to some store or state...
@@ -138,7 +138,7 @@ export function PropertyImagesForm() {
                 onDrop={(e) => handleDrop(e, index)}
                 onDragOver={(e) => e.preventDefault()}
               >
-                <Box component='img' src={field.imageData} width='100%' height='100%'/>
+                <Box component='img' src={`http://100.42.69.119:3000/images/${field.imageData}`} width='100%' height='100%'/>
                 <Box
                   sx={{
                     position: 'absolute',

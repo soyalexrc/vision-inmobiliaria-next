@@ -1,5 +1,5 @@
 import React from 'react';
-import {AdminLayout} from "../../../../../components/layouts";
+import {AdminLayout} from "../../../../components/layouts";
 import {
   Box,
   Typography,
@@ -13,10 +13,10 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useForm, FormProvider} from "react-hook-form";
-import {Property} from "../../../../../interfaces/properties";
-import {panels, PROPERTY_FILES_INITIAL_VALUE} from "../../../../../utils/mock-data";
+import {Property} from "../../../../interfaces/properties";
+import {panels, PROPERTY_FILES_INITIAL_VALUE} from "../../../../utils/mock-data";
 import {useRouter} from "next/router";
-import {axiosInstance} from "../../../../../utils";
+import {axiosInstance} from "../../../../utils";
 import {useSnackbar} from "notistack";
 
 
@@ -67,6 +67,12 @@ export default function EditPropertyPage() {
     }
   }
 
+  const handleGoToPrevisualize = () => {
+    const valueToSend = JSON.stringify(methods.control._formValues);
+    sessionStorage.setItem('propertyToPrevisualize', valueToSend);
+    window.open(`/admin/propiedades/previsualizar/${router.query?.id}`, '_blank', 'popup=true')
+  }
+
   React.useEffect(() => {
     if (router.query.id) {
       getPropertyById(router.query?.id!)
@@ -87,8 +93,7 @@ export default function EditPropertyPage() {
           <>
             <Box display='flex' justifyContent='space-between' flexWrap='wrap' my={3}>
               <Typography variant='h2'>Edicion de propiedad</Typography>
-              <Button fullWidth={!largeScreen} sx={{mt: !largeScreen ? 2 : 0}} onClick={() => {
-              }}
+              <Button fullWidth={!largeScreen} sx={{mt: !largeScreen ? 2 : 0}} onClick={handleGoToPrevisualize}
                       variant='outlined' color='primary'>Vista previa</Button>
             </Box>
             <FormProvider {...methods}>

@@ -22,11 +22,14 @@ import {AuthContext} from "../../../../context/auth";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
 import {useSnackbar} from "notistack";
+import {Property} from "../../../../interfaces";
+import {HistoryModal, ChangeStatusModal} from "./";
 
 interface PropertiesTableProps {
   loading: boolean;
   properties: any;
   owners: any[];
+  reload: () => void;
 }
 
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
@@ -35,13 +38,15 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 }));
 
 
-export function PropertiesTable({loading, properties, owners}: PropertiesTableProps) {
+export function PropertiesTable({loading, properties, owners, reload}: PropertiesTableProps) {
   const [previewModal, setPreviewModal] = React.useState<boolean>(false);
   const [statusModal, setStatusModal] = React.useState<boolean>(false);
   const [historyModal, setHistoryModal] = React.useState<boolean>(false);
   const [comissionModal, setComissionModal] = React.useState<boolean>(false);
   const [propertyDetailLoading, setPropertyDetailLoading] = React.useState<boolean>(false);
   const [propertyDetail, setPropertyDetail] = React.useState<any>({});
+  const [historyInfo, setHistoryInfo] = React.useState<any[]>([]);
+  const [statusInfo, setStatusInfo] = React.useState<{}>({});
   const {currentUser} = React.useContext(AuthContext)
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
@@ -52,8 +57,39 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
     // await getPropertyHistory(id);
   }
 
+  const handleGoToPrevisualize = async (row: Property) => {
+    try {
+      const property = await axiosInstance.get(`property/getById?id=${row.id}`)
+      if (property.status === 200) {
+        const valueToSend = JSON.stringify(property.data);
+        sessionStorage.setItem('propertyToPrevisualize', valueToSend);
+        window.open(`/admin/propiedades/previsualizar/${row.id}`, '_blank', 'popup=true')
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const deleteProperty = async (id: number) => {
 
+  }
+
+  const handleOpenStatusModal = (row: Property) => {
+    setStatusInfo(row);
+    setStatusModal(true)
+  }
+
+  const handleOpenHistoryModal = async (id: string | number) => {
+    try {
+      const response = await axiosInstance.get(`property/getHistoricByPropertyId?property_id=${id}`);
+        console.log(response)
+      if (response.status === 200) {
+        setHistoryInfo(response.data);
+        setHistoryModal(true)
+      }
+    } catch (e) {
+      enqueueSnackbar('No se consiguio informacion de esta propiedad, ocurrio un error!', {variant: 'error'})
+    }
   }
 
   // React.useEffect(() => {
@@ -186,17 +222,17 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
                         currentUser.user_type === 'Administrador' &&
                         <>
                           <Tooltip title='Editar propiedad'>
-                            <IconButton onClick={() => router.push(`/admin/propiedades/editar/${row.id}`)}>
+                            <IconButton onClick={() => router.push(`/admin/propiedades/${row.id}`)}>
                               <EditIcon/>
                             </IconButton>
                           </Tooltip>
                           <Tooltip title='Cambiar estatus'>
-                            <IconButton onClick={() => setStatusModal(true)}>
+                            <IconButton onClick={() => handleOpenStatusModal(row)}>
                               <AutorenewIcon/>
                             </IconButton>
                           </Tooltip>
                           <Tooltip title='Vista preeliminar '>
-                            <IconButton onClick={() => router.push(`/admin/propiedades/previsualizar/${row.id}`)}>
+                            <IconButton onClick={() => handleGoToPrevisualize(row)}>
                               <OpenInNewIcon/>
                             </IconButton>
                           </Tooltip>
@@ -216,7 +252,8 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
                         </Tooltip>
                       }
                     </Box>
-                    <Button variant='text' fullWidth size='small' onClick={() => router.push(`/admin/propiedades/historial/${row.id}`)}>Ver
+                    <Button variant='text' fullWidth size='small'
+                            onClick={() => handleOpenHistoryModal(row.id)}>Ver
                       historial</Button>
                   </Box>
                 </TableCell>
@@ -237,6 +274,9 @@ export function PropertiesTable({loading, properties, owners}: PropertiesTablePr
       {/*  setOpen={setComissionModal}*/}
       {/*  trigger={() => setComissionModal(true)}*/}
       {/*/>*/}
+
+      <HistoryModal open={historyModal} setOpen={() => setHistoryModal(false)} data={historyInfo} />
+      <ChangeStatusModal open={statusModal} setOpen={() => setStatusModal(false)} data={statusInfo} trigger={() => reload()} reload={() => reload()} />
     </>
   )
 }

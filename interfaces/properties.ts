@@ -1,4 +1,5 @@
 export interface Property {
+  id?: string | null;
   attributes: PropertyAttribute[];
   clientData: PropertyClientData;
   files: PropertyFile[];

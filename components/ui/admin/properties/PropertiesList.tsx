@@ -164,7 +164,7 @@ export function PropertiesList() {
         {loading && <LinearProgress/>}
       </Box>
     {/*  Properties Table*/}
-      <PropertiesTable properties={properties} loading={loading} owners={owners} />
+      <PropertiesTable properties={properties} loading={loading} owners={owners} reload={() => getProperties(filtersData)}/>
       {
         (!properties.data || properties.data.length) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
