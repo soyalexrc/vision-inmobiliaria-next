@@ -32,6 +32,13 @@ export interface FormatCashFlow {
   month: string;
   id: number | string;
   client: string;
+  type_of_service: string;
+  type_of_property: string;
+  canon?: string;
+  currency: string;
+  guarantee?: string;
+  tax_payer?: string;
+  contract?: string;
   date: string;
   property: string;
   reason: string;
@@ -41,9 +48,9 @@ export interface FormatCashFlow {
   total_due: number | string;
   pending_to_collect: string | number;
   way_to_pay: WayToPayOption;
-  location: LocationOption;
-  amount_inserted_third_party_banks: number | string;
-  status: StatusOption;
+  entity: EntityOption;
+  location: string;
+  observations: string;
 }
 
 export interface FormatCommissionCalculation {
@@ -79,5 +86,5 @@ export interface FormatCommissionCalculation {
 type StatusCommissionCalculation = 'EN CURSO' | 'CULMINADO'
 type TransactionTypeOption = 'Ingreso Bs' | 'Egreso Bs' | 'Ingreso $' | 'Egreso $' | 'Comision Bancaria'
 type WayToPayOption = 'Efectivo' | 'Zelle' | 'Transferencia' | 'Comision Bancaria'
-type LocationOption = 'Oficina' | 'Banesco Panama' | 'Banesco de terceros' | 'Banco de Venezuela' | 'Banco Banesco' | 'BNC'
+type EntityOption = 'Oficina' | 'Banesco Panama' | 'Banesco de terceros' | 'Banco de Venezuela' | 'Banco Banesco' | 'BNC'
 type StatusOption = 'POR PAGAR A TERCEROS' | 'POR COBRAR' | 'GASTOS PERSONALES MG'

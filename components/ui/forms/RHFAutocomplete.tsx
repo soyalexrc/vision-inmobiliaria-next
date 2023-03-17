@@ -6,8 +6,11 @@ export const RHFAutocomplete = (
   { options = [],
     getOptionLabel,
     ignored,
+    label,
+    disabled = false,
     defaultValue,
     name,
+    control,
     renderOption
   } : any) => {
   return (
@@ -19,11 +22,13 @@ export const RHFAutocomplete = (
           options={options}
           getOptionLabel={getOptionLabel}
           renderOption={renderOption}
-          renderInput={(params: any) => <TextField {...params} margin="normal" />}
+          renderInput={(params: any) => <TextField {...params} label={label} margin="normal" />}
           onChange={(values, value) => onChange(value)}
           value={value}
+          disabled={disabled}
         />
       )}
+      control={control}
       defaultValue={defaultValue}
       name={name}
     />
