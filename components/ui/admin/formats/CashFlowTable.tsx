@@ -43,16 +43,25 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
               <TableHeaderItem>Nº</TableHeaderItem>
               <TableHeaderItem>Mes</TableHeaderItem>
               <TableHeaderItem>Fecha</TableHeaderItem>
-              <TableHeaderItem>Inmueble / Sujeto Ppal</TableHeaderItem>
-              <TableHeaderItem>Persona / Cliente</TableHeaderItem>
-              <TableHeaderItem>Concepto</TableHeaderItem>
+              <TableHeaderItem>Tipo de Inmueble </TableHeaderItem>
+              <TableHeaderItem>Inmueble </TableHeaderItem>
+              <TableHeaderItem>Ubicacion </TableHeaderItem>
               <TableHeaderItem>Servicio</TableHeaderItem>
+              <TableHeaderItem>Tipo de servicio</TableHeaderItem>
+              <TableHeaderItem>Canon</TableHeaderItem>
+              <TableHeaderItem>Garantia</TableHeaderItem>
+              <TableHeaderItem>Contrato</TableHeaderItem>
+              <TableHeaderItem>Contribuyente</TableHeaderItem>
+              <TableHeaderItem>Persona / Cliente</TableHeaderItem>
               <TableHeaderItem>Tipo de transaccion</TableHeaderItem>
+              <TableHeaderItem>Moneda</TableHeaderItem>
+              <TableHeaderItem>Forma de pago</TableHeaderItem>
+              <TableHeaderItem>Entidad</TableHeaderItem>
               <TableHeaderItem align='center'>Monto </TableHeaderItem>
+              <TableHeaderItem>Concepto</TableHeaderItem>
+              <TableHeaderItem align='center'>Retencion para pagos</TableHeaderItem>
               <TableHeaderItem align='center'>Por pagar</TableHeaderItem>
-              <TableHeaderItem>Ubicacion / Entidad</TableHeaderItem>
-              <TableHeaderItem>Monto ingresado a cuenta de terceros</TableHeaderItem>
-              <TableHeaderItem>Estatus</TableHeaderItem>
+              <TableHeaderItem>Observaciones</TableHeaderItem>
               <TableHeaderItem align='center'>Acciones</TableHeaderItem>
             </TableRow>
           </TableHead>
@@ -72,46 +81,61 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                 <TableCell>{row.date}</TableCell>
                 <TableCell>
                   <Box width={200}>
+                    {row.type_of_property}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box width={200}>
                     {row.property}
                   </Box>
                 </TableCell>
                 <TableCell>
                   <Box width={200}>
-                    {row.client}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.reason}
+                    {row.location}
                   </Box>
                 </TableCell>
                 <TableCell>{row.service}</TableCell>
+                <TableCell>{row.type_of_service}</TableCell>
+                <TableCell>{row.type_of_service}</TableCell>
+                <TableCell>{row.canon}</TableCell>
+                <TableCell>{row.guarantee}</TableCell>
+                <TableCell>{row.contract}</TableCell>
+                <TableCell>{row.tax_payer}</TableCell>
+                <TableCell>{row.client}</TableCell>
                 <TableCell align='center'>
                   <Box width={180}>
                     {row.transaction_type}
                   </Box>
                 </TableCell>
+                <TableCell>{row.currency}</TableCell>
+                <TableCell>{row.way_to_pay}</TableCell>
+                <TableCell>{row.entity}</TableCell>
+
                 <TableCell align='center'>
                   <Box width={150}>
                     {row.amount}
                   </Box>
                 </TableCell>
+
+                <TableCell align='center'>
+                  <Box width={150}>
+                    {row.reason}
+                  </Box>
+                </TableCell>
+
                 <TableCell align='center'>
                   <Box width={150}>
                     {row.total_due}
                   </Box>
                 </TableCell>
+
                 <TableCell align='center'>
                   <Box width={150}>
-                    {row.location}
+                    {row.pending_to_collect}
                   </Box>
                 </TableCell>
-                <TableCell align='center'>
-                  <Box width={300}>
-                    {row.amount_inserted_third_party_banks}
-                  </Box>
-                </TableCell>
-                <TableCell>{row.status}</TableCell>
+
+                <TableCell>{row.observations}</TableCell>
 
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>

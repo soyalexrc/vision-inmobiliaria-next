@@ -20,22 +20,31 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {FormatCashFlow} from "../../../../../interfaces/formats";
+import {SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS, TYPE_OF_PROPERTY} from "../../../../../utils/properties";
+import {RHFAutocomplete} from "../../../../../components/ui/forms";
 
 const schema = yup.object({
-  month: yup.string(),
-  client: yup.string(),
-  date: yup.string(),
-  property: yup.string(),
-  reason: yup.string(),
-  service: yup.string(),
-  transaction_type: yup.string(),
-  amount: yup.string(),
-  total_due: yup.string(),
-  pending_to_collect: yup.string(),
-  way_to_pay: yup.string(),
-  location: yup.string(),
-  amount_inserted_third_party_banks: yup.string(),
-  status: yup.string()
+  month: yup.string().required('Este campo es requerido'),
+  client: yup.string().required('Este campo es requerido'),
+  date: yup.string().required('Este campo es requerido'),
+  property: yup.string().required('Este campo es requerido'),
+  type_of_property: yup.string().required('Este campo es requerido'),
+  reason: yup.string().required('Este campo es requerido'),
+  service: yup.string().required('Este campo es requerido'),
+  type_of_service: yup.string().required('Este campo es requerido'),
+  transaction_type: yup.string().required('Este campo es requerido'),
+  amount: yup.string().required('Este campo es requerido'),
+  total_due: yup.string().required('Este campo es requerido'),
+  pending_to_collect: yup.string().required('Este campo es requerido'),
+  way_to_pay: yup.string().required('Este campo es requerido'),
+  entity: yup.string().required('Este campo es requerido'),
+  location: yup.string().required('Este campo es requerido'),
+  observations: yup.string().required('Este campo es requerido'),
+  canon: yup.string(),
+  guarantee: yup.string(),
+  contract: yup.string(),
+  tax_payer: yup.string(),
+  currency: yup.string().required('Este campo es requerido'),
 }).required();
 
 export default function UpdateCashFlowFormat() {
@@ -43,13 +52,16 @@ export default function UpdateCashFlowFormat() {
   const id = router.query?.id;
   const {enqueueSnackbar} = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
-  const {register, handleSubmit, formState: {errors}, setValue } = useForm<FormatCashFlow>({
+  const {register, handleSubmit, formState: {errors}, setValue, watch, control } = useForm<FormatCashFlow>({
     resolver: yupResolver(schema),
     mode: 'all'
   });
+
+  const watchedService = watch('service')
   const onSubmit = handleSubmit((data) => editFormat(data));
   const [loading, setLoading] = React.useState<boolean>()
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
+  const [options, setOptions] = React.useState<any[]>([])
 
   async function getFormatById() {
     try {
@@ -61,31 +73,45 @@ export default function UpdateCashFlowFormat() {
           client,
           date,
           property,
+          type_of_property,
           reason,
           service,
+          type_of_service,
           transaction_type,
           amount,
           total_due,
           pending_to_collect,
           way_to_pay,
+          entity,
           location,
-          amount_inserted_third_party_banks,
-          status
+          observations,
+          canon,
+          guarantee,
+          contract,
+          tax_payer,
+          currency,
         } = response.data[0];
-        setValue('month', month, {});
-        setValue('client', client, {});
-        setValue('date', date, {});
-        setValue('property', property, {});
-        setValue('reason', reason, {});
-        setValue('service', service, {});
-        setValue('transaction_type', transaction_type, {});
-        setValue('amount', amount, {});
-        setValue('total_due', total_due, {});
-        setValue('pending_to_collect', pending_to_collect, {});
-        setValue('way_to_pay', way_to_pay, {});
-        setValue('location', location, {});
-        setValue('amount_inserted_third_party_banks', amount_inserted_third_party_banks, {});
-        setValue('status', status, {});
+        setValue('month', month, {})
+        setValue('client', client, {})
+        setValue('date', date, {})
+        setValue('property', property, {})
+        setValue('type_of_property', type_of_property, {})
+        setValue('reason', reason, {})
+        setValue('service', service, {})
+        setValue('type_of_service', type_of_service, {})
+        setValue('transaction_type', transaction_type, {})
+        setValue('amount', amount, {})
+        setValue('total_due', total_due, {})
+        setValue('pending_to_collect', pending_to_collect, {})
+        setValue('way_to_pay', way_to_pay, {})
+        setValue('entity', entity, {})
+        setValue('location', location, {})
+        setValue('observations', observations, {})
+        setValue('canon', canon, {})
+        setValue('guarantee', guarantee, {})
+        setValue('contract', contract, {})
+        setValue('tax_payer', tax_payer, {})
+        setValue('currency', currency, {})
       }
     } catch (err) {
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
@@ -116,6 +142,18 @@ export default function UpdateCashFlowFormat() {
     getFormatById()
   }, [])
 
+  React.useEffect(() => {
+    setValue('type_of_service', '')
+    if (watchedService === 'Inmobiliario') setOptions(SERVICE_TYPE_OPTIONS.inmueble)
+    if (watchedService === 'Legal') setOptions(SERVICE_TYPE_OPTIONS.legal)
+    if (watchedService === 'Contabilidad') setOptions(SERVICE_TYPE_OPTIONS.accounting)
+    if (watchedService === 'Administración Inmuebles Alquilados') setOptions(SERVICE_TYPE_OPTIONS.propertiesAdministration)
+    if (watchedService === 'Limpieza (Ama de Llaves)') setOptions(SERVICE_TYPE_OPTIONS.cleanliness)
+    if (watchedService === 'Administración Empresas') setOptions(SERVICE_TYPE_OPTIONS.companyAdministration)
+    if (watchedService === 'Remodelación/ Acondicionamiento de Espacios') setOptions(SERVICE_TYPE_OPTIONS.remodeling)
+    if (watchedService === 'Mantenimiento de Equipos Domésticos e Industriales') setOptions(SERVICE_TYPE_OPTIONS.maintenance)
+  }, [watchedService])
+
 
   return (
     <AdminLayout title='Crear nuevo formato de flujo de efectivo | Vision inmobiliaria'>
@@ -142,6 +180,7 @@ export default function UpdateCashFlowFormat() {
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
                           placeholder='Mes'
+                          disabled
                           {...register('month')}
                           error={Boolean(errors?.month)}
                           label='Mes'
@@ -153,6 +192,7 @@ export default function UpdateCashFlowFormat() {
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
                           placeholder='Fecha'
+                          type='date'
                           {...register('date')}
                           error={Boolean(errors?.date)}
                           label='Fecha'
@@ -160,18 +200,125 @@ export default function UpdateCashFlowFormat() {
                         />
                       </Grid>
                       <Grid item xs={12} md={6}>
+                        <RHFAutocomplete
+                          name="type_of_property"
+                          control={control}
+                          options={TYPE_OF_PROPERTY}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Tipo de Inmueble'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.type_of_property?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
                         <TextField
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Propiedad'
+                          placeholder='Inmueble'
                           {...register('property')}
                           error={Boolean(errors?.property)}
-                          label='Propiedad'
+                          label='Inmueble'
                           variant="outlined"
                         />
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.property?.message}</Typography>
                       </Grid>
+                      <Grid item xs={12} >
+                        <TextField
+                          fullWidth
+                          sx={{mt: 2, borderColor: 'red'}}
+                          placeholder='Ubicacion'
+                          {...register('location')}
+                          error={Boolean(errors?.location)}
+                          label='Ubicacion'
+                          variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.location?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Divider sx={{ my: 2 }} />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <RHFAutocomplete
+                          name="service"
+                          control={control}
+                          options={SERVICE_OPTIONS}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Servicio'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.service?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <RHFAutocomplete
+                          name="type_of_service"
+                          control={control}
+                          options={options}
+                          disabled={options.length < 1}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Tipo de servicio'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.type_of_service?.message}</Typography>
+                      </Grid>
+                      {
+                        watchedService === 'Administración Inmuebles Alquilados' &&
+                        <>
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              fullWidth
+                              sx={{mt: 2, borderColor: 'red'}}
+                              placeholder='Canon'
+                              disabled
+                              {...register('canon')}
+                              error={Boolean(errors?.canon)}
+                              label='Canon'
+                              variant="outlined"
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              fullWidth
+                              sx={{mt: 2, borderColor: 'red'}}
+                              placeholder='Garantía '
+                              disabled
+                              {...register('guarantee')}
+                              error={Boolean(errors?.guarantee)}
+                              label='Garantía '
+                              variant="outlined"
+                            />
+                          </Grid>
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              fullWidth
+                              sx={{mt: 2, borderColor: 'red'}}
+                              placeholder='Contrato'
+                              disabled
+                              {...register('contract')}
+                              error={Boolean(errors?.contract)}
+                              label='Contrato'
+                              variant="outlined"
+                            />
+                          </Grid>
+                        </>
+                      }
+                      {
+                        watchedService === 'Contabilidad' &&
+                        <Grid item xs={12}>
+                          <RHFAutocomplete
+                            name="tax_payer"
+                            control={control}
+                            options={['Ordinario Natural', 'Ordinario Jurídico', 'Especial']}
+                            getOptionLabel={(option: any) => option || ''}
+                            defaultValue={null}
+                            label='Contribuyente'
+                          />
+                        </Grid>
+                      }
                       <Grid item xs={12} md={6}>
                         <TextField
                           fullWidth
@@ -185,44 +332,58 @@ export default function UpdateCashFlowFormat() {
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Concepto'
-                          {...register('reason')}
-                          error={Boolean(errors?.reason)}
-                          label='Concepto'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
+                      <Grid item xs={12}>
+                        <Divider sx={{ my: 2 }} />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Servicio'
-                          {...register('service')}
-                          error={Boolean(errors?.service)}
-                          label='Servicio'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.service?.message}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Tipo de transaccion'
-                          {...register('transaction_type')}
-                          error={Boolean(errors?.transaction_type)}
+
+
+                      <Grid item xs={12} md={5}>
+                        <RHFAutocomplete
+                          name="transaction_type"
+                          control={control}
+                          options={['Ingreso', 'Egreso', 'Ingreso a cuenta de terceros', 'Interbancaria']}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
                           label='Tipo de transaccion'
-                          variant="outlined"
                         />
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.transaction_type?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={3}>
+                        <RHFAutocomplete
+                          name="currency"
+                          control={control}
+                          options={['$ Estados Unidos', 'Bs', 'Euros',]}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Moneda'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.currency?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <RHFAutocomplete
+                          name="way_to_pay"
+                          control={control}
+                          options={['Efectivo', 'Transferencia', 'Pago Movil', 'Zelle']}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Forma de pago'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.way_to_pay?.message}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <RHFAutocomplete
+                          name="entity"
+                          control={control}
+                          options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Panamá', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería']}
+                          getOptionLabel={(option: any) => option || ''}
+                          defaultValue={null}
+                          label='Entidad'
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.entity?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -242,10 +403,24 @@ export default function UpdateCashFlowFormat() {
                         <TextField
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Por pagar'
+                          placeholder='Concepto'
+                          {...register('reason')}
+                          error={Boolean(errors?.reason)}
+                          label='Concepto'
+                          variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          fullWidth
+                          sx={{mt: 2, borderColor: 'red'}}
+                          placeholder='Retencion para pagos'
                           {...register('total_due')}
                           error={Boolean(errors?.total_due)}
-                          label='Por pagar'
+                          label='Retencion para pagos'
                           variant="outlined"
                         />
                         <Typography variant='caption' fontWeight='bold'
@@ -256,67 +431,30 @@ export default function UpdateCashFlowFormat() {
                         <TextField
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Por cobrar}'
+                          placeholder='Por cobrar'
                           {...register('pending_to_collect')}
                           error={Boolean(errors?.pending_to_collect)}
-                          label='Por cobrar}'
+                          label='Por cobrar'
                           variant="outlined"
                         />
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
                       </Grid>
 
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12}>
                         <TextField
                           fullWidth
+                          multiline
+                          minRows={3}
                           sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Forma de pago'
-                          {...register('way_to_pay')}
-                          error={Boolean(errors?.way_to_pay)}
-                          label='Forma de pago'
+                          placeholder='Observacion'
+                          {...register('observations')}
+                          error={Boolean(errors?.observations)}
+                          label='Observacion'
                           variant="outlined"
                         />
                         <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.way_to_pay?.message}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Ubicacion / Entidad'
-                          {...register('location')}
-                          error={Boolean(errors?.location)}
-                          label='Ubicacion / Entidad'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.location?.message}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Monto ingresado a cuenta de terceros'
-                          {...register('amount_inserted_third_party_banks')}
-                          error={Boolean(errors?.amount_inserted_third_party_banks)}
-                          label='Monto ingresado a cuenta de terceros'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.amount_inserted_third_party_banks?.message}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Estatus'
-                          {...register('status')}
-                          error={Boolean(errors?.status)}
-                          label='Estatus'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.status?.message}</Typography>
+                                    sx={{color: '#FF0000'}}>{errors?.observations?.message}</Typography>
                       </Grid>
 
                     </Grid>
@@ -345,7 +483,7 @@ export default function UpdateCashFlowFormat() {
                         type='submit'
                         variant='contained'
                       >
-                        Editar formato de flujo de efectivo
+                        Registrar formato de flujo de efectivo
                       </Button>
                     </Grid>
                   </Container>

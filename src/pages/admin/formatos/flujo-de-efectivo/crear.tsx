@@ -54,7 +54,13 @@ export default function CashFlowCreateFormat() {
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const {register, handleSubmit, formState: {errors}, setValue, control, watch} = useForm<FormatCashFlow>({
     resolver: yupResolver(schema),
-    mode: 'all'
+    mode: 'all',
+    defaultValues: {
+      canon: '',
+      guarantee: '',
+      contract: '',
+      tax_payer: ''
+    }
   });
   const watchedService = watch('service');
   const onSubmit = handleSubmit((data) => createFormat(data));
@@ -64,18 +70,19 @@ export default function CashFlowCreateFormat() {
   async function createFormat(data: any) {
     const fullObj = {...data};
     fullObj.createdAt = new Date();
-    try {
-      setLoading(true);
-      const response = await axiosInstance.post('format/cashFlow/addNewData', fullObj);
-      if (response.status === 200) {
-        enqueueSnackbar('Se creo el formato con exito!', {variant: 'success'})
-        router.back()
-      }
-    } catch (e) {
-      enqueueSnackbar('Error!', {variant: 'error'})
-    } finally {
-      setLoading(false);
-    }
+    console.log(fullObj)
+    // try {
+    //   setLoading(true);
+    //   const response = await axiosInstance.post('format/cashFlow/addNewData', fullObj);
+    //   if (response.status === 200) {
+    //     enqueueSnackbar('Se creo el formato con exito!', {variant: 'success'})
+    //     router.back()
+    //   }
+    // } catch (e) {
+    //   enqueueSnackbar('Error!', {variant: 'error'})
+    // } finally {
+    //   setLoading(false);
+    // }
   }
 
   React.useEffect(() => {
@@ -153,7 +160,6 @@ export default function CashFlowCreateFormat() {
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
                       placeholder='Inmueble'
-                      disabled
                       {...register('property')}
                       error={Boolean(errors?.property)}
                       label='Inmueble'
