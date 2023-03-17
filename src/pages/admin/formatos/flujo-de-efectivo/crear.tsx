@@ -70,19 +70,18 @@ export default function CashFlowCreateFormat() {
   async function createFormat(data: any) {
     const fullObj = {...data};
     fullObj.createdAt = new Date();
-    console.log(fullObj)
-    // try {
-    //   setLoading(true);
-    //   const response = await axiosInstance.post('format/cashFlow/addNewData', fullObj);
-    //   if (response.status === 200) {
-    //     enqueueSnackbar('Se creo el formato con exito!', {variant: 'success'})
-    //     router.back()
-    //   }
-    // } catch (e) {
-    //   enqueueSnackbar('Error!', {variant: 'error'})
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post('format/cashFlow/addNewData', fullObj);
+      if (response.status === 200) {
+        enqueueSnackbar('Se creo el formato con exito!', {variant: 'success'})
+        router.back()
+      }
+    } catch (e) {
+      enqueueSnackbar('Error!', {variant: 'error'})
+    } finally {
+      setLoading(false);
+    }
   }
 
   React.useEffect(() => {
