@@ -79,6 +79,14 @@ export function AttributesList() {
     setPage(newPage);
   };
 
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
+
   React.useEffect(() => {
     getAttributes()
   }, [])
@@ -155,9 +163,6 @@ export function AttributesList() {
       <Box sx={{width: '100%'}}>
         {loading && <LinearProgress/>}
       </Box>
-      <Box sx={{width: '100%'}}>
-        {loading && <LinearProgress/>}
-      </Box>
       <TableContainer>
         <Table>
           <TableHead sx={{backgroundColor: '#eaeaea'}}>
@@ -169,7 +174,7 @@ export function AttributesList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && attributes && attributes.length > 0 && attributes.slice(page * 10, page * 10 + 10).map((row: any) => (
+            {!loading && attributes && attributes.length > 0 && attributes.slice(getCurrentPage(),getCurrentPageLimit()).map((row: any) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -209,15 +214,15 @@ export function AttributesList() {
         </Table>
       </TableContainer>
       {
-        (!attributes.data || attributes.data.length) < 1 &&
+        (!attributes.data || attributes.data.length ) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
-          <Typography>No se encontradon propiedades...</Typography>
+          <Typography>No se encontradon atributos...</Typography>
         </Box>
       }
       <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
         <Pagination
           boundaryCount={1}
-          count={Math.round(attributes.length / 10)}
+          count={Math.ceil(attributes.length / 10)}
           defaultPage={1}
           onChange={handleChangePage}
           page={page}

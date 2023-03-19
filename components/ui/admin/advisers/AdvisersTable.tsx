@@ -23,14 +23,21 @@ interface OwnersTableProps {
   deleteAdviser: (id: string | number) => void
 }
 export function AdvisersTable({loading, advisers, deleteAdviser}: OwnersTableProps) {
-  const [page, setPage] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
   const router = useRouter()
 
-  console.log('advisers', advisers);
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
   };
+
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
 
   return (
     <Box my={3}>
@@ -50,7 +57,7 @@ export function AdvisersTable({loading, advisers, deleteAdviser}: OwnersTablePro
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && advisers && advisers.length > 0 && advisers.slice(page * 10, page * 10 + 10).map((row: any) => (
+            {!loading && advisers && advisers.length > 0 && advisers.slice(getCurrentPage(), getCurrentPageLimit()).map((row: any) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -100,7 +107,7 @@ export function AdvisersTable({loading, advisers, deleteAdviser}: OwnersTablePro
       <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
         <Pagination
           boundaryCount={1}
-          count={Math.round(advisers.length / 10)}
+          count={Math.ceil(advisers.length / 10)}
           defaultPage={1}
           onChange={handleChangePage}
           page={page}

@@ -23,7 +23,7 @@ interface UsersTableProps {
   deleteUser: (id: string | number) => void
 }
 export function UsersTable({loading, users, deleteUser}: UsersTableProps) {
-  const [page, setPage] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
   const router = useRouter()
 
   console.log('users', users);
@@ -31,6 +31,14 @@ export function UsersTable({loading, users, deleteUser}: UsersTableProps) {
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
   };
+
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
 
   return (
     <Box my={3}>
@@ -50,7 +58,7 @@ export function UsersTable({loading, users, deleteUser}: UsersTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && users && users.length > 0 && users.slice(page * 10, page * 10 + 10).map((row: any) => (
+            {!loading && users && users.length > 0 && users.slice(getCurrentPage() , getCurrentPageLimit()).map((row: any) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -112,7 +120,7 @@ export function UsersTable({loading, users, deleteUser}: UsersTableProps) {
       <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
         <Pagination
           boundaryCount={1}
-          count={Math.round(users.length / 10)}
+          count={Math.ceil(users.length / 10)}
           defaultPage={1}
           onChange={handleChangePage}
           page={page}

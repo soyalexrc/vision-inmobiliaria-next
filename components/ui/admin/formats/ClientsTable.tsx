@@ -8,7 +8,7 @@ import {
   TableCell,
   Box,
   Tooltip,
-  IconButton,
+  IconButton, Typography, Pagination,
 } from '@mui/material'
 import {styled} from '@mui/material/styles'
 
@@ -34,7 +34,21 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 
 export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
+  const [page, setPage] = React.useState<number>(1);
+
   const router = useRouter()
+
+  const handleChangePage = (event: any, newPage: any) => {
+    setPage(newPage);
+  };
+
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
 
   return (
     <>
@@ -72,7 +86,7 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && clients && clients.length > 0 && clients.map((row, index: number) => (
+            {!loading && clients && clients.length > 0 && clients.slice(getCurrentPage(), getCurrentPageLimit()).map((row, index: number) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -219,6 +233,23 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
           </TableBody>
         </Table>
       </TableContainer>
+      {
+        (!clients || clients.length) < 1 &&
+        <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
+          <Typography>No se encontradon propiedades...</Typography>
+        </Box>
+      }
+      <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
+        <Pagination
+          boundaryCount={1}
+          count={Math.ceil(clients.length / 10)}
+          defaultPage={1}
+          onChange={handleChangePage}
+          page={page}
+          showFirstButton
+          showLastButton
+        />
+      </Box>
     </>
   )
 }

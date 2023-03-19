@@ -30,7 +30,7 @@ export default function AdvisersListPage() {
   async function getAdvisers() {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('owner/getAllData?type=Asesores%20Externoss');
+      const response = await axiosInstance.get('owner/getAllData?type=Asesores%20Externos');
       if (response.status === 200) {
         setAdvisers(response.data)
       }

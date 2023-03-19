@@ -27,7 +27,6 @@ export function CommissionCalculationList() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const { enqueueSnackbar} = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const [page, setPage] = React.useState<number>(1);
   const [searchTerm, setSearchTerm] = React.useState('')
   const router = useRouter();
   const [filtersDrawer, setFiltersDrawer] = React.useState(false);
@@ -53,9 +52,7 @@ export function CommissionCalculationList() {
     }
   }
 
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
+
 
   const applyFilters = () => {
     setFiltersDrawer(false);
@@ -152,23 +149,7 @@ export function CommissionCalculationList() {
       </Box>
       {/*  Properties Table*/}
       <CommissionCalculationTable data={data} loading={loading}  onDelete={(id) => deleteData(id)}  />
-      {
-        (!data || data.length) < 1 &&
-        <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
-          <Typography>No se encontradon propiedades...</Typography>
-        </Box>
-      }
-      <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
-        <Pagination
-          boundaryCount={1}
-          count={Math.round(10 / 10)}
-          defaultPage={1}
-          onChange={handleChangePage}
-          page={page}
-          showFirstButton
-          showLastButton
-        />
-      </Box>
+
       <ClientsFilterDrawer
         open={filtersDrawer}
         filters={filtersData.filters}

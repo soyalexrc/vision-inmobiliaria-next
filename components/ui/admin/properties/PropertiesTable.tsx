@@ -10,7 +10,7 @@ import {
   Box,
   Tooltip,
   IconButton,
-  Button
+  Button, Pagination
 } from '@mui/material'
 import {styled} from '@mui/material/styles'
 
@@ -48,6 +48,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const [historyInfo, setHistoryInfo] = React.useState<any[]>([]);
   const [statusInfo, setStatusInfo] = React.useState<{}>({});
   const [commissionInfo, setCommissionInfo] = React.useState<{}>({});
+  const [page, setPage] = React.useState<number>(1);
   const {currentUser} = React.useContext(AuthContext)
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
@@ -57,6 +58,10 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     setHistoryModal(true);
     // await getPropertyHistory(id);
   }
+
+  const handleChangePage = (event: any, newPage: any) => {
+    setPage(newPage);
+  };
 
   const handleGoToPrevisualize = async (row: Property) => {
     try {
@@ -106,6 +111,14 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     setCommissionModal(true)
   }
 
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
+
   // React.useEffect(() => {
   //   setTimeout(() => {
   //     router.push('/admin/propiedades/comision/2901')
@@ -144,7 +157,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && properties.data && properties.data.length > 0 && properties.data.map((row: any, index: number) => (
+            {!loading && properties.data && properties.data.length > 0 && properties.data.slice(getCurrentPage(), getCurrentPageLimit()).map((row: any, index: number) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -276,12 +289,23 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
           </TableBody>
         </Table>
       </TableContainer>
-      {/*<ComissionModal*/}
-      {/*  data={row}*/}
-      {/*  open={comissionModal}*/}
-      {/*  setOpen={setComissionModal}*/}
-      {/*  trigger={() => setComissionModal(true)}*/}
-      {/*/>*/}
+      {
+        (!properties.data || properties.data.length) < 1 &&
+        <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
+          <Typography>No se encontradon propiedades...</Typography>
+        </Box>
+      }
+      <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
+        <Pagination
+          boundaryCount={1}
+          count={Math.ceil(properties?.data?.length / 10)}
+          defaultPage={1}
+          onChange={handleChangePage}
+          page={page}
+          showFirstButton
+          showLastButton
+        />
+      </Box>
 
       <HistoryModal open={historyModal} close={() => setHistoryModal(false)} data={historyInfo} />
       <ChangeStatusModal open={statusModal} close={() => setStatusModal(false)} data={statusInfo} trigger={handleOpenCommissionModal} reload={() => reload()} />

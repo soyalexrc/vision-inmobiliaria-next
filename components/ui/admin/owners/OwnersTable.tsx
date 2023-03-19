@@ -23,14 +23,26 @@ interface OwnersTableProps {
   deleteOwner: (id: string | number) => void
 }
 export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
-  const [page, setPage] = React.useState<number>(0);
+  const [page, setPage] = React.useState<number>(1);
   const router = useRouter()
 
-  console.log('owners', owners);
+  console.log('owners', owners.length);
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
   };
+
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10
+  }
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10
+  }
+
+  console.log(getCurrentPage())
+  console.log(getCurrentPageLimit())
+
 
   return (
     <Box my={3}>
@@ -50,7 +62,7 @@ export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && owners && owners.length > 0 && owners.slice(page * 10, page * 10 + 10).map((row: any) => (
+            {!loading && owners && owners.length > 0 && owners.slice(getCurrentPage(), getCurrentPageLimit()).map((row: any) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -92,7 +104,7 @@ export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
         </Table>
       </TableContainer>
       {
-        (!owners || owners.length) < 1 &&
+        (!owners || owners.length ) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
           <Typography>No se encontraron propietarios...</Typography>
         </Box>
@@ -100,7 +112,7 @@ export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
       <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
         <Pagination
           boundaryCount={1}
-          count={Math.round(owners.length / 10)}
+          count={Math.ceil(owners.length / 10)}
           defaultPage={1}
           onChange={handleChangePage}
           page={page}
