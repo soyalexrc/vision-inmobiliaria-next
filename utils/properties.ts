@@ -1,13 +1,14 @@
 export const TYPE_OF_PROPERTY = [
-  'Local',
-  'Apartamento',
-  'Townhouse',
-  'Oficina',
-  'Galpon',
-  'Terreno',
-  'Casa',
+  'Locales Comerciales',
+  'Apartamentos',
+  'Casa / Townhouse',
+  'Oficinas',
+  'Galpones',
+  'Terrenos',
   'Habitacion',
   'Anexo',
+  'Fondo de Comercio',
+  'VIP',
   'Otro',
 ]
 

@@ -6,6 +6,7 @@ import {AdminSidebar, AdminNavbar} from "../ui/admin";
 import {UIContext} from "../../context/ui";
 import {AuthContext} from "../../context/auth";
 import {useRouter} from "next/router";
+import {AttributesCreadeUpdateDrawer} from "../ui/admin/properties/drawers";
 
 interface AdminLayoutProps {
   title?: string;
@@ -31,7 +32,8 @@ export  function AdminLayout({title = 'Admin - Vision Inmobiliaria', children}: 
 
       <AdminNavbar />
       <AdminSidebar />
-
+      {/*Attributes Update / Create */}
+      <AttributesCreadeUpdateDrawer />
       <Box sx={{ marginLeft: largeScreen ? '300px' : '0px', p: 2 }}>
         {children}
       </Box>

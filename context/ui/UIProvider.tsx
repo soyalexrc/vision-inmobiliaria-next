@@ -7,6 +7,10 @@ export interface UIState {
   isDragging: boolean;
   adminMenuOpen: boolean;
   adminPanelOpen: string;
+  attributesPanelOpen: boolean;
+  attributesPanelData: any;
+  attributesTypeAction: string;
+  refreshListener: any
 }
 
 const UI_INITIAL_STATE: UIState = {
@@ -14,7 +18,19 @@ const UI_INITIAL_STATE: UIState = {
   adminMenuOpen: false,
   isAddingEntry: false,
   isDragging: false,
-  adminPanelOpen: ''
+  adminPanelOpen: '',
+  attributesPanelOpen: false,
+  attributesPanelData: {
+    category: 'Custom',
+    form_type: '',
+    label: '',
+    placeholder: '',
+    property_type: '',
+    id: null,
+    property_values: ''
+  },
+  attributesTypeAction: '',
+  refreshListener: null
 }
 
 export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
@@ -36,6 +52,17 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
       dispatch({type: 'UI - Set Admin Panel Name', payload: value})
     }
   }
+  const handleAttributesPanel = (action: string, data?: any) => {
+    if (action === 'create') {
+      dispatch({type: 'UI - Create Attributes Panel'})
+    } else {
+      dispatch({type: 'UI - Update Attributes Panel', payload: data})
+    }
+  }
+
+  const onRefresh = () => dispatch({type: 'UI - Emit Refresh', payload: Math.floor(Math.random() * 100)})
+
+  const handleCloseAttributesPanel = () => dispatch({type: 'UI - Close Attributes Panel'})
 
   const providerValue = React.useMemo(() => ({
     ...state,
@@ -46,8 +73,12 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
     endDragging,
     closeAdminMenu,
     openAdminMenu,
-    setAdminPanelName
+    setAdminPanelName,
+    handleAttributesPanel,
+    handleCloseAttributesPanel,
+    onRefresh
   }), [state])
+
   return (
     <UIContext.Provider value={providerValue}>
       {children}
