@@ -63,7 +63,7 @@ export const ConfirmationProvider: React.FC<{children: JSX.Element}> = ({childre
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button variant='contained' color='error' onClick={handleCancel}>Cancelar</Button>
-          <Button variant='contained' color='secondary' onClick={handleOk} autoFocus>
+          <Button variant='contained' color='info' onClick={handleOk} autoFocus>
             Aceptar
           </Button>
         </DialogActions>
