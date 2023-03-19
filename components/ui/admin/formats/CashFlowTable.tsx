@@ -92,7 +92,11 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
               >
                 <TableCell sx={{px: 5}}>{index + 1}</TableCell>
                 <TableCell>{row.month}</TableCell>
-                <TableCell>{row.date}</TableCell>
+                <TableCell>
+                  <Box width={100}>
+                    {row.date}
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <Box width={200}>
                     {row.type_of_property}
@@ -108,9 +112,16 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                     {row.location}
                   </Box>
                 </TableCell>
-                <TableCell>{row.service}</TableCell>
-                <TableCell>{row.type_of_service}</TableCell>
-                <TableCell>{row.type_of_service}</TableCell>
+                <TableCell>
+                  <Box width={200}>
+                    {row.service}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box width={150}>
+                    {row.type_of_service}
+                  </Box>
+                </TableCell>
                 <TableCell>{row.canon}</TableCell>
                 <TableCell>{row.guarantee}</TableCell>
                 <TableCell>{row.contract}</TableCell>
@@ -121,8 +132,16 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                     {row.transaction_type}
                   </Box>
                 </TableCell>
-                <TableCell>{row.currency}</TableCell>
-                <TableCell>{row.way_to_pay}</TableCell>
+                <TableCell>
+                  <Box width={100}>
+                    {row.currency}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box width={150}>
+                    {row.way_to_pay}
+                  </Box>
+                </TableCell>
                 <TableCell>{row.entity}</TableCell>
 
                 <TableCell align='center'>
@@ -149,7 +168,11 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                   </Box>
                 </TableCell>
 
-                <TableCell>{row.observations}</TableCell>
+                <TableCell>
+                  <Box width={250}>
+                    {row.observations}
+                  </Box>
+                </TableCell>
 
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>
