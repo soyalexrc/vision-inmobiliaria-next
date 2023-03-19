@@ -121,7 +121,7 @@ export function PropertiesList() {
       <Box p={2}>
         <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
           <Typography variant='h2'>Propiedades</Typography>
-          <Typography sx={{mx: 2}} color='gray'>10 propiedades registradas</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{properties?.data?.length} propiedades registradas</Typography>
         </Box>
         <Grid container sx={{ mb: 2 }}>
           <Grid item xs={12} md={6}>

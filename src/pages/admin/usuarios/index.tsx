@@ -55,7 +55,7 @@ export default function UsersListPage() {
       <Box p={2}>
         <Box display='flex' alignItems='center' mb={2}>
           <Typography variant='h2'>Usuarios</Typography>
-          <Typography sx={{mx: 2}} color='gray'>10 usuarios registrados</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{users.length} usuarios registrados</Typography>
         </Box>
         <Grid container>
           <Grid item xs={12} md={6}>

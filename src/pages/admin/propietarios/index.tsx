@@ -64,7 +64,7 @@ export default function OwnersListPage() {
       <Box p={2}>
         <Box display='flex' alignItems='center' mb={2}>
           <Typography variant='h2'>Propietarios</Typography>
-          <Typography sx={{mx: 2}} color='gray'>100 propietarios registrados</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{owners.length} propietarios registrados</Typography>
         </Box>
         <Grid container>
           <Grid item xs={12} md={6}>

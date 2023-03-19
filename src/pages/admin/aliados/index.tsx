@@ -64,7 +64,7 @@ export default function AlliesListPage() {
       <Box p={2}>
         <Box display='flex' alignItems='center' mb={2}>
           <Typography variant='h2'>Aliados</Typography>
-          <Typography sx={{mx: 2}} color='gray'>100 aliados registrados</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{allies.length} aliados registrados</Typography>
         </Box>
         <Grid container>
           <Grid item xs={12} md={6}>

@@ -64,7 +64,7 @@ export default function AdvisersListPage() {
       <Box p={2}>
         <Box display='flex' alignItems='center' mb={2}>
           <Typography variant='h2'>Asesores externos</Typography>
-          <Typography sx={{mx: 2}} color='gray'>10 Asesores registrados</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{advisers.length} Asesores registrados</Typography>
         </Box>
         <Grid container>
           <Grid item xs={12} md={6}>

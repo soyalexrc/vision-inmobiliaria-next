@@ -106,7 +106,7 @@ export function CashFlowList() {
       <Box p={2}>
         <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
           <Typography variant='h2'>Formato de flujo de efectivo</Typography>
-          <Typography sx={{mx: 2}} color='gray'>10 registros</Typography>
+          <Typography sx={{mx: 2}} color='gray'>{data.length} registros</Typography>
         </Box>
         <Grid container sx={{ mb: 2 }}>
           <Grid item xs={12} md={6}>
