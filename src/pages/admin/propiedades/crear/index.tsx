@@ -42,8 +42,8 @@ export default function CreateNewPropertyPage() {
   const createNewProperty = async (data: Property) => {
     try {
       setLoading(true);
-      const response = await axios.post('/api/properties/create', data);
-      if (response.status === 201) {
+      const response = await axiosInstance.post('property/addNewData', data);
+      if (response.status === 200) {
         enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
         router.back()
       }
