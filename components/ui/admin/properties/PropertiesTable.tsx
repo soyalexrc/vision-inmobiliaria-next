@@ -96,7 +96,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const handleOpenHistoryModal = async (id: string | number) => {
     try {
       const response = await axiosInstance.get(`property/getHistoricByPropertyId?property_id=${id}`);
-        console.log(response)
+      console.log(response)
       if (response.status === 200) {
         setHistoryInfo(response.data);
         setHistoryModal(true)
@@ -170,7 +170,9 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                 <TableCell sx={{px: 5}}>{index + 1}</TableCell>
                 <TableCell sx={{px: 5}}>{row.code}</TableCell>
                 <TableCell>
-                  <Typography>20/02/2022</Typography>
+                  <Box width={100}>
+                    <Typography>{row.created_date.split('T')[0]}</Typography>
+                  </Box>
                 </TableCell>
                 <TableCell>
                   <Box
@@ -186,7 +188,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography sx={{width: 180}}>{row.attributes[0]?.property_type}</Typography>
+                  <Typography sx={{width: 180}}>{row.propertyType}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography>Nomenclatura</Typography>
@@ -231,10 +233,10 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                   <Typography>Nomenclatura 1</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography sx={{width: 200}}>Metraje de terreno cuadrado</Typography>
+                  <Typography sx={{width: 100}}>{row.footageGround}m²</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography sx={{width: 200}}>Metraje de terreno construccion</Typography>
+                  <Typography sx={{width: 130}}>{row.footageBuilding}m² </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography sx={{width: 200}}>Material de piso </Typography>
@@ -307,9 +309,11 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
         />
       </Box>
 
-      <HistoryModal open={historyModal} close={() => setHistoryModal(false)} data={historyInfo} />
-      <ChangeStatusModal open={statusModal} close={() => setStatusModal(false)} data={statusInfo} trigger={handleOpenCommissionModal} reload={() => reload()} />
-      <CommissionModal open={commissionModal} data={commissionInfo} close={() => setCommissionModal(false)} reload={() => reload()}/>
+      <HistoryModal open={historyModal} close={() => setHistoryModal(false)} data={historyInfo}/>
+      <ChangeStatusModal open={statusModal} close={() => setStatusModal(false)} data={statusInfo}
+                         trigger={handleOpenCommissionModal} reload={() => reload()}/>
+      <CommissionModal open={commissionModal} data={commissionInfo} close={() => setCommissionModal(false)}
+                       reload={() => reload()}/>
     </>
   )
 }
