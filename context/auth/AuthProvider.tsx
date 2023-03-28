@@ -4,7 +4,8 @@ import {User} from '../../interfaces';
 import {axiosInstance} from "../../utils";
 import Cookie from 'js-cookie'
 import {useRouter} from 'next/router';
-
+import {useSnackbar} from "notistack";
+import {encryptValue, masterCryptoKey, decryptValue} from '../../utils'
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -42,6 +43,7 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider: React.FC<{children: JSX.Element}> = ({children}) => {
   const router = useRouter();
+  const {enqueueSnackbar} = useSnackbar()
 
   const [state, dispatch] = React.useReducer(authReducer, AUTH_INITIAL_STATE)
 
@@ -50,13 +52,20 @@ export const AuthProvider: React.FC<{children: JSX.Element}> = ({children}) => {
       dispatch({type: 'Auth - Loading State', payload: true})
 
       const {data} = await axiosInstance.get(`/user/login?email=${loginData.email}`)
-
       if (data.recordset.length > 0) {
-        dispatch({type: 'Auth - Login', payload: data?.recordset[0]})
-        localStorage.setItem('vi-currentUser', JSON.stringify(data?.recordset[0]))
-        localStorage.setItem('vi-token', JSON.stringify(data?.recordset[0]))
-        Cookie.set('isAuthenticated', 'true')
-        await router.push('/admin')
+        const password = encryptValue(masterCryptoKey, loginData.password);
+        if (data.recordset[0].password === password) {
+          dispatch({type: 'Auth - Login', payload: data?.recordset[0]})
+          localStorage.setItem('vi-currentUser', JSON.stringify(data?.recordset[0]))
+          localStorage.setItem('vi-token', JSON.stringify(data?.recordset[0]))
+          Cookie.set('isAuthenticated', 'true')
+          await router.push('/admin')
+          await enqueueSnackbar(`Bienvenido/a ${data.recordset[0].username}`, {variant: 'success'})
+        }  else {
+          enqueueSnackbar('Contraseñas no coinciden...', {variant: 'warning'})
+        }
+      } else {
+        enqueueSnackbar('Usuario no encontrado...', {variant: 'error'})
       }
 
     } catch (e) {

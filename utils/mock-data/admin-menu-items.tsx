@@ -106,13 +106,13 @@ export const ADMIN_MENU_ITEMS: AdminMenu[] = [
       {
         title: 'Flujo de efectivo',
         path: '/admin/formatos/flujo-de-efectivo',
-        id: 71,
+        id: 72,
         value: 'formatos-flujo-efectivo'
       },
       {
         title: 'Calculo de comisiones',
         path: '/admin/formatos/calculo-de-comisiones',
-        id: 71,
+        id: 73,
         value: 'formatos-calculo-comisiones'
       },
     ]

@@ -91,6 +91,8 @@ export function Footer() {
             <Typography color='primary' component={NextLink} href='/legal/cookies'>Cookies</Typography>
             <Divider sx={{mx: 2, borderWidth: '1px'}} orientation='vertical' flexItem/>
             <Typography color='primary' component={Link} href='https://google.com' target='_blank'>Creado por LSM Sinergy</Typography>
+            <Divider sx={{mx: 2, borderWidth: '1px'}} orientation='vertical' flexItem/>
+            <Typography color='primary' component={NextLink} href='/admin'> Ingresar</Typography>
           </Box>
         </Container>
       </Box>

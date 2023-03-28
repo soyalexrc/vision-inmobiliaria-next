@@ -63,7 +63,6 @@ export default function ClientCreateFormat() {
   async function createFormat(data: any) {
     const fullObj = {...data};
     fullObj.createdAt = new Date();
-    console.log(fullObj)
     try {
       setLoading(true);
       const response = await axiosInstance.post('format/client/addNewData', fullObj);

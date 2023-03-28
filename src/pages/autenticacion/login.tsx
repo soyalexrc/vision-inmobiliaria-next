@@ -6,7 +6,21 @@ import {AuthContext} from "../../../context/auth";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import NextLink from 'next/link'
+import * as yup from "yup";
+import {useForm} from "react-hook-form";
+import {Formatclients} from "../../../interfaces";
+import {yupResolver} from "@hookform/resolvers/yup";
 
+interface LoginData {
+  email: string;
+  password: any;
+}
+
+const schema = yup.object({
+  email: yup.string().email('Ingresa un email valido').required('Este campo es requerido!'),
+  password: yup.string().required('Este campo es requerido!'),
+
+}).required();
 export default function Login() {
   const {login, loading} = React.useContext(AuthContext)
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
@@ -15,6 +29,11 @@ export default function Login() {
     email: '',
     password: ''
   })
+  const {register, handleSubmit, formState: {errors}} = useForm<LoginData>({
+    resolver: yupResolver(schema),
+    mode: 'all'
+  });
+  const onSubmit = handleSubmit((data) => login(data));
 
   function changeUserData(type: string, value: string) {
     setUserData(prevState => ({
@@ -51,50 +70,50 @@ export default function Login() {
           }}
         />
         <Box sx={{flex: 0.6, display: 'flex', alignItems: largeScreen ? 'center' : 'flex-start', mt: largeScreen ? 0 : 5, justifyContent: 'center'}}>
-          <Box width={largeScreen ? 450 : '100%'} p={2}>
-            <Typography align='center' variant='h6'>Inicio de sesión</Typography>
-            <Box mt={5}>
-              <TextField
-                color='secondary'
-                fullWidth
-                sx={{mt: 2}}
-                id="user-name-textfield"
-                placeholder='Email'
-                value={userData.email}
-                onChange={(e) => changeUserData('email', e.target.value)}
-                label='Email'
-                variant="outlined"
-              />
-              <TextField
-                color='secondary'
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                sx={{mt: 2}}
-                id="user-name-textfield"
-                placeholder='Contraseña'
-                value={userData.password}
-                onChange={(e) => changeUserData('password', e.target.value)}
-                label='Contraseña'
-                variant="outlined"
-                InputProps={{
-                  endAdornment:
-                    <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? (<VisibilityOffIcon />) : (<VisibilityIcon />)}
-                      </IconButton>
-                    </InputAdornment>,
-                }}
-              />
+          <form onSubmit={onSubmit}>
+            <Box width={largeScreen ? 450 : '100%'} p={2}>
+              <Typography align='center' variant='h6'>Inicio de sesión</Typography>
+              <Box mt={5}>
+                <TextField
+                  color='secondary'
+                  fullWidth
+                  sx={{mt: 2}}
+                  placeholder='Email'
+                  {...register('email')}
+                  error={Boolean(errors?.email)}
+                  label='Email'
+                  variant="outlined"
+                />
+                <TextField
+                  color='secondary'
+                  fullWidth
+                  type={showPassword ? 'text' : 'password'}
+                  sx={{mt: 2}}
+                  placeholder='Contraseña'
+                  {...register('password')}
+                  error={Boolean(errors?.password)}
+                  label='Contraseña'
+                  variant="outlined"
+                  InputProps={{
+                    endAdornment:
+                      <InputAdornment position="end">
+                        <IconButton onClick={() => setShowPassword(!showPassword)}>
+                          {showPassword ? (<VisibilityOffIcon />) : (<VisibilityIcon />)}
+                        </IconButton>
+                      </InputAdornment>,
+                  }}
+                />
+              </Box>
+              <Box display='flex' justifyContent='center' mt={5}>
+                <NextLink href='/autenticacion/recuperar-credenciales'>
+                  Olvide mi contraseña
+                </NextLink>
+              </Box>
+              <Box  mt={5} display='flex' justifyContent='center'>
+                <Button type='submit' disabled={loading} variant='contained'>{loading ? 'Iniciando sesión...' : 'Iniciar sesión'}</Button>
+              </Box>
             </Box>
-            <Box display='flex' justifyContent='center' mt={5}>
-              <NextLink href='/autenticacion/recuperar-credenciales'>
-                Olvide mi contraseña
-              </NextLink>
-            </Box>
-            <Box  mt={5} display='flex' justifyContent='center' onClick={() => login(userData)}>
-              <Button disabled={loading} variant='contained'>{loading ? 'Iniciando sesión...' : 'Iniciar sesión'}</Button>
-            </Box>
-          </Box>
+          </form>
         </Box>
 
       </Box>
