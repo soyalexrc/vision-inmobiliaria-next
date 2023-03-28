@@ -13,7 +13,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 
 interface LoginData {
   email: string;
-  password: any;
+  password: string;
 }
 
 const schema = yup.object({
@@ -84,6 +84,8 @@ export default function Login() {
                   label='Email'
                   variant="outlined"
                 />
+                <Typography variant='caption' fontWeight='bold' sx={{color: '#FF0000'}}>{errors?.email?.message}</Typography>
+
                 <TextField
                   color='secondary'
                   fullWidth
@@ -103,6 +105,8 @@ export default function Login() {
                       </InputAdornment>,
                   }}
                 />
+                <Typography variant='caption' fontWeight='bold' sx={{color: '#FF0000'}}>{errors?.password?.message}</Typography>
+
               </Box>
               <Box display='flex' justifyContent='center' mt={5}>
                 <NextLink href='/autenticacion/recuperar-credenciales'>
