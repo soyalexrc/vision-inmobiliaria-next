@@ -22,140 +22,21 @@ import {FormatCashFlow} from "../../../../interfaces";
 import {axiosInstance} from "../../../../utils";
 import {useSnackbar} from "notistack";
 
-export function CashFlowList() {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const [searchTerm, setSearchTerm] = React.useState('')
-  const router = useRouter();
-  const {enqueueSnackbar} = useSnackbar()
-  const [filtersDrawer, setFiltersDrawer] = React.useState(false);
-  const [data, setData] = React.useState<FormatCashFlow[]>([]);
-  const [filtersData, setFiltersData] = React.useState<any>({
-    filters: [],
-    pageNumber: 1,
-    pageSize: 5
-  });
-
-  async function getProperties() {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get('format/cashFlow/getAllData');
-      if (response.status === 200) {
-        setData(response.data)
-      }
-    } catch (err) {
-      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
-    } finally {
-      setLoading(false);
-    }
-  }
+export function CashFlowList({getProperties, data, loading, deleteData}: any) {
 
 
 
-  const applyFilters = () => {
-    setFiltersDrawer(false);
-    getProperties()
-  }
-
-  React.useEffect(() => {
-    getProperties();
-  }, [])
-
-  const handleSelectFilter = (code: any, value: any) => {
-    const filters = [...filtersData.filters];
-    if (value === null) {
-      if (filters.length === 1) {
-        filters.pop();
-      }
-      const removed = filters.findIndex(x => x.parameter === code);
-      filters.splice(removed, 1);
-    } else if (filters.filter(x => x.parameter === code)[0]) {
-      const index = filters.findIndex(x => x.parameter === code);
-      filters.splice(index, 1);
-      filters.push(value);
-    } else {
-      filters.push(value);
-    }
-    setFiltersData((prevState: any) => ({
-      ...prevState,
-      filters,
-    }))
-  }
 
 
-  async function deleteData(id: number | string) {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.delete(`format/cashFlow/deleteData?id=${id}`);
-      if (response.status === 200) {
-        enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
-        getProperties()
-      }
-    } catch (e) {
-      enqueueSnackbar('Error!', {variant: 'error'} )
-    } finally {
-      setLoading(false);
-    }
-  }
+
 
   return (
     <Box sx={{width: '100%', p: 2}}>
-      <Box p={2}>
-        <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
-          <Typography variant='h2'>Formato de flujo de efectivo</Typography>
-          <Typography sx={{mx: 2}} color='gray'>{data.length} registros</Typography>
-        </Box>
-        <Grid container sx={{ mb: 2 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{width: '100%'}}
-              id="search-textfield"
-              placeholder="Buscar "
-              variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon/>
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
-            <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/formatos/flujo-de-efectivo/crear')}>
-              <AddIcon/>
-              registro
-            </Button>
-          </Grid>
-        </Grid>
-        <Badge badgeContent={filtersData.filters.length} color="primary">
-          <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)}
-                  sx={{display: 'flex'}}>
-            <FilterAltIcon/>
-            Filtros
-          </Button>
-        </Badge>
-
-      </Box>
       <Box sx={{width: '100%'}}>
         {loading && <LinearProgress/>}
       </Box>
       {/*  Properties Table*/}
       <CashFlowTable data={data} loading={loading} onDelete={(id) => deleteData(id)} />
-
-      <ClientsFilterDrawer
-        open={filtersDrawer}
-        filters={filtersData.filters}
-        applyFilters={() => applyFilters()}
-        closeAction={() => setFiltersDrawer(false)}
-        selectFilter={handleSelectFilter}
-        largeScreen={largeScreen}
-      />
     </Box>
   )
 }
