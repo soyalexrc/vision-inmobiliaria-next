@@ -119,11 +119,11 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     return page === 1 ? 10 : page * 10
   }
 
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     router.push('/admin/propiedades/comision/2901')
-  //   }, 2000)
-  // }, [])
+  function canEdit() {}
+
+  function canDelete() {}
+
+  function canChangeStatus(){}
 
   return (
     <>
@@ -248,7 +248,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                   <Box>
                     <Box display='flex' alignItems='center'>
                       {
-                        currentUser.user_type === 'Administrador' &&
+                        (currentUser.user_type === 'Administrador' || currentUser.user_type === 'Coordinador de servicios') &&
                         <>
                           <Tooltip title='Editar propiedad'>
                             <IconButton onClick={() => router.push(`/admin/propiedades/${row.id}`)}>
