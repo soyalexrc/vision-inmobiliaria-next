@@ -8,7 +8,7 @@ interface PropertiesFiltersDrawerProps {
   open: boolean;
   closeAction: () => void;
   applyFilters: () => void;
-  selectFilter: (param: string, value: string, type: string) => void
+  selectFilter: (param: string, value: string | null, type: string) => void
   largeScreen: boolean;
   filters: any[]
 }

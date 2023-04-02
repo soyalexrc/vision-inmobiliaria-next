@@ -338,4 +338,8 @@ export function CashFlowChart({data, loading}: CashFlowChartProps) {
     )
   }
 
+  return (
+    <></>
+  )
+
 }
