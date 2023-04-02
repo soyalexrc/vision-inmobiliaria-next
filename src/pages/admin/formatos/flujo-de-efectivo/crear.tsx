@@ -320,7 +320,7 @@ export default function CashFlowCreateFormat() {
                     <RHFAutocomplete
                       name="entity"
                       control={control}
-                      options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Panamá', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería']}
+                      options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Venezuela', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería']}
                       getOptionLabel={(option: any) => option || ''}
                       defaultValue={null}
                       label='Entidad'

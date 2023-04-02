@@ -84,7 +84,7 @@ export interface FormatCommissionCalculation {
 }
 
 type StatusCommissionCalculation = 'EN CURSO' | 'CULMINADO'
-type TransactionTypeOption = 'Ingreso Bs' | 'Egreso Bs' | 'Ingreso $' | 'Egreso $' | 'Comision Bancaria'
-type WayToPayOption = 'Efectivo' | 'Zelle' | 'Transferencia' | 'Comision Bancaria'
-type EntityOption = 'Oficina' | 'Banesco Panama' | 'Banesco de terceros' | 'Banco de Venezuela' | 'Banco Banesco' | 'BNC'
+type TransactionTypeOption = 'Ingreso' | 'Egreso' | 'Ingreso a cuenta de terceros' | 'Interbancaria'
+type WayToPayOption = 'Efectivo' | 'Zelle' | 'Transferencia' | 'Pago Movil'
+type EntityOption = 'Banco Nacional de Terceros'| 'Banesco Panamá' | 'Banesco de terceros' | 'Banesco Venezuela'  | 'Banco Nacional de Crédito (BNC)' | 'Oficina Paseo La Granja' | 'Oficina San Carlos' | 'Tesorería'
 type StatusOption = 'POR PAGAR A TERCEROS' | 'POR COBRAR' | 'GASTOS PERSONALES MG'

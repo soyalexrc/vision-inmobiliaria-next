@@ -51,8 +51,8 @@ export function AttributesCreadeUpdateDrawer() {
   const [options, setOptions] = React.useState<string[]>([])
   const [loading, setLoading] = React.useState(false)
   const { register, handleSubmit, setValue, watch, control } = useForm<FormValues>({ resolver: yupResolver(schema), mode: 'all' });
-  const watchedFormType = watch('form_type')
   const onSubmit = handleSubmit((data) => handleAttribute(data));
+  const watchedFormType = watch('form_type')
   const { enqueueSnackbar } = useSnackbar()
 
   const {

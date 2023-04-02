@@ -6,3 +6,4 @@ export * from './crypto';
 export * from './redirect';
 export * from './sleep';
 export * from './format';
+export * from './months';
