@@ -66,7 +66,6 @@ export default function UpdateCashFlowFormat() {
   async function getFormatById() {
     try {
       const response = await axiosInstance.get(`format/cashFlow/getById?id=${id}`);
-      console.log('data', response.data[0]);
       if (response.status === 200 && response.data.length > 0) {
         const {
           month,

@@ -33,7 +33,6 @@ export function ChangeStatusModal({close, open, data, trigger, reload}: any) {
       user_id: 'id de user',
       username: 'user name de usaer'
     }
-    console.log(id, value, payload);
     await updateStatusProperty(id, value, payload)
     if (value === 'Cerrado por Externo') {
       console.log('handle trigger')
@@ -46,7 +45,6 @@ export function ChangeStatusModal({close, open, data, trigger, reload}: any) {
   async function updateStatusProperty(id: any, status: string, payload: any) {
     try {
       const response = await axiosInstance.put("property/updateStatus", {id, property_status: status})
-      console.log(response);
       if (response.status === 200) {
         enqueueSnackbar('Se cambio el estado de la propiedad con exito!', {variant: 'success'});
         await updateHistory(payload);

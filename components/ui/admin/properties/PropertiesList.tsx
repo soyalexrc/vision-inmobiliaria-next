@@ -116,7 +116,7 @@ export function PropertiesList() {
   }
   return (
     <Box sx={{width: '100%', p: 2}}>
-      <Box p={2}>
+      <Box >
         <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
           <Typography variant='h2'>Propiedades</Typography>
           <Typography sx={{mx: 2}} color='gray'>{properties?.data?.length} propiedades registradas</Typography>

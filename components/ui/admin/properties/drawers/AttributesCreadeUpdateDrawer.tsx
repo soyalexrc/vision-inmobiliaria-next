@@ -15,7 +15,7 @@ import {
   Button
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close'
-import AddIcon from '@mui/icons-material/Add'
+import AddIcon from '@mui/icons-material/add'
 import {UIContext} from "../../../../../context/ui";
 import {DeleteButton} from "../../DeleteButton";
 import * as yup from "yup";
@@ -64,7 +64,6 @@ export function AttributesCreadeUpdateDrawer() {
   } = React.useContext(UIContext)
 
   function removeOption(option: any) {
-    console.log('option', option);
   }
 
 

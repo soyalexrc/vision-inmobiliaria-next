@@ -26,7 +26,6 @@ export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
   const [page, setPage] = React.useState<number>(1);
   const router = useRouter()
 
-  console.log('owners', owners.length);
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -40,8 +39,6 @@ export function OwnersTable({loading, owners, deleteOwner}: OwnersTableProps) {
     return page === 1 ? 10 : page * 10
   }
 
-  console.log(getCurrentPage())
-  console.log(getCurrentPageLimit())
 
 
   return (

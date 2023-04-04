@@ -54,7 +54,6 @@ export default function UpdateCommissionCalculationFormat() {
   async function getFormatById() {
     try {
       const response = await axiosInstance.get(`format/commission/getById?id=${id}`);
-      console.log('data', response.data[0]);
       if (response.status === 200 && response.data.length > 0) {
         const {
           date_application,

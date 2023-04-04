@@ -22,6 +22,7 @@ import {useSnackbar} from "notistack";
 
 export default function EditPropertyPage() {
   const router = useRouter();
+  const id = router.query?.id;
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const methods = useForm<Property>();
   const onSubmit = methods.handleSubmit((data: Property) => editProperty(data));
@@ -34,9 +35,11 @@ export default function EditPropertyPage() {
   }
 
   const editProperty = async (data: Property) => {
+    const fullObj = {...data};
+    fullObj.id = id
     try {
       setLoading(true);
-      const response = await axiosInstance.put('property/updateData', data);
+      const response = await axiosInstance.put('property/updateData', fullObj);
       if (response.status === 200) {
         enqueueSnackbar('Se edito la propiedad con exito!', {variant: 'success'})
         router.back()
@@ -52,7 +55,6 @@ export default function EditPropertyPage() {
     try {
       const response = await axiosInstance.get<Property>(`property/getById?id=${id}`);
       if (response.status === 200) {
-        console.log('response', response.data);
         methods.setValue('property', response.data.property);
         methods.setValue('attributes', response.data.attributes);
         methods.setValue('files', response.data.files);
@@ -79,7 +81,6 @@ export default function EditPropertyPage() {
     }
   }, [router.query.id])
 
-  console.log(methods.getValues())
 
   return (
     <AdminLayout title='Edicion propiedad | Vision inmobiliaria'>

@@ -12,7 +12,6 @@ export default function PreviewPropertyPage() {
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
   const id = router.query?.id;
-  console.log(id)
 
   async function getPropertyById() {
     try {
@@ -31,7 +30,6 @@ export default function PreviewPropertyPage() {
     const dataFromStorage = JSON.parse(sessionStorage.getItem('propertyToPrevisualize') ?? '')
     setTimeout(() => {
       setPropertyData(dataFromStorage)
-      console.log(dataFromStorage)
       setLoading(false)
     }, 2000)
   }, [])

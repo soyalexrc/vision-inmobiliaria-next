@@ -13,12 +13,13 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useForm, FormProvider} from "react-hook-form";
-import {Property} from "../../../../../interfaces/properties";
+import {Property} from "../../../../../interfaces";
 import {panels, PROPERTY_FILES_INITIAL_VALUE} from "../../../../../utils/mock-data";
 import {useRouter} from "next/router";
 import {axiosInstance} from "../../../../../utils";
 import {useSnackbar} from "notistack";
 import axios from "axios";
+import {AuthContext} from "../../../../../context/auth";
 
 
 export default function CreateNewPropertyPage() {
@@ -28,7 +29,9 @@ export default function CreateNewPropertyPage() {
     defaultValues: {
       // @ts-ignore
       // TODO corregir este tipado
-      files: [...PROPERTY_FILES_INITIAL_VALUE]
+      property: {
+        property_status: 'Incompleto'
+      }
     }
   });
   const onSubmit = methods.handleSubmit((data) => createNewProperty(data));
@@ -40,19 +43,20 @@ export default function CreateNewPropertyPage() {
   }
 
   const createNewProperty = async (data: Property) => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.post('property/addNewData', data);
-      if (response.status === 200) {
-        enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
-        router.back()
-      }
-    } catch (err) {
-      enqueueSnackbar("Ocurrio un error", {variant: 'error'})
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   const response = await axiosInstance.post('property/addNewData', data);
+    //   if (response.status === 200) {
+    //     enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
+    //     router.back()
+    //   }
+    // } catch (err) {
+    //   enqueueSnackbar("Ocurrio un error", {variant: 'error'})
+    // } finally {
+    //   setLoading(false);
+    // }
   }
+
 
   return (
     <AdminLayout title='Crear nueva propiedad | Vision inmobiliaria'>

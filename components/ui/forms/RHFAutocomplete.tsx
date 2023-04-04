@@ -11,7 +11,8 @@ export const RHFAutocomplete = (
     defaultValue,
     name,
     control,
-    renderOption
+    renderOption,
+    sx = {}
   } : any) => {
   return (
     <Controller
@@ -19,6 +20,7 @@ export const RHFAutocomplete = (
         field: {value, onChange}
        }) => (
         <Autocomplete
+          sx={sx}
           options={options}
           getOptionLabel={getOptionLabel}
           renderOption={renderOption}

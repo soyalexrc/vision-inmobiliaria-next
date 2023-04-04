@@ -10,7 +10,7 @@ import {
   Grid,
   IconButton
 } from '@mui/material'
-import AddIcon from "@mui/icons-material/Add";
+import AddIcon from "@mui/icons-material/add";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import {DeleteButton} from "../../DeleteButton";
@@ -58,7 +58,7 @@ export function PropertyImagesForm() {
             console.log('dataImage', dataImage);
             // TODO validar imagenes del server que no estan exisitiendo bajo path
             const objImage = {
-              id: null,
+              id: dataImage,
               imageData: dataImage,
               imageType: files[i].type
             }

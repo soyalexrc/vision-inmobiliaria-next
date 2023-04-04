@@ -1,5 +1,5 @@
 export interface Property {
-  id?: string | null;
+  id?: any;
   attributes: PropertyAttribute[];
   clientData: PropertyClientData;
   files: PropertyFile[];
@@ -23,8 +23,6 @@ export interface PropertyAttribute {
 
 interface PropertyClientData {
   finalPrice: string | null;
-  price: string;
-  minimunNegotiation: string | null;
   attorneyCellPhone: string;
   attorneyEmail: string;
   attorneyFirstName: string;
@@ -45,7 +43,6 @@ interface PropertyClientData {
   lastName: string;
   mainLivingPlace: string;
   mortgage: string;
-  observations: string;
   partOfPayment: string;
   power: string;
   powerCondition: string;
@@ -87,7 +84,12 @@ interface PropertyLocation {
 
 interface PropertyGeneralData {
   code: string;
+  adviser: string | number;
+  price: string;
+  nomenclature: string;
+  distributionComments: string;
   commisionRentalType: string | null;
+  minimunNegotiation: string | null;
   commisionRentalTypeSeller: string | null;
   commisionRoyalty: string | null;
   commisionRoyaltySeller: string | null;
@@ -107,6 +109,7 @@ interface PropertyGeneralData {
   propertyType: string;
   property_status: string;
   sellerId: string | null;
+  observations: string;
   userId: number;
 }
 

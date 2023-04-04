@@ -65,7 +65,6 @@ export default function ServicesPage() {
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
 
   const router = useRouter();
-  console.log(router.asPath.split('#')[1]);
 
   React.useEffect(() => {
 

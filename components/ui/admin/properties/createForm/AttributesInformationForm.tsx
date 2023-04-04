@@ -15,9 +15,7 @@ export function AttributesInformationForm() {
   const getAttributes = async () => {
     try {
       const response = await axiosInstance.get(`/attribute/getAllDataByPropertyType?propertyType=${propertyTypeWached}`)
-      console.log('response', response);
       if (response.status === 200) {
-        console.log(response.data);
         fillArrayOfAttributes(response.data);
 
       }

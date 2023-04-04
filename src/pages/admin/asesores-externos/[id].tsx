@@ -56,7 +56,6 @@ export default function EditAdviserPage() {
         setValue('email', email, {});
         setValue('birthday', birthday, {});
       }
-      console.log('state', );
 
     } catch (err) {
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
@@ -66,7 +65,6 @@ export default function EditAdviserPage() {
   }
 
   async function editAdviser(data: any) {
-    console.log('here')
     const fullObj = {...data};
     fullObj.type = 'Asesores Externos'
     fullObj.id = id;

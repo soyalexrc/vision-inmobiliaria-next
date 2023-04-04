@@ -120,17 +120,14 @@ export default function CashFlowPage() {
   }
 
   const handleSelectFilter = (param: string, value: string | null, type: string) => {
-    console.log(param, value, type)
     const filters = filtersData;
     if (value === null) {
-      console.log('value === null')
       if (filters.length === 1) {
         filters.pop();
       }
       const removed = filters.findIndex(x => x.value === value);
       filters.splice(removed, 1);
     } else if (filters?.filter(x => x.value === value).length > 0) {
-      console.log('value existe antes')
       const index = filters.findIndex(x => x.value === value);
       filters.splice(index, 1);
       filters.push({value, param, type});

@@ -130,7 +130,6 @@ export default function EditOwnerPage() {
       }
 
     } catch (err) {
-      console.log(err);
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
     } finally {
       setLoadingData(false);
@@ -164,8 +163,7 @@ export default function EditOwnerPage() {
       await reader.readAsDataURL(files[0]);
       reader.onload = async () => {
         const response = await axios.post('/api/files', {imageData: reader.result, imageType: files[0].type, alias: 'users', imageName: files[0].name});
-        if (response.status === 201) {
-          console.log(response)
+        if (response.status === 200) {
           enqueueSnackbar('Se cargo el archivo  con exito!', {variant: 'success'})
           setValue('imageData', response.data)
           setImage(reader.result)

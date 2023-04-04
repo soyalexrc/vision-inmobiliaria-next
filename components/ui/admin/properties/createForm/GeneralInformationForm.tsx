@@ -11,7 +11,7 @@ export function GeneralInformationForm() {
 
   return (
     <Grid container spacing={4}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={3}>
         <Typography fontWeight='bold' sx={{mb: 1}}>Compania</Typography>
         <TextField
           color='secondary'
@@ -30,6 +30,16 @@ export function GeneralInformationForm() {
           fullWidth
           placeholder='Codigo'
           {...register('property.code')}
+          variant="outlined"
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Nomenclatura</Typography>
+        <TextField
+          color='secondary'
+          fullWidth
+          placeholder='Nomenclatura'
+          {...register('property.nomenclature')}
           variant="outlined"
         />
       </Grid>
@@ -106,6 +116,18 @@ export function GeneralInformationForm() {
             />
           </>
         }
+      </Grid>
+      <Grid item xs={12}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Comentarios de distribucion</Typography>
+        <TextField
+          color='secondary'
+          fullWidth
+          multiline
+          rows={5}
+          placeholder='Comentarios de distribucion'
+          {...register('property.distributionComments')}
+          variant="outlined"
+        />
       </Grid>
       <Grid item xs={12} >
         <Typography fontWeight='bold' sx={{mb: 1}}>Titulo de inmueble</Typography>

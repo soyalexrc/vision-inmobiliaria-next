@@ -64,7 +64,6 @@ export default function CommissionCalculationCreateFormat() {
   async function createFormat(data: any) {
     const fullObj = {...data};
     fullObj.createdAt = new Date();
-    console.log(fullObj)
     try {
       setLoading(true);
       const response = await axiosInstance.post('format/commission/addNewData', fullObj);

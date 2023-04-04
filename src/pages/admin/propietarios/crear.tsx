@@ -48,7 +48,7 @@ export default function CreateNewOwnerPage() {
     try {
       setLoading(true);
       const response = await axiosInstance.post('owner/addNewData', fullObj);
-      if (response.status === 201) {
+      if (response.status === 200) {
         enqueueSnackbar('Se creo el propietario con exito!', {variant: 'success'})
         router.back()
       }

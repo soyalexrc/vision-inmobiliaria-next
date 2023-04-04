@@ -65,7 +65,6 @@ export default function UpdateClientFormat() {
   async function getFormatById() {
     try {
       const response = await axiosInstance.get(`format/client/getById?id=${id}`);
-      console.log('data', response.data[0]);
 
       if (response.status === 200 && response.data.length > 0) {
         const {

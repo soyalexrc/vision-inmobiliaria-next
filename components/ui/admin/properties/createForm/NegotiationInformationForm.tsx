@@ -11,10 +11,69 @@ import {
   InputAdornment
 } from "@mui/material";
 import {useFormContext} from "react-hook-form";
-import {RHFSelect} from "../../../forms";
+import {RHFAutocomplete, RHFSelect} from "../../../forms";
+import {axiosInstance} from "../../../../../utils";
+import {Ally, ExternalAdviser, Owner} from "../../../../../interfaces";
+import {AuthContext} from "../../../../../context/auth";
+import {useRouter} from "next/router";
+import {TYPE_OF_PROPERTY} from "../../../../../utils/properties";
 
 export function NegotiationInformationForm() {
-  const {register, control} = useFormContext()
+  const {register, control, setValue, watch} = useFormContext()
+  const router = useRouter()
+  const [loading, setLoading] = React.useState<boolean>(false)
+  const [owners, setOwners] = React.useState<Owner[]>([])
+  const [advisers, setAdvisers] = React.useState<ExternalAdviser[]>([])
+  const [allies, setAllies] = React.useState<Ally[]>([]);
+  const {currentUser} = React.useContext(AuthContext)
+  const ownerWatched = watch('property.owner')
+
+
+  async function getData() {
+    try {
+      setLoading(true);
+      Promise.all([getOwners(), getAllies(), getAdvisers()])
+        .then(values => {
+          setOwners(values[0])
+          setAllies(values[1])
+          setAdvisers(values[2])
+        })
+    } catch(e) {
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function getOwners() {
+      const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
+        return response.data
+  }
+  async function getAllies() {
+      const response = await axiosInstance.get('owner/getAllData?type=Aliados');
+        return response.data
+  }
+  async function getAdvisers() {
+      const response = await axiosInstance.get('owner/getAllData?type=Asesores%20Externos');
+        return response.data
+  }
+
+  React.useEffect(() => {
+    getData()
+    if (router.pathname.includes('crear')) {
+      setValue('property.adviser', currentUser)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (ownerWatched) {
+      setValue('clientData.firstName', ownerWatched.first_name)
+      setValue('clientData.lastName', ownerWatched.last_name)
+      setValue('clientData.cellPhone', ownerWatched.phone)
+      setValue('clientData.birthday', ownerWatched.birthday)
+      setValue('clientData.email', ownerWatched.email)
+    }
+  }, [ownerWatched])
 
   return (
     <Grid container spacing={4}>
@@ -24,7 +83,7 @@ export function NegotiationInformationForm() {
           color='secondary'
           fullWidth
           placeholder='Precio'
-          {...register('clientData.price')}
+          {...register('property.price')}
           variant="outlined"
         />
       </Grid>
@@ -61,7 +120,7 @@ export function NegotiationInformationForm() {
           color='secondary'
           fullWidth
           placeholder='Negociacion minima'
-          {...register('clientData.minimunNegotiation')}
+          {...register('property.minimunNegotiation')}
           variant="outlined"
         />
       </Grid>
@@ -73,15 +132,24 @@ export function NegotiationInformationForm() {
           multiline
           rows={5}
           placeholder='Motivo de venta / alquiler'
-          {...register('clientData.observations')}
+          {...register('property.observations')}
           variant="outlined"
         />
       </Grid>
       <Grid item xs={12}>
         <Divider sx={{my: 3}}/>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} display='flex' alignItems='center' justifyContent='space-between'>
         <Typography variant='h5'>Datos de cliente</Typography>
+        <RHFAutocomplete
+          sx={{width: '200px'}}
+          name="property.owner"
+          control={control}
+          options={owners}
+          getOptionLabel={(option: any) => option.first_name || ''}
+          defaultValue={null}
+          label='Seleccionar propietario'
+        />
       </Grid>
       {/*  datos de cliente */}
 
@@ -227,6 +295,48 @@ export function NegotiationInformationForm() {
           fullWidth
           placeholder='Email'
           {...register('clientData.attorneyEmail')}
+          variant="outlined"
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Divider sx={{my: 3}}/>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant='h5'>Datos Vision</Typography>
+      </Grid>
+
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Asesor</Typography>
+        <TextField
+          disabled
+          color='secondary'
+          fullWidth
+          placeholder='Asesor'
+          {...register('property.adviser.username')}
+          variant="outlined"
+          helperText='Nombre de usuario responsable de crear esta propiedad'
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Aliado</Typography>
+        <RHFAutocomplete
+          sx={{marginTop: '-1rem'}}
+          name="property.ally"
+          control={control}
+          options={allies}
+          getOptionLabel={(option: any) => option.first_name || ''}
+          defaultValue={null}
+          label='Seleccionar'
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Capacitador Externo</Typography>
+        <TextField
+          color='secondary'
+          fullWidth
+          placeholder='Capacitador Externo'
+          {...register('property.externalCapacitor')}
           variant="outlined"
         />
       </Grid>

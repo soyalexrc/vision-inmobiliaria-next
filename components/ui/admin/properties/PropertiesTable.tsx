@@ -35,16 +35,29 @@ interface PropertiesTableProps {
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
   color: theme.palette.common.black,
   fontWeight: 'bold',
+  webkitTouchCallout: 'none',
+  webkitUserSelect: 'none',
+  mozUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none'
+}));
+
+const TableItem = styled(TableCell)(({theme}: { theme: any }) => ({
+  webkitTouchCallout: 'none',
+  webkitUserSelect: 'none',
+  mozUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none'
 }));
 
 
+
+
+
 export function PropertiesTable({loading, properties, owners, reload}: PropertiesTableProps) {
-  const [previewModal, setPreviewModal] = React.useState<boolean>(false);
   const [statusModal, setStatusModal] = React.useState<boolean>(false);
   const [historyModal, setHistoryModal] = React.useState<boolean>(false);
   const [commissionModal, setCommissionModal] = React.useState<boolean>(false);
-  const [propertyDetailLoading, setPropertyDetailLoading] = React.useState<boolean>(false);
-  const [propertyDetail, setPropertyDetail] = React.useState<any>({});
   const [historyInfo, setHistoryInfo] = React.useState<any[]>([]);
   const [statusInfo, setStatusInfo] = React.useState<{}>({});
   const [commissionInfo, setCommissionInfo] = React.useState<{}>({});
@@ -52,12 +65,8 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const {currentUser} = React.useContext(AuthContext)
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
+  let pos = { top: 0, left: 0, x: 0, y: 0 };
 
-
-  const openHistoryModal = async (id: number) => {
-    setHistoryModal(true);
-    // await getPropertyHistory(id);
-  }
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -96,7 +105,6 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const handleOpenHistoryModal = async (id: string | number) => {
     try {
       const response = await axiosInstance.get(`property/getHistoricByPropertyId?property_id=${id}`);
-      console.log(response)
       if (response.status === 200) {
         setHistoryInfo(response.data);
         setHistoryModal(true)
@@ -119,15 +127,46 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
     return page === 1 ? 10 : page * 10
   }
 
-  function canEdit() {}
+  React.useEffect(() => {
+    let pos = {top: 0, left: 0, x: 0, y: 0}
+    let table = document.getElementById('properties-table')!;
+    table.addEventListener('mousedown', mouseDownHandler)
 
-  function canDelete() {}
+    function mouseDownHandler(e: any) {
+      pos = {
+        // The current scroll
+        left: table.scrollLeft!,
+        top: table.scrollTop!,
+        // Get the current mouse position
+        x: e.clientX,
+        y: e.clientY,
+      };
 
-  function canChangeStatus(){}
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
+    }
+
+    const mouseMoveHandler = function (e: any) {
+      // How far the mouse has been moved
+      const dx = e.clientX - pos.x;
+      const dy = e.clientY - pos.y;
+
+      // Scroll the element
+      table.scrollTop = pos.top - dy;
+      table.scrollLeft = pos.left - dx;
+    };
+
+    const mouseUpHandler = function () {
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+    };
+  }, [])
+
+
 
   return (
     <>
-      <TableContainer>
+      <TableContainer sx={{ width: '100%', overflowX: 'scroll', cursor: 'grab' }} id='properties-table'>
         <Table width='100%'>
           <TableHead sx={{backgroundColor: '#eaeaea'}}>
             <TableRow>
@@ -136,7 +175,6 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
               <TableHeaderItem>Fecha de registro</TableHeaderItem>
               <TableHeaderItem>Imagen</TableHeaderItem>
               <TableHeaderItem>Inmueble</TableHeaderItem>
-              <TableHeaderItem>Nomenclatura</TableHeaderItem>
               <TableHeaderItem>Ubicación</TableHeaderItem>
               <TableHeaderItem>Precio</TableHeaderItem>
               <TableHeaderItem>Negociación </TableHeaderItem>
@@ -167,84 +205,81 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                   }
                 }}
               >
-                <TableCell sx={{px: 5}}>{index + 1}</TableCell>
+                <TableItem sx={{px: 5}}>{index + 1}</TableItem>
                 <TableCell sx={{px: 5}}>{row.code}</TableCell>
-                <TableCell>
+                <TableItem>
                   <Box width={100}>
                     <Typography>{row.created_date.split('T')[0]}</Typography>
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box
                     onError={({currentTarget}: { currentTarget: any }) => {
                       currentTarget.onerror = null;
                       currentTarget.src = '/images/no-image.jpg'
                     }}
                     component='img'
-                    src={row.image ? row.image : '/images/no-image.jpg'}
+                    src={row.image ? `http://100.42.69.119:3000/images/${row.image}` : '/images/no-image.jpg'}
                     width={50}
                     height={50}
                     sx={{borderRadius: 100}}
                   />
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 180}}>{row.propertyType}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography>Nomenclatura</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 250}}>
                     {row.location.country} - {row.location.city} - {row.location.state} - {row.location.municipality}
                   </Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 130}}>{formatPrice(row.price)}</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 130}}>{formatPrice(row.price)}</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography
                     sx={{width: 200}}>{owners && owners.length > 0 && `${owners[0].first_name} ${owners[0].last_name}`}</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>{row.operationType}</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 130}}>Aliado</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 130}}>Asesor</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>External capacitor</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>Motivo de operacion</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>{row.property_status}</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>Estatus documento</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography>Nomenclatura 1</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 100}}>{row.footageGround}m²</Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 130}}>{row.footageBuilding}m² </Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>Material de piso </Typography>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Typography sx={{width: 200}}>Comentarios de distribucion</Typography>
-                </TableCell>
-                <TableCell align='center'>
+                </TableItem>
+                <TableItem align='center'>
                   <Box>
                     <Box display='flex' alignItems='center'>
                       {
@@ -285,7 +320,7 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
                             onClick={() => handleOpenHistoryModal(row.id)}>Ver
                       historial</Button>
                   </Box>
-                </TableCell>
+                </TableItem>
               </TableRow>
             ))}
           </TableBody>

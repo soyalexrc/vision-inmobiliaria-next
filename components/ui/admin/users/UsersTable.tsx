@@ -26,7 +26,6 @@ export function UsersTable({loading, users, deleteUser}: UsersTableProps) {
   const [page, setPage] = React.useState<number>(1);
   const router = useRouter()
 
-  console.log('users', users);
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);

@@ -89,7 +89,6 @@ export function CommissionModal({close, open, data, reload}: any) {
   async function updateStatusProperty(id: any, status: string, payload: any) {
     try {
       const response = await axiosInstance.put("property/updateStatus", {id, property_status: status})
-      console.log(response);
       if (response.status === 200) {
         enqueueSnackbar('Se cambio el estado de la propiedad al ultimo estado registrado', {variant: 'info'});
         await updateHistory(payload);
