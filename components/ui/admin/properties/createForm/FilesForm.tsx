@@ -3,23 +3,27 @@ import {useFormContext, useFieldArray} from "react-hook-form";
 import {
   Grid,
   Box,
-  Typography,
-  TextField,
   IconButton,
+  TextField,
+  ListItem,
   Button,
-  MenuItem,
-  Chip
+  ListItemButton,
+  Chip,
+  ListItemIcon,
+  Divider,
+  Typography
 } from '@mui/material'
 import {v4 as uuidv4} from 'uuid';
 import AddIcon from '@mui/icons-material/add'
-import DocumentScannerIcon from '@mui/icons-material/DocumentScanner'
+import ArticleIcon from "@mui/icons-material/Article";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {PropertyFile} from "../../../../../interfaces/properties";
-import {RHFSelect} from "../../../forms";
 import {axiosInstance} from "../../../../../utils";
 import {useSnackbar} from "notistack";
+import {UIContext} from "../../../../../context/ui";
 
 export function FilesForm() {
   const {register, control} = useFormContext()
@@ -30,6 +34,7 @@ export function FilesForm() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const {enqueueSnackbar} = useSnackbar()
   const inputRef = useRef<any>(null)
+  const {openPreviewModal} = React.useContext(UIContext)
 
   function createNewDocument() {
     setIsEditing(true);
@@ -41,6 +46,7 @@ export function FilesForm() {
 
   function handleCancel() {
     setNewDocument({})
+    setDocumentFiles([])
     setIsEditing(false)
   }
 
@@ -101,15 +107,25 @@ export function FilesForm() {
     }))
   }
 
-  function handleDeleteFile() {}
+  function handleDeleteFile() {
+  }
 
   function handleSave() {
     const obj = {...newDocument};
     obj.data = documentFiles
 
     append(obj)
+    setNewDocument({})
+    setIsEditing(false)
+    setDocumentFiles([])
   }
 
+  function openFile(file: string) {
+    if (file.includes('.pdf')) {
+      window.open(`http://100.42.69.119:3000/images/${file}`);
+    }
+    openPreviewModal(file)
+  }
 
 
   return (
@@ -179,84 +195,49 @@ export function FilesForm() {
             documentFiles && documentFiles.length > 0 &&
             <Box display='flex' flexWrap='wrap' gap={1} mt={2}>
               {documentFiles.map((file: any) => (
-                <Box key={file.id} >
-                  <Chip label={file.imageData} onDelete={handleDeleteFile} onClick={() => {}} />
+                <Box key={file.id}>
+                  <Chip label={file.imageData} onDelete={handleDeleteFile} onClick={() => {
+                  }}/>
                 </Box>
               ))}
             </Box>
           }
         </Grid>
       }
-      {
-        // @ts-ignore
-        // TODO corregir este tipado
-        fields.map((field: PropertyFile, index) => {
-          return (
-            <div key={field.id}>
-              {JSON.stringify(field)}
-            </div>
+      <Box width='100%'>
+        {
+          // @ts-ignore
+          // TODO corregir este tipado
+          fields.map((field: PropertyFile, index) => (
+              <Box
+                key={field.id}
+                p={2}
+                width='100%'
+              >
+                <Box>
+                  <Box display='flex' alignItems='center' justifyContent='space-between'>
+                    <Box display='flex' p={2} gap={2}>
+                      <ArticleIcon/>
+                      <Typography>{field.title} </Typography>
+                    </Box>
+                    <IconButton onClick={handleDeleteFile}>
+                      <DeleteIcon color='error'/>
+                    </IconButton>
+                  </Box>
+                  <Box px={2} display='flex' flexWrap='wrap' gap={2}>
+                    {field.data.map((file: any) => (
+                      <Box key={file.id}>
+                        <Chip label={file.imageData} onClick={() => openFile(file.imageData)}/>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+                <Divider sx={{my: 2}} />
+              </Box>
+            )
           )
-            // if (field.type === 'text') {
-            //   return (
-            //     <>
-            //       <Grid item xs={12} md={3} key={field.id}>
-            //         <Typography fontWeight='bold' sx={{mb: 1}}>{field.label}</Typography>
-            //         <TextField
-            //           color='secondary'
-            //           fullWidth
-            //           placeholder={field.label}
-            //           {...register(`files[${index}].value`)}
-            //           variant="outlined"
-            //         />
-            //       </Grid>
-            //       {
-            //         field.imageData &&
-            //         <Box display='flex' alignItems='center' justifyContent='space-between'>
-            //           <Box display='flex' alignItems='center'>
-            //             {
-            //               !field.id.includes('.pdf') &&
-            //               <Box sx={{cursor: 'pointer'}}
-            //                    onClick={() => {
-            //                    }}
-            //                    component='img' mr={2} src={`http://138.219.42.156:3000/images/${field.id}`} width={40}
-            //                    height={40}/>
-            //
-            //             }
-            //             {
-            //               field.id.includes('.pdf') &&
-            //               <IconButton onClick={() => {
-            //               }}>
-            //                 <DocumentScannerIcon/>
-            //               </IconButton>
-            //             }
-            //             <Box><Typography fontWeight='bold' color='primary'>Evidencia {field.label}</Typography></Box>
-            //           </Box>
-            //           {/*<DeleteButton onClick={() => {}} item={`Evidencia de ${field.label}`}/>*/}
-            //         </Box>
-            //       }
-            //     </>
-            //   )
-            // } else {
-            //   return (
-            //     <Grid item xs={12} md={3} key={field.id}>
-            //       <RHFSelect
-            //         name={`files[${index}].value`}
-            //         label={field.label}
-            //         defaultValue={''}
-            //         control={control}
-            //       >
-            //         {
-            //           field.values?.split('#').map((option: string, index: number) => (
-            //             <MenuItem key={option + index} value={option}>{option}</MenuItem>
-            //           ))
-            //         }
-            //       </RHFSelect>
-            //     </Grid>
-            //   )
-            // }
-          }
-        )
-      }
+        }
+      </Box>
     </Grid>
   )
 }

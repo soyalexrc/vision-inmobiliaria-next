@@ -43,6 +43,11 @@ export default function CreateNewPropertyPage() {
   }
 
   const createNewProperty = async (data: Property) => {
+    const fullObj = {...data};
+    fullObj.property.ally = fullObj.property.ally.id;
+    fullObj.property.owner = fullObj.property.owner.id;
+    fullObj.property.adviser = fullObj.property.adviser.id;
+    console.log(fullObj)
     // try {
     //   setLoading(true);
     //   const response = await axiosInstance.post('property/addNewData', data);

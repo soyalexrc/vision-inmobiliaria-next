@@ -19,7 +19,7 @@ import {useRouter} from "next/router";
 import {TYPE_OF_PROPERTY} from "../../../../../utils/properties";
 
 export function NegotiationInformationForm() {
-  const {register, control, setValue, watch} = useFormContext()
+  const {register, control, setValue, watch, getValues} = useFormContext()
   const router = useRouter()
   const [loading, setLoading] = React.useState<boolean>(false)
   const [owners, setOwners] = React.useState<Owner[]>([])
@@ -72,8 +72,15 @@ export function NegotiationInformationForm() {
       setValue('clientData.cellPhone', ownerWatched.phone)
       setValue('clientData.birthday', ownerWatched.birthday)
       setValue('clientData.email', ownerWatched.email)
+    } else {
+      setValue('clientData.firstName', '')
+      setValue('clientData.lastName', '')
+      setValue('clientData.cellPhone', '')
+      setValue('clientData.birthday', '')
+      setValue('clientData.email', '')
     }
   }, [ownerWatched])
+
 
   return (
     <Grid container spacing={4}>
@@ -136,13 +143,49 @@ export function NegotiationInformationForm() {
           variant="outlined"
         />
       </Grid>
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Asesor</Typography>
+        <TextField
+          disabled
+          color='secondary'
+          fullWidth
+          placeholder='Asesor'
+          {...register('property.adviser.username')}
+          variant="outlined"
+          helperText='Nombre de usuario responsable de crear esta propiedad'
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Aliado</Typography>
+        <RHFAutocomplete
+          sx={{marginTop: '-1rem'}}
+          name="property.ally"
+          control={control}
+          options={allies}
+          getOptionLabel={(option: any) => option.first_name || ''}
+          defaultValue={null}
+          label='Seleccionar'
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Typography fontWeight='bold' sx={{mb: 1}}>Capacitador Externo</Typography>
+        <TextField
+          color='secondary'
+          fullWidth
+          placeholder='Capacitador Externo'
+          {...register('property.externalCapacitor')}
+          variant="outlined"
+        />
+      </Grid>
       <Grid item xs={12}>
         <Divider sx={{my: 3}}/>
       </Grid>
-      <Grid item xs={12} display='flex' alignItems='center' justifyContent='space-between'>
+      <Grid item xs={12} >
         <Typography variant='h5'>Datos de cliente</Typography>
+      </Grid>
+      <Grid item xs={12} >
+        <Typography fontWeight='bold' sx={{mb: 1}}>Seleccionar cliente</Typography>
         <RHFAutocomplete
-          sx={{width: '200px'}}
           name="property.owner"
           control={control}
           options={owners}
@@ -157,6 +200,7 @@ export function NegotiationInformationForm() {
         <Typography fontWeight='bold' sx={{mb: 1}}>Nombres</Typography>
         <TextField
           color='secondary'
+          disabled
           fullWidth
           placeholder='Nombres'
           {...register('clientData.firstName')}
@@ -167,6 +211,7 @@ export function NegotiationInformationForm() {
         <Typography fontWeight='bold' sx={{mb: 1}}>Apellidos</Typography>
         <TextField
           color='secondary'
+          disabled
           fullWidth
           placeholder='Apellidos'
           {...register('clientData.lastName')}
@@ -177,6 +222,7 @@ export function NegotiationInformationForm() {
         <Typography fontWeight='bold' sx={{mb: 1}}>Telefono</Typography>
         <TextField
           color='secondary'
+          disabled
           fullWidth
           {...register('clientData.cellPhone')}
           variant="outlined"
@@ -187,6 +233,7 @@ export function NegotiationInformationForm() {
         <Typography fontWeight='bold' sx={{mb: 1}}>Email</Typography>
         <TextField
           color='secondary'
+          disabled
           fullWidth
           placeholder='Email'
           {...register('clientData.email')}
@@ -197,6 +244,7 @@ export function NegotiationInformationForm() {
         <Typography fontWeight='bold' sx={{mb: 1}}>Fecha de cumpleanos</Typography>
         <TextField
           color='secondary'
+          disabled
           fullWidth
           type='date'
           placeholder='Email'
@@ -295,48 +343,6 @@ export function NegotiationInformationForm() {
           fullWidth
           placeholder='Email'
           {...register('clientData.attorneyEmail')}
-          variant="outlined"
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Divider sx={{my: 3}}/>
-      </Grid>
-      <Grid item xs={12}>
-        <Typography variant='h5'>Datos Vision</Typography>
-      </Grid>
-
-      <Grid item xs={12} md={4}>
-        <Typography fontWeight='bold' sx={{mb: 1}}>Asesor</Typography>
-        <TextField
-          disabled
-          color='secondary'
-          fullWidth
-          placeholder='Asesor'
-          {...register('property.adviser.username')}
-          variant="outlined"
-          helperText='Nombre de usuario responsable de crear esta propiedad'
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <Typography fontWeight='bold' sx={{mb: 1}}>Aliado</Typography>
-        <RHFAutocomplete
-          sx={{marginTop: '-1rem'}}
-          name="property.ally"
-          control={control}
-          options={allies}
-          getOptionLabel={(option: any) => option.first_name || ''}
-          defaultValue={null}
-          label='Seleccionar'
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <Typography fontWeight='bold' sx={{mb: 1}}>Capacitador Externo</Typography>
-        <TextField
-          color='secondary'
-          fullWidth
-          placeholder='Capacitador Externo'
-          {...register('property.externalCapacitor')}
           variant="outlined"
         />
       </Grid>

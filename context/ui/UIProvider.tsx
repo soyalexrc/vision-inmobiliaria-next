@@ -8,7 +8,9 @@ export interface UIState {
   adminMenuOpen: boolean;
   adminPanelOpen: string;
   attributesPanelOpen: boolean;
+  isPreviewModal: boolean;
   attributesPanelData: any;
+  currentFile: string;
   attributesTypeAction: string;
   refreshListener: any
 }
@@ -17,6 +19,8 @@ const UI_INITIAL_STATE: UIState = {
   sideMenuOpen: false,
   adminMenuOpen: false,
   isAddingEntry: false,
+  isPreviewModal: false,
+  currentFile: '',
   isDragging: false,
   adminPanelOpen: '',
   attributesPanelOpen: false,
@@ -42,7 +46,8 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
   const closeAdminMenu = () => dispatch({ type: 'UI - Close Admin Sidebar' })
   const startDragging = () => dispatch({ type: 'UI - Start Dragging' })
   const endDragging = () => dispatch({ type: 'UI - End Dragging' })
-
+  const openPreviewModal = (file: string) => dispatch({ type: 'UI - Open Preview Modal', payload: file })
+  const closePreviewModal = () => dispatch({ type: 'UI - Close Preview Modal' })
   const setIsAddingEntry = (value: boolean) => dispatch({ type: 'UI - Set IsAddingEntry', payload: value })
 
   const setAdminPanelName = (value: string) => {
@@ -76,7 +81,9 @@ export const UIProvider: React.FC<{children: JSX.Element}> = ({children}) => {
     setAdminPanelName,
     handleAttributesPanel,
     handleCloseAttributesPanel,
-    onRefresh
+    onRefresh,
+    openPreviewModal,
+    closePreviewModal
   }), [state])
 
   return (

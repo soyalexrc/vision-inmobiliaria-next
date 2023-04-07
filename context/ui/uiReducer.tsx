@@ -14,6 +14,8 @@ type UIActionType =
   | { type: 'UI - Close Attributes Panel' }
   | { type: 'UI - Emit Refresh', payload: number  }
   | { type: 'UI - Update Attributes Panel', payload: any }
+  | { type: 'UI - Open Preview Modal', payload: string }
+  | { type: 'UI - Close Preview Modal' }
 
 export const uiReducer = (state: UIState, action: UIActionType): UIState => {
   switch (action.type) {
@@ -32,6 +34,20 @@ export const uiReducer = (state: UIState, action: UIActionType): UIState => {
       return {
         ...state,
         adminMenuOpen: false
+      }
+
+    case 'UI - Open Preview Modal':
+      return {
+        ...state,
+        currentFile: action.payload,
+        isPreviewModal: true
+      }
+
+    case 'UI - Close Preview Modal':
+      return {
+        ...state,
+        currentFile: '',
+        isPreviewModal: false
       }
 
     case 'UI - Close Sidebar':

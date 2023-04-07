@@ -11,6 +11,7 @@ import PermMediaIcon from "@mui/icons-material/PermMedia";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import ArticleIcon from "@mui/icons-material/Article";
+import ShareIcon from '@mui/icons-material/Share';
 
 interface PanelProps {
   id: string;
@@ -67,7 +68,7 @@ export const panels: PanelProps[] = [
     id: 'panel7',
     state: propertyAccordionStatus.publicationSourceInformation,
     title: 'Fuente de publicacion',
-    icon: < ArticleIcon/>,
+    icon: < ShareIcon/>,
     content: < PublicationSourceForm/>
   },
 ]

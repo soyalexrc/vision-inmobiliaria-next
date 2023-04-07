@@ -53,6 +53,8 @@ export interface PropertyFile {
   id: string,
   imageData: string | null,
   imageType: string | null,
+  title: string,
+  data: any[]
   label: string,
   type: string,
   values: string,
@@ -84,7 +86,9 @@ interface PropertyLocation {
 
 interface PropertyGeneralData {
   code: string;
-  adviser: string | number;
+  adviser: any;
+  owner: any;
+  ally: any;
   price: string;
   nomenclature: string;
   distributionComments: string;

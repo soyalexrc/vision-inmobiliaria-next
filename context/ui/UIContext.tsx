@@ -5,6 +5,10 @@ interface UIContextProps {
   adminMenuOpen: boolean;
   isAddingEntry: boolean;
   openSideMenu: () => void;
+  currentFile: string;
+  isPreviewModal: boolean;
+  openPreviewModal: (file: string) => void;
+  closePreviewModal: () => void;
   openAdminMenu: () => void;
   closeSideMenu: () => void;
   closeAdminMenu: () => void;
