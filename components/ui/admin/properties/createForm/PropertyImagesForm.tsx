@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/add";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import {DeleteButton} from "../../DeleteButton";
+import {UIContext} from "../../../../../context/ui";
 
 export function PropertyImagesForm() {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -22,6 +23,7 @@ export function PropertyImagesForm() {
   const {register} = useFormContext()
   const {fields, swap, append, remove} = useFieldArray({name: 'images'})
   const inputRef = React.useRef<any>(null);
+  const {openPreviewModal} = React.useContext(UIContext)
 
   async function uploadFile(data: any) {
     try {
@@ -88,6 +90,10 @@ export function PropertyImagesForm() {
   const handleDragStart = (index: any) => {
     setPrevIndex(index)
   };
+
+  function showPreview(file: string) {
+    openPreviewModal(file)
+  }
 
 
   return (
@@ -157,7 +163,7 @@ export function PropertyImagesForm() {
                       title='Se eliminara la imagen'
                       element='imagen.png'
                     />
-                    <IconButton>
+                    <IconButton onClick={() => showPreview(field.imageData)}>
                       <OpenInFullIcon sx={{color: '#fff'}}/>
                     </IconButton>
                   </Box>

@@ -7,7 +7,7 @@ import {
   Container,
   Grid,
   TextField,
-  useMediaQuery
+  useMediaQuery, MenuItem
 } from "@mui/material";
 import {useRouter} from "next/router";
 import {AdminLayout} from "../../../../../components/layouts";
@@ -19,7 +19,9 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import {FormatCommissionCalculation} from "../../../../../interfaces";
+import {FormatCommissionCalculation, User} from "../../../../../interfaces";
+import {AuthContext} from "../../../../../context/auth";
+import {RHFAutocomplete, RHFSelect} from "../../../../../components/ui/forms";
 
 const schema = yup.object({
   date_application: yup.string(),
@@ -54,12 +56,14 @@ export default function CommissionCalculationCreateFormat() {
   const router = useRouter();
   const {enqueueSnackbar} = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
-  const {register, handleSubmit, formState: {errors}} = useForm<FormatCommissionCalculation>({
+  const {register, handleSubmit, formState: {errors}, setValue, control} = useForm<FormatCommissionCalculation>({
     resolver: yupResolver(schema),
     mode: 'all'
   });
+  const {currentUser} = React.useContext(AuthContext)
   const onSubmit = handleSubmit((data) => createFormat(data));
   const [loading, setLoading] = React.useState<boolean>()
+  const [users, setUsers] = React.useState<User[]>([])
 
   async function createFormat(data: any) {
     const fullObj = {...data};
@@ -77,6 +81,28 @@ export default function CommissionCalculationCreateFormat() {
       setLoading(false);
     }
   }
+  async function getUsers() {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get('user/getAllData');
+      if (response.status === 200) {
+        setUsers(response.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  React.useEffect(() => {
+    setValue('date_application', new Date().toISOString().split('T')[0])
+    setValue('adviser_in_charge', currentUser)
+  }, [])
+
+  React.useEffect(() => {
+    getUsers()
+  }, [])
 
   return (
     <AdminLayout title='Crear nuevo formato de calculo de comision | Vision inmobiliaria'>
@@ -98,10 +124,10 @@ export default function CommissionCalculationCreateFormat() {
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Fecha de solicitud'
+                      type='date'
                       {...register('date_application')}
                       error={Boolean(errors?.date_application)}
-                      label='Fecha de solicitud'
+                      helperText='Fecha de solicitud'
                       variant="outlined"
                     />
                   </Grid>
@@ -142,20 +168,18 @@ export default function CommissionCalculationCreateFormat() {
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Asesor a cargo'
-                      {...register('adviser_in_charge')}
-                      error={Boolean(errors?.adviser_in_charge)}
-                      label='Asesor a cargo'
-                      variant="outlined"
+                  <Grid item xs={12} sx={{ mt: 2 }}>
+                    <RHFAutocomplete
+                      sx={{marginTop: '-1rem'}}
+                      name="adviser_in_charge"
+                      control={control}
+                      options={users}
+                      getOptionLabel={(option: any) => option.first_name || ''}
+                      defaultValue={null}
+                      label='Seleccionar'
                     />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.adviser_in_charge?.message}</Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
@@ -169,19 +193,19 @@ export default function CommissionCalculationCreateFormat() {
                                 sx={{color: '#FF0000'}}>{errors?.procedure?.message}</Typography>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Estatus (Culminado o en curso)'
-                      {...register('status')}
-                      error={Boolean(errors?.status)}
+                    <RHFSelect
+                      name='status'
                       label='Estatus (Culminado o en curso)'
-                      variant="outlined"
-                    />
+                      defaultValue={'EN CURSO'}
+                      control={control}
+                    >
+                      <MenuItem value='CULMINADO'>CULMINADO</MenuItem>
+                      <MenuItem value='EN CURSO'>EN CURSO</MenuItem>
+                    </RHFSelect>
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.status?.message}</Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
@@ -213,10 +237,10 @@ export default function CommissionCalculationCreateFormat() {
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Por cobrar}'
+                      placeholder='Por cobrar'
                       {...register('total_due')}
                       error={Boolean(errors?.total_due)}
-                      label='Por cobrar}'
+                      label='Por cobrar'
                       variant="outlined"
                     />
                     <Typography variant='caption' fontWeight='bold'

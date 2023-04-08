@@ -65,7 +65,6 @@ export function PropertiesTable({loading, properties, owners, reload}: Propertie
   const {currentUser} = React.useContext(AuthContext)
   const {enqueueSnackbar} = useSnackbar()
   const router = useRouter()
-  let pos = { top: 0, left: 0, x: 0, y: 0 };
 
 
   const handleChangePage = (event: any, newPage: any) => {

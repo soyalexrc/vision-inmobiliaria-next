@@ -12,7 +12,6 @@ import {UIContext} from "../../../../../context/ui";
 export function PreviewFileModal({close, open, data}: any) {
   const {closePreviewModal, isPreviewModal, currentFile} = React.useContext(UIContext)
 
-  console.log(isPreviewModal)
 
   return (
     <Dialog

@@ -59,7 +59,7 @@ export interface FormatCommissionCalculation {
   bill_number: number;
   property: string;
   client: string;
-  adviser_in_charge: string;
+  adviser_in_charge: any;
   procedure: string;
   status: StatusCommissionCalculation;
   price_procedure: number;

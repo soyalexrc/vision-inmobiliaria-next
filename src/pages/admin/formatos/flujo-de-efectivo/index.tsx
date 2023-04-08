@@ -119,28 +119,6 @@ export default function CashFlowPage() {
     }
   }
 
-  const handleSelectFilter = (param: string, value: string | null, type: string) => {
-    const filters = filtersData;
-    if (value === null) {
-      if (filters.length === 1) {
-        filters.pop();
-      }
-      const removed = filters.findIndex(x => x.value === value);
-      filters.splice(removed, 1);
-    } else if (filters?.filter(x => x.value === value).length > 0) {
-      const index = filters.findIndex(x => x.value === value);
-      filters.splice(index, 1);
-      filters.push({value, param, type});
-    } else {
-      filters.push({value, param, type});
-    }
-    setFiltersData((prevState: any) => ({
-      ...prevState,
-      filters,
-    }))
-  }
-
-
   async function getProperties() {
     try {
       setLoading(true);
@@ -197,6 +175,7 @@ export default function CashFlowPage() {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             largeScreen={largeScreen}
+            deleteData={deleteData}
             currentFiltersAmount={currentFiltersAmount}
             setFiltersDrawer={setFiltersDrawer}
           />

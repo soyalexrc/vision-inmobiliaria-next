@@ -62,14 +62,19 @@ export default function CreateNewPropertyPage() {
     // }
   }
 
+  const handleGoToPrevisualize = () => {
+    const valueToSend = JSON.stringify(methods.control._formValues);
+    sessionStorage.setItem('propertyToPrevisualize', valueToSend);
+    window.open(`/admin/propiedades/previsualizar/${router.query?.id}`, '_blank', 'popup=true')
+  }
+
 
   return (
     <AdminLayout title='Crear nueva propiedad | Vision inmobiliaria'>
       <>
         <Box display='flex' justifyContent='space-between' flexWrap='wrap' my={3}>
           <Typography variant='h2'>Registro de propiedad</Typography>
-          <Button fullWidth={!largeScreen} sx={{mt: !largeScreen ? 2 : 0}} onClick={() => {
-          }}
+          <Button fullWidth={!largeScreen} sx={{mt: !largeScreen ? 2 : 0}} onClick={handleGoToPrevisualize}
                   variant='outlined' color='primary'>Vista previa</Button>
         </Box>
         <FormProvider {...methods}>

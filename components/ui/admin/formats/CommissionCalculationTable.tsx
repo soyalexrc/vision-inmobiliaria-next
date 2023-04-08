@@ -27,7 +27,21 @@ interface PropertiesTableProps {
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
   color: theme.palette.common.black,
   fontWeight: 'bold',
+  webkitTouchCallout: 'none',
+  webkitUserSelect: 'none',
+  mozUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none'
 }));
+
+const TableItem = styled(TableCell)(({theme}: { theme: any }) => ({
+  webkitTouchCallout: 'none',
+  webkitUserSelect: 'none',
+  mozUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none'
+}));
+
 
 
 export function CommissionCalculationTable({loading, data, onDelete}: PropertiesTableProps) {
@@ -48,9 +62,44 @@ export function CommissionCalculationTable({loading, data, onDelete}: Properties
     return page === 1 ? 10 : page * 10
   }
 
+  React.useEffect(() => {
+    let pos = {top: 0, left: 0, x: 0, y: 0}
+    let table = document.getElementById('commission-table')!;
+    table.addEventListener('mousedown', mouseDownHandler)
+
+    function mouseDownHandler(e: any) {
+      pos = {
+        // The current scroll
+        left: table.scrollLeft!,
+        top: table.scrollTop!,
+        // Get the current mouse position
+        x: e.clientX,
+        y: e.clientY,
+      };
+
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
+    }
+
+    const mouseMoveHandler = function (e: any) {
+      // How far the mouse has been moved
+      const dx = e.clientX - pos.x;
+      const dy = e.clientY - pos.y;
+
+      // Scroll the element
+      table.scrollTop = pos.top - dy;
+      table.scrollLeft = pos.left - dx;
+    };
+
+    const mouseUpHandler = function () {
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+    };
+  }, [])
+
   return (
     <>
-      <TableContainer>
+      <TableContainer sx={{ width: '100%', overflowX: 'scroll', cursor: 'grab' }}  id='commission-table'>
         <Table width='100%'>
           <TableHead sx={{backgroundColor: '#eaeaea'}}>
             <TableRow>
@@ -95,130 +144,134 @@ export function CommissionCalculationTable({loading, data, onDelete}: Properties
                   }
                 }}
               >
-                <TableCell sx={{px: 5}}>{index + 1}</TableCell>
-                <TableCell>{row.date_application}</TableCell>
-                <TableCell>
+                <TableItem sx={{px: 5}}>{index + 1}</TableItem>
+                <TableItem>
+                  <Box width={100}>
+                    {row.date_application}
+                  </Box>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.bill_number}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.property}
                   </Box>
-                </TableCell>
-                <TableCell>{row.client}</TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>{row.client}</TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.adviser_in_charge}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={280} display='flex' justifyContent='center'>
                     {row.procedure}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={300} display='flex' justifyContent='center'>
                     {row.status}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={200} display='flex' justifyContent='center'>
                     {row.price_procedure}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={200} display='flex' justifyContent='center'>
                     {row.total_paid}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={200} display='flex' justifyContent='center'>
                     {row.total_due}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={200} display='flex' justifyContent='center'>
                     {row.price_per_stage_process}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.expenses}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.lawyer_calculation_20}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.lawyer_calculation_30}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.lawyer_calculation_40}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.adviser_calculation_10}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.company_profit}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.stationary}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.total_paid_lawyer}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.total_due_lawyer}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.payment_date_lawyer}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.status_lawyer}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={180}>
                     {row.total_paid_adviser}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={400}>
                     {row.total_due_adviser}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={400}>
                     {row.payment_date_adviser}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box width={400}>
                     {row.status_adviser}
                   </Box>
-                </TableCell>
-                <TableCell>
+                </TableItem>
+                <TableItem>
                   <Box display='flex' alignItems='center' justifyContent='center' width={200}>
                     <Tooltip title='Editar propiedad'>
                       <IconButton onClick={() => router.push(`/admin/formatos/calculo-de-comisiones/${row.id}`)}>
@@ -231,7 +284,7 @@ export function CommissionCalculationTable({loading, data, onDelete}: Properties
                       onClick={() => onDelete(row.id)}
                     />
                   </Box>
-                </TableCell>
+                </TableItem>
               </TableRow>
             ))}
           </TableBody>
@@ -240,7 +293,7 @@ export function CommissionCalculationTable({loading, data, onDelete}: Properties
       {
         (!data || data.length) < 1 &&
         <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
-          <Typography>No se encontradon propiedades...</Typography>
+          <Typography>No se encontro data...</Typography>
         </Box>
       }
       <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>

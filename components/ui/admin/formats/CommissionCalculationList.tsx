@@ -1,104 +1,33 @@
 import React from 'react';
 import {useRouter} from "next/router";
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from "@mui/icons-material/Add";
+import AddIcon from "@mui/icons-material/add";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import {
   Box,
   LinearProgress,
   Button,
   Grid,
-  Pagination,
   TextField,
   InputAdornment,
   IconButton,
   Badge,
-  useMediaQuery
-  , Typography
+  Typography
 } from "@mui/material";
 import {CommissionCalculationTable} from "./";
-import {ClientsFilterDrawer} from "./";
-import {FORMAT_COMMISSION_CALCULATION} from "../../../../utils/mock-data";
-import {axiosInstance} from "../../../../utils";
-import {useSnackbar} from "notistack";
-import {FormatCommissionCalculation} from "../../../../interfaces";
 
-export function CommissionCalculationList() {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const { enqueueSnackbar} = useSnackbar()
-  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const [searchTerm, setSearchTerm] = React.useState('')
+export function CommissionCalculationList(
+  {
+    data,
+    loading,
+    searchTerm,
+    setSearchTerm,
+    largeScreen,
+    deleteData,
+    currentFiltersAmount,
+    setFiltersDrawer
+  }: any) {
   const router = useRouter();
-  const [filtersDrawer, setFiltersDrawer] = React.useState(false);
-  const [data, setData] = React.useState<FormatCommissionCalculation[]>([]);
-  const [filtersData, setFiltersData] = React.useState<any>({
-    filters: [],
-    pageNumber: 1,
-    pageSize: 5
-  });
-
-
-  async function getProperties() {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get('format/commission/getAllData');
-      if (response.status === 200) {
-        setData(response.data)
-      }
-    } catch (err) {
-      enqueueSnackbar(`Error ${JSON.stringify(err)}`, { variant: 'error' })
-    } finally {
-      setLoading(false);
-    }
-  }
-
-
-
-  const applyFilters = () => {
-    setFiltersDrawer(false);
-    getProperties()
-  }
-
-  React.useEffect(() => {
-    getProperties();
-  }, [])
-
-  const handleSelectFilter = (code: any, value: any) => {
-    const filters = [...filtersData.filters];
-    if (value === null) {
-      if (filters.length === 1) {
-        filters.pop();
-      }
-      const removed = filters.findIndex(x => x.parameter === code);
-      filters.splice(removed, 1);
-    } else if (filters.filter(x => x.parameter === code)[0]) {
-      const index = filters.findIndex(x => x.parameter === code);
-      filters.splice(index, 1);
-      filters.push(value);
-    } else {
-      filters.push(value);
-    }
-    setFiltersData((prevState: any) => ({
-      ...prevState,
-      filters,
-    }))
-  }
-
-  async function deleteData(id: number | string) {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.delete(`format/commission/deleteData?id=${id}`);
-      if (response.status === 200) {
-        enqueueSnackbar('Se elimino el aliado con exito!', {variant: 'success'} )
-        getProperties()
-      }
-    } catch (e) {
-      enqueueSnackbar('Error!', {variant: 'error'} )
-    } finally {
-      setLoading(false);
-    }
-  }
-
 
   return (
     <Box sx={{width: '100%', p: 2}}>
@@ -107,7 +36,7 @@ export function CommissionCalculationList() {
           <Typography variant='h2'>Formato de calculo de comisiones</Typography>
           <Typography sx={{mx: 2}} color='gray'>{data.length} registros</Typography>
         </Box>
-        <Grid container sx={{ mb: 2 }}>
+        <Grid container sx={{mb: 2}}>
           <Grid item xs={12} md={6}>
             <TextField
               value={searchTerm}
@@ -129,13 +58,14 @@ export function CommissionCalculationList() {
           </Grid>
           <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/formatos/calculo-de-comisiones/crear')}>
+                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}}
+                    onClick={() => router.push('/admin/formatos/calculo-de-comisiones/crear')}>
               <AddIcon/>
               registro
             </Button>
           </Grid>
         </Grid>
-        <Badge badgeContent={filtersData.filters.length} color="primary">
+        <Badge badgeContent={currentFiltersAmount} color="primary">
           <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)}
                   sx={{display: 'flex'}}>
             <FilterAltIcon/>
@@ -148,16 +78,8 @@ export function CommissionCalculationList() {
         {loading && <LinearProgress/>}
       </Box>
       {/*  Properties Table*/}
-      <CommissionCalculationTable data={data} loading={loading}  onDelete={(id) => deleteData(id)}  />
+      <CommissionCalculationTable data={data} loading={loading} onDelete={(id) => deleteData(id)}/>
 
-      <ClientsFilterDrawer
-        open={filtersDrawer}
-        filters={filtersData.filters}
-        applyFilters={() => applyFilters()}
-        closeAction={() => setFiltersDrawer(false)}
-        selectFilter={handleSelectFilter}
-        largeScreen={largeScreen}
-      />
     </Box>
   )
 }
