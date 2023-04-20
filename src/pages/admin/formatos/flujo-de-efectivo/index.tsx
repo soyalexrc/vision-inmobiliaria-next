@@ -25,9 +25,12 @@ import {useForm} from "react-hook-form";
 import {MONTHS} from "../../../../../utils";
 import {TYPE_OF_PROPERTY, SERVICE_OPTIONS} from "../../../../../utils/properties";
 import {RHFAutocomplete} from "../../../../../components/ui/forms";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 interface FormValues {
   month: filterData,
+  dateOne: filterData,
+  dateTwo: filterData,
   service: filterData,
   type_of_property: filterData,
   transaction_type: filterData,
@@ -53,10 +56,20 @@ export default function CashFlowPage() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [currentFiltersAmount, setCurrentFiltersAmount] = React.useState<number>(0);
   const {enqueueSnackbar} = useSnackbar()
-  const { register, handleSubmit, control, getValues } = useForm<FormValues>({
+  const { register, handleSubmit, setValue, watch , control, getValues } = useForm<FormValues>({
     defaultValues: {
       month: {
         param: 'month',
+        value: '',
+        type: 'EQUAL'
+      },
+      dateOne: {
+        param: 'dateOne',
+        value: '',
+        type: 'EQUAL'
+      },
+      dateTwo: {
+        param: 'dateTwo',
         value: '',
         type: 'EQUAL'
       },
@@ -87,12 +100,18 @@ export default function CashFlowPage() {
       },
     }
   });
+  const watchedMonth = watch('month')
+  const watchedDateOne = watch('dateOne')
+  const watchedDateTwo = watch('dateTwo')
+
   const onSubmit = handleSubmit((data) => applyFilters(data));
 
   const applyFilters = (data: FormValues) => {
+    console.log(data)
     const rawFilters = {
       filters: Object.values(data).filter((ftr: filterData) => ftr.value )
     };
+    console.log(rawFilters)
     evaluateQtyFilters()
     if (rawFilters.filters.length < 1) {
       getProperties()
@@ -154,9 +173,15 @@ export default function CashFlowPage() {
     setFiltersDrawer(false)
   }
 
+  function clearDates() {
+    setValue('dateOne.value', '');
+    setValue('dateTwo.value', '');
+  }
+
   React.useEffect(() => {
     getProperties();
   }, [])
+
 
   return (
     <AdminLayout title='Formato de flujo de efectivo | Vision inmobiliaria'>
@@ -205,6 +230,7 @@ export default function CashFlowPage() {
                     <Typography variant='h6'>Busqueda por mes</Typography>
                     <RHFAutocomplete
                       name="month.value"
+                      disabled={watchedDateTwo.value || watchedDateOne.value}
                       control={control}
                       options={MONTHS}
                       getOptionLabel={(option: any) => option || ''}
@@ -212,7 +238,33 @@ export default function CashFlowPage() {
                       label='Filtrar por mes'
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}></Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
+                      <Typography variant='h6'>Busqueda por fecha</Typography>
+                      <IconButton sx={{p: 0}} onClick={clearDates}>
+                        <HighlightOffIcon />
+                      </IconButton>
+                    </Box>
+                    <Box display='flex'>
+                      <TextField
+                          color='secondary'
+                          fullWidth
+                          disabled={Boolean(watchedMonth.value)}
+                          type='date'
+                          {...register('dateOne.value')}
+                          variant="outlined"
+                      />
+                      <Typography variant='h1' sx={{mx: 1}}>-</Typography>
+                      <TextField
+                          color='secondary'
+                          fullWidth
+                          disabled={Boolean(watchedMonth.value)}
+                          type='date'
+                          {...register('dateTwo.value')}
+                          variant="outlined"
+                      />
+                    </Box>
+                  </Grid>
 
                   <Grid item xs={12} md={6}>
                     <Typography variant='h6'>Tipo de servicio</Typography>

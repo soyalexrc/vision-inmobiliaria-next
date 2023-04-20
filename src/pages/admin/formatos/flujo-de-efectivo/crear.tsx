@@ -13,7 +13,7 @@ import {useRouter} from "next/router";
 import {AdminLayout} from "../../../../../components/layouts";
 import NextLink from 'next/link';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import {axiosInstance, parseCookie, dateFunctions} from "../../../../../utils";
+import {axiosInstance, parseCookie, dateFunctions, MONTHS} from "../../../../../utils";
 import {useSnackbar} from "notistack";
 import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
@@ -35,8 +35,8 @@ const schema = yup.object({
   type_of_service: yup.string().required('Este campo es requerido'),
   transaction_type: yup.string().required('Este campo es requerido'),
   amount: yup.string().required('Este campo es requerido'),
-  total_due: yup.string().required('Este campo es requerido'),
-  pending_to_collect: yup.string().required('Este campo es requerido'),
+  total_due: yup.string(),
+  pending_to_collect: yup.string(),
   way_to_pay: yup.string().required('Este campo es requerido'),
   entity: yup.string().required('Este campo es requerido'),
   location: yup.string().required('Este campo es requerido'),
@@ -59,10 +59,12 @@ export default function CashFlowCreateFormat() {
       canon: '',
       guarantee: '',
       contract: '',
-      tax_payer: ''
+      tax_payer: '',
+      amount: ''
     }
   });
   const watchedService = watch('service');
+  const watchedTransactionType = watch('transaction_type')
   const onSubmit = handleSubmit((data) => createFormat(data));
   const [options, setOptions] = React.useState<string[]>([])
   const [loading, setLoading] = React.useState<boolean>()
@@ -101,6 +103,19 @@ export default function CashFlowCreateFormat() {
     if (watchedService === 'Mantenimiento de Equipos Domésticos e Industriales') setOptions(SERVICE_TYPE_OPTIONS.maintenance)
   }, [watchedService])
 
+  React.useEffect(() => {
+    if (watchedTransactionType === 'Cuenta por cobrar' || watchedTransactionType === 'Cuenta por pagar') {
+      // if (watchedService)
+      setValue('pending_to_collect', '');
+      setValue('total_due', '');
+      setValue('amount', '0')
+    }
+  }, [watchedTransactionType])
+
+  function showAmountField() {
+    return watchedTransactionType === 'Ingreso' ||  watchedTransactionType === 'Egreso' ||  watchedTransactionType === 'Interbancaria'
+  }
+
 
   return (
     <AdminLayout title='Crear nuevo formato de flujo de efectivo | Vision inmobiliaria'>
@@ -119,18 +134,21 @@ export default function CashFlowCreateFormat() {
                 <Typography variant='h5' align='center' color='secondary.light'>Datos de formato</Typography>
                 <Grid container spacing={2} sx={{mt: 3}}>
                   <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Mes'
-                      disabled
-                      {...register('month')}
-                      error={Boolean(errors?.month)}
-                      label='Mes'
-                      variant="outlined"
-                    />
+                    <RHFSelect
+                      name='month'
+                      label='Tipo de operacion'
+                      defaultValue={''}
+                      control={control}
+                    >
+                      {
+                        MONTHS.map((month: string) => (
+                            <MenuItem value={month} key={month}>{month}</MenuItem>
+                        ))
+                      }
+
+                    </RHFSelect>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} sx={{ marginTop: '.7rem' }}>
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
@@ -284,7 +302,7 @@ export default function CashFlowCreateFormat() {
                     <RHFAutocomplete
                       name="transaction_type"
                       control={control}
-                      options={['Ingreso', 'Egreso', 'Ingreso a cuenta de terceros', 'Interbancaria']}
+                      options={['Ingreso', 'Egreso', 'Cuenta por pagar', 'Cuenta por cobrar', 'Interbancaria']}
                       getOptionLabel={(option: any) => option || ''}
                       defaultValue={null}
                       label='Tipo de transaccion'
@@ -320,7 +338,7 @@ export default function CashFlowCreateFormat() {
                     <RHFAutocomplete
                       name="entity"
                       control={control}
-                      options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Venezuela', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería']}
+                      options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Venezuela', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería', 'Ingreso a cuenta de terceros']}
                       getOptionLabel={(option: any) => option || ''}
                       defaultValue={null}
                       label='Entidad'
@@ -328,19 +346,23 @@ export default function CashFlowCreateFormat() {
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.entity?.message}</Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Monto'
-                      {...register('amount')}
-                      error={Boolean(errors?.amount)}
-                      label='Monto'
-                      variant="outlined"
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.amount?.message}</Typography>
-                  </Grid>
+                  {
+                    showAmountField() &&
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                            fullWidth
+                            sx={{mt: 2, borderColor: 'red'}}
+                            placeholder='Monto'
+                            {...register('amount')}
+                            error={Boolean(errors?.amount)}
+                            label='Monto'
+                            variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.amount?.message}</Typography>
+                      </Grid>
+                  }
+
 
                   <Grid item xs={12} md={6}>
                     <TextField
@@ -356,33 +378,70 @@ export default function CashFlowCreateFormat() {
                                 sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
                   </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Retencion para pagos'
-                      {...register('total_due')}
-                      error={Boolean(errors?.total_due)}
-                      label='Retencion para pagos'
-                      variant="outlined"
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
-                  </Grid>
+                  {
+                     watchedTransactionType === 'Ingreso' &&
+                      <>
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                              fullWidth
+                              sx={{mt: 2, borderColor: 'red'}}
+                              placeholder='Monto por pagar'
+                              {...register('total_due')}
+                              error={Boolean(errors?.total_due)}
+                              label='Monto por pagar'
+                              variant="outlined"
+                          />
+                          <Typography variant='caption' fontWeight='bold'
+                                      sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
+                        </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Por cobrar'
-                      {...register('pending_to_collect')}
-                      error={Boolean(errors?.pending_to_collect)}
-                      label='Por cobrar'
-                      variant="outlined"
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
-                  </Grid>
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                              fullWidth
+                              sx={{mt: 2, borderColor: 'red'}}
+                              placeholder='Monto por cobrar'
+                              {...register('pending_to_collect')}
+                              error={Boolean(errors?.pending_to_collect)}
+                              label='Monto por cobrar'
+                              variant="outlined"
+                          />
+                          <Typography variant='caption' fontWeight='bold'
+                                      sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
+                        </Grid>
+                      </>
+                  }
+                  {
+                    watchedTransactionType === 'Cuenta por cobrar' &&
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                            fullWidth
+                            sx={{mt: 2, borderColor: 'red'}}
+                            placeholder='Monto por cobrar'
+                            {...register('pending_to_collect')}
+                            error={Boolean(errors?.pending_to_collect)}
+                            label='Monto por cobrar'
+                            variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
+                      </Grid>
+                  }
+                  {
+                    watchedTransactionType === 'Cuenta por pagar' &&
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                            fullWidth
+                            sx={{mt: 2, borderColor: 'red'}}
+                            placeholder='Monto por pagar'
+                            {...register('total_due')}
+                            error={Boolean(errors?.total_due)}
+                            label='Monto por pagar'
+                            variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
+                      </Grid>
+                  }
 
                   <Grid item xs={12}>
                     <TextField

@@ -48,18 +48,18 @@ export default function CreateNewPropertyPage() {
     fullObj.property.owner = fullObj.property.owner.id;
     fullObj.property.adviser = fullObj.property.adviser.id;
     console.log(fullObj)
-    // try {
-    //   setLoading(true);
-    //   const response = await axiosInstance.post('property/addNewData', data);
-    //   if (response.status === 200) {
-    //     enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
-    //     router.back()
-    //   }
-    // } catch (err) {
-    //   enqueueSnackbar("Ocurrio un error", {variant: 'error'})
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post('property/addNewData', data);
+      if (response.status === 200) {
+        enqueueSnackbar('Se registro la propiedad con exito!', {variant: 'success'})
+        router.back()
+      }
+    } catch (err) {
+      enqueueSnackbar("Ocurrio un error", {variant: 'error'})
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleGoToPrevisualize = () => {
