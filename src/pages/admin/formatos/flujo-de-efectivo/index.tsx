@@ -29,13 +29,14 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 interface FormValues {
   month: filterData,
-  dateOne: filterData,
-  dateTwo: filterData,
+  dateOne?: filterData,
+  dateTwo?: filterData,
   service: filterData,
   type_of_property: filterData,
   transaction_type: filterData,
   currency: filterData,
   way_to_pay: filterData
+  date?: filterData
 }
 
 type filterData = {
@@ -56,7 +57,7 @@ export default function CashFlowPage() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [currentFiltersAmount, setCurrentFiltersAmount] = React.useState<number>(0);
   const {enqueueSnackbar} = useSnackbar()
-  const { register, handleSubmit, setValue, watch , control, getValues } = useForm<FormValues>({
+  const { register, handleSubmit, unregister, setValue, watch , control, getValues } = useForm<FormValues>({
     defaultValues: {
       month: {
         param: 'month',
@@ -107,9 +108,18 @@ export default function CashFlowPage() {
   const onSubmit = handleSubmit((data) => applyFilters(data));
 
   const applyFilters = (data: FormValues) => {
-    console.log(data)
+    const obj = {...data}
+    if (obj.dateOne?.value && obj.dateTwo?.value) {
+      obj.date = {
+        param: 'date',
+        value: `${obj.dateOne?.value}#${obj.dateTwo?.value}`,
+        type: 'RANGE'
+      }
+    }
+    delete obj.dateOne
+    delete obj.dateTwo
     const rawFilters = {
-      filters: Object.values(data).filter((ftr: filterData) => ftr.value )
+      filters: Object.values(obj).filter((ftr: filterData) => ftr.value )
     };
     console.log(rawFilters)
     evaluateQtyFilters()
@@ -230,7 +240,7 @@ export default function CashFlowPage() {
                     <Typography variant='h6'>Busqueda por mes</Typography>
                     <RHFAutocomplete
                       name="month.value"
-                      disabled={watchedDateTwo.value || watchedDateOne.value}
+                      disabled={watchedDateTwo?.value || watchedDateOne?.value}
                       control={control}
                       options={MONTHS}
                       getOptionLabel={(option: any) => option || ''}

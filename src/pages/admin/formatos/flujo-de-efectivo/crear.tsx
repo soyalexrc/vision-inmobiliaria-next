@@ -19,22 +19,21 @@ import {GetServerSideProps} from "next";
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import {FormatCashFlow} from "../../../../../interfaces";
+import {FormatCashFlow, Owner} from "../../../../../interfaces";
 import {RHFAutocomplete, RHFSelect} from "../../../../../components/ui/forms";
 import {TYPE_OF_PROPERTY, SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS} from "../../../../../utils/properties";
 
 
 const schema = yup.object({
   month: yup.string().required('Este campo es requerido'),
-  client: yup.string().required('Este campo es requerido'),
+  client: yup.object().required('Este campo es requerido'),
   date: yup.string().required('Este campo es requerido'),
-  property: yup.string().required('Este campo es requerido'),
-  type_of_property: yup.string().required('Este campo es requerido'),
+  property: yup.object().required('Este campo es requerido'),
   reason: yup.string().required('Este campo es requerido'),
   service: yup.string().required('Este campo es requerido'),
   type_of_service: yup.string().required('Este campo es requerido'),
   transaction_type: yup.string().required('Este campo es requerido'),
-  amount: yup.string().required('Este campo es requerido'),
+  amount: yup.string(),
   total_due: yup.string(),
   pending_to_collect: yup.string(),
   way_to_pay: yup.string().required('Este campo es requerido'),
@@ -68,8 +67,17 @@ export default function CashFlowCreateFormat() {
   const onSubmit = handleSubmit((data) => createFormat(data));
   const [options, setOptions] = React.useState<string[]>([])
   const [loading, setLoading] = React.useState<boolean>()
+  const [owners, setOwners] = React.useState<Owner[]>([])
+  const [properties, setProperties] = React.useState<Owner[]>([])
+  const [filtersData, setFiltersData] = React.useState<any>({
+    filters: [],
+    pageNumber: 1,
+    pageSize: 10
+  });
 
   async function createFormat(data: any) {
+    console.log(data);
+    return
     const fullObj = {...data};
     fullObj.createdAt = new Date();
     try {
@@ -108,13 +116,43 @@ export default function CashFlowCreateFormat() {
       // if (watchedService)
       setValue('pending_to_collect', '');
       setValue('total_due', '');
-      setValue('amount', '0')
+      setValue('amount', '')
     }
   }, [watchedTransactionType])
 
   function showAmountField() {
     return watchedTransactionType === 'Ingreso' ||  watchedTransactionType === 'Egreso' ||  watchedTransactionType === 'Interbancaria'
   }
+
+  async function getOwners() {
+    try {
+      const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
+      setOwners(response.data)
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
+    }
+  }
+
+  async function getProperties(data: any) {
+    try {
+      const response = await axiosInstance.post('/property/getallDataFilter', data);
+      if (response.status === 200) {
+        console.log(response.data.data);
+        setProperties(response.data.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
+    }
+  }
+
+
+  React.useEffect(() => {
+    getOwners()
+  }, [])
+
+  React.useEffect(() => {
+    getProperties(filtersData);
+  }, [])
 
 
   return (
@@ -160,27 +198,15 @@ export default function CashFlowCreateFormat() {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
+                    <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
                     <RHFAutocomplete
-                      name="type_of_property"
+                      name="property"
                       control={control}
-                      options={TYPE_OF_PROPERTY}
-                      getOptionLabel={(option: any) => option || ''}
+                      options={properties}
+                      getOptionLabel={(option: any) =>`${option.code} - ${option.propertyType} - ${option.operationType}`  || ''}
                       defaultValue={null}
-                      label='Tipo de Inmueble'
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.type_of_property?.message}</Typography>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Inmueble'
-                      {...register('property')}
-                      error={Boolean(errors?.property)}
-                      label='Inmueble'
-                      variant="outlined"
+                      label='Seleccionar propiedad'
                     />
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.property?.message}</Typography>
@@ -281,14 +307,14 @@ export default function CashFlowCreateFormat() {
                     </Grid>
                   }
                   <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Cliente'
-                      {...register('client')}
-                      error={Boolean(errors?.client)}
-                      label='Cliente'
-                      variant="outlined"
+                    <Typography fontWeight='bold' >Seleccionar cliente</Typography>
+                    <RHFAutocomplete
+                        name="client"
+                        control={control}
+                        options={owners}
+                        getOptionLabel={(option: any) => option.first_name || ''}
+                        defaultValue={null}
+                        label='Seleccionar cliente'
                     />
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>

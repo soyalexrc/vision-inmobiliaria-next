@@ -175,16 +175,38 @@ export function CashFlowList({
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
-          <CashFlowTable data={getDataByIncome(data)} loading={loading} onDelete={(id) => deleteData(id)} />
+          <CashFlowTable
+              data={getDataByIncome(data)}
+              loading={loading}
+              onDelete={(id) => deleteData(id)}
+          />
         </TabPanel>
         <TabPanel value={tab} index={1}>
-          <CashFlowTable data={getDataByOutcome(data)} loading={loading} onDelete={(id) => deleteData(id)} />
+          <CashFlowTable
+            data={getDataByOutcome(data)}
+            loading={loading}
+            showPendingToCollect={false}
+            showTotalDue={false}
+            onDelete={(id) => deleteData(id)}
+          />
         </TabPanel>
         <TabPanel value={tab} index={2}>
-          <CashFlowTable data={getDataByTotalDue(data)} loading={loading} onDelete={(id) => deleteData(id)} />
+          <CashFlowTable
+            data={getDataByTotalDue(data)}
+            loading={loading}
+            showPendingToCollect={false}
+            showAmount={false}
+            onDelete={(id) => deleteData(id)}
+          />
         </TabPanel>
         <TabPanel value={tab} index={3}>
-          <CashFlowTable data={getDataByPendingToCollect(data)} loading={loading} onDelete={(id) => deleteData(id)} />
+          <CashFlowTable
+            data={getDataByPendingToCollect(data)}
+            loading={loading}
+            showTotalDue={false}
+            showAmount={false}
+            onDelete={(id) => deleteData(id)}
+          />
         </TabPanel>
 
         </Box>

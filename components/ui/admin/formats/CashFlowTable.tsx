@@ -22,6 +22,10 @@ interface CashFlowTableProps {
   loading: boolean;
   data: FormatCashFlow[];
   onDelete: (id: number | string) => void;
+  showPendingToCollect?: boolean;
+  showTotalDue?: boolean;
+  showAmount?: boolean;
+
 }
 
 const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
@@ -30,7 +34,7 @@ const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
 }));
 
 
-export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
+export function CashFlowTable({loading, data, onDelete, showPendingToCollect = true, showTotalDue = true, showAmount = true}: CashFlowTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
   const router = useRouter()
   const [page, setPage] = React.useState<number>(1);
@@ -58,10 +62,10 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
               <TableHeaderItem>Inmueble </TableHeaderItem>
               <TableHeaderItem>Persona / Cliente</TableHeaderItem>
               <TableHeaderItem>Moneda</TableHeaderItem>
-              <TableHeaderItem align='center'>Monto </TableHeaderItem>
+              {showAmount && <TableHeaderItem align='center'>Monto </TableHeaderItem>}
               <TableHeaderItem>Concepto</TableHeaderItem>
-              <TableHeaderItem align='center'>Por Pagar</TableHeaderItem>
-              <TableHeaderItem align='center'>Por Cobrar</TableHeaderItem>
+              {showTotalDue && <TableHeaderItem align='center'>Por Pagar</TableHeaderItem>}
+              {showPendingToCollect && <TableHeaderItem align='center'>Por Cobrar</TableHeaderItem>}
               <TableHeaderItem align='center'>Acciones</TableHeaderItem>
             </TableRow>
           </TableHead>
@@ -97,9 +101,12 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                 </TableCell>
 
 
-                <TableCell align='center'>
-                    {row.amount}
-                </TableCell>
+                {
+                  showAmount &&
+                    <TableCell align='center'>
+                      {row.amount}
+                    </TableCell>
+                }
 
                 <TableCell align='center'>
                   <Box width={150}>
@@ -107,13 +114,19 @@ export function CashFlowTable({loading, data, onDelete}: CashFlowTableProps) {
                   </Box>
                 </TableCell>
 
-                <TableCell align='center'>
-                    {row.total_due}
-                </TableCell>
+                {
+                  showTotalDue &&
+                    <TableCell align='center'>
+                      {row.total_due}
+                    </TableCell>
+                }
 
-                <TableCell align='center'>
-                    {row.pending_to_collect}
-                </TableCell>
+                {
+                  showPendingToCollect &&
+                    <TableCell align='center'>
+                      {row.pending_to_collect}
+                    </TableCell>
+                }
 
 
 
