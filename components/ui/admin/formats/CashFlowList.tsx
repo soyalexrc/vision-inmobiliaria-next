@@ -1,6 +1,5 @@
 import React from 'react';
 import {useRouter} from "next/router";
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from "@mui/icons-material/add";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import {
@@ -8,27 +7,17 @@ import {
   LinearProgress,
   Button,
   Grid,
-  Pagination,
-  TextField,
-  InputAdornment,
-  IconButton,
   Badge,
-  useMediaQuery
-  , Typography, Tabs, Tab, Paper
+  Typography, Tabs, Tab, Paper
 } from "@mui/material";
 import {CashFlowTable} from "./";
-import {ClientsFilterDrawer} from "./";
-import {FormatCashFlow} from "../../../../interfaces";
-import {axiosInstance, formatPrice} from "../../../../utils";
-import {useSnackbar} from "notistack";
+import {formatPrice} from "../../../../utils";
 import {a11yProps, TabPanel} from "../../tabs";
 
 export function CashFlowList({
   data,
   loading,
   deleteData,
-  searchTerm,
-  setSearchTerm,
   largeScreen,
   currentFiltersAmount,
   setFiltersDrawer,
