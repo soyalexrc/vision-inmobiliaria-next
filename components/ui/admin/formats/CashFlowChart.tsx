@@ -164,13 +164,15 @@ export function CashFlowChart({data, loading}: CashFlowChartProps) {
       {name: 'Ingreso', value: 0, color: '#0088FE'},
       {name: 'Egreso', value: 0, color: '#00C49F'},
       {name: 'Interbancaria', value: 0, color: '#FFBB28'},
-      {name: 'Ingreso a cuenta de terceros', value: 0, color: '#FF8042'},
+      {name: 'Cuenta por pagar', value: 0, color: '#FF8042'},
+      {name: 'Cuenta por cobrar', value: 0, color: '#FF8192'},
     ];
     for (let i = 0; i < data.length; i++) {
       if (data[i].transaction_type === 'Egreso') pieData[0].value++
       if (data[i].transaction_type === 'Ingreso') pieData[1].value++
       if (data[i].transaction_type === 'Interbancaria') pieData[2].value++
-      if (data[i].transaction_type === 'Ingreso a cuenta de terceros') pieData[3].value++
+      if (data[i].transaction_type === 'Cuenta por pagar') pieData[3].value++
+      if (data[i].transaction_type === 'Cuenta por cobrar') pieData[4].value++
     }
 
     return pieData
