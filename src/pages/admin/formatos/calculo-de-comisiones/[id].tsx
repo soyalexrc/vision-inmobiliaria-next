@@ -24,6 +24,7 @@ import {FormatCommissionCalculation} from "../../../../../interfaces";
 const schema = yup.object({
   month: yup.string(),
   client: yup.string(),
+  adviser_in_charge: yup.string(),
   date: yup.string(),
   property: yup.string(),
   reason: yup.string(),
@@ -218,8 +219,6 @@ export default function UpdateCommissionCalculationFormat() {
                           label='Asesor a cargo'
                           variant="outlined"
                         />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.adviser_in_charge?.message}</Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
                         <TextField
