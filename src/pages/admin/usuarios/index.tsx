@@ -5,7 +5,7 @@ import {parseCookie, axiosInstance} from "../../../../utils";
 import axios from 'axios';
 import {Box, Button, Grid, IconButton, InputAdornment, TextField, Typography, useMediaQuery} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/add";
+import AddIcon from "@mui/icons-material/Add";
 import {UsersTable} from "../../../../components/ui/admin/users";
 import {useSnackbar} from "notistack";
 import {useRouter} from "next/router";

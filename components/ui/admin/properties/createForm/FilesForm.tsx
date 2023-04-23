@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material'
 import {v4 as uuidv4} from 'uuid';
-import AddIcon from '@mui/icons-material/add'
+import AddIcon from '@mui/icons-material/Add'
 import ArticleIcon from "@mui/icons-material/Article";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AttachFileIcon from '@mui/icons-material/AttachFile';

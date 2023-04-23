@@ -10,7 +10,7 @@ import {
   Grid,
   IconButton
 } from '@mui/material'
-import AddIcon from "@mui/icons-material/add";
+import AddIcon from "@mui/icons-material/Add";
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import {DeleteButton} from "../../DeleteButton";

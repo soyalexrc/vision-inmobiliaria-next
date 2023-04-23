@@ -1,6 +1,6 @@
 import React from 'react';
 import {useRouter} from "next/router";
-import AddIcon from "@mui/icons-material/add";
+import AddIcon from "@mui/icons-material/Add";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import {
   Box,

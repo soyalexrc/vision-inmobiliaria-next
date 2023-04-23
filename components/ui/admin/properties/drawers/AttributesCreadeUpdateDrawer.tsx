@@ -15,7 +15,7 @@ import {
   Button
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close'
-import AddIcon from '@mui/icons-material/add'
+import AddIcon from '@mui/icons-material/Add'
 import {UIContext} from "../../../../../context/ui";
 import {DeleteButton} from "../../DeleteButton";
 import * as yup from "yup";
