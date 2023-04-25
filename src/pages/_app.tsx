@@ -8,14 +8,14 @@ import {AuthProvider} from "../../context/auth";
 import {ConfirmationProvider} from "../../context/confirmation";
 import Script from "next/script";
 
-import {Inter} from '@next/font/google'
+// import {Inter} from '@next/font/google'
 
 const propertyId = '63bdab1947425128790cb8cf';
 const tawkId = '1gmee8ng9';
 
-const inter = Inter({
-  subsets: ['latin']
-})
+// const inter = Inter({
+//   subsets: ['latin']
+// })
 
 export default function App({Component, pageProps}: AppProps) {
   return (
@@ -25,9 +25,9 @@ export default function App({Component, pageProps}: AppProps) {
           <UIProvider>
             <ThemeProvider theme={lightTheme}>
               <CssBaseline/>
-                <main className={inter.className}>
+                {/*<main className={inter.className}>*/}
                 <Component {...pageProps} />
-                </main>
+                {/*</main>*/}
               <Script id="tawk" strategy="lazyOnload">
                 {`
                   var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
