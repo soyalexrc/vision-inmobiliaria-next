@@ -88,7 +88,7 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
 
                 <TableCell>
                   <Box width={200}>
-                    {row.property}
+                    { row.property && row.property.id ? `${row.property.code} - ${row.property.property_type} - ${row.property.operation_type}` : 'not set'}
                   </Box>
                 </TableCell>
 
@@ -133,7 +133,7 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
                 <TableCell>
                   <Box display='flex' alignItems='center' justifyContent='center' width={100}>
                     <Tooltip title='Editar propiedad'>
-                      <IconButton onClick={() => router.push(`/admin/formatos/flujo-de-efectivo/${row.id}`)}>
+                      <IconButton onClick={() => router.push(`/admin/formatos/flujo-de-caja/${row.id}`)}>
                         <EditIcon/>
                       </IconButton>
                     </Tooltip>

@@ -22,20 +22,21 @@ import * as yup from "yup";
 import {FormatCashFlow} from "../../../../../interfaces/formats";
 import {SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS, TYPE_OF_PROPERTY} from "../../../../../utils/properties";
 import {RHFAutocomplete} from "../../../../../components/ui/forms";
+import {Owner} from "../../../../../interfaces";
+import {useDropzone} from "react-dropzone";
 
 const schema = yup.object({
   month: yup.string().required('Este campo es requerido'),
   client: yup.string().required('Este campo es requerido'),
   date: yup.string().required('Este campo es requerido'),
-  property: yup.string().required('Este campo es requerido'),
-  type_of_property: yup.string().required('Este campo es requerido'),
+  property: yup.object().required('Este campo es requerido'),
   reason: yup.string().required('Este campo es requerido'),
   service: yup.string().required('Este campo es requerido'),
   type_of_service: yup.string().required('Este campo es requerido'),
   transaction_type: yup.string().required('Este campo es requerido'),
-  amount: yup.string().required('Este campo es requerido'),
-  total_due: yup.string().required('Este campo es requerido'),
-  pending_to_collect: yup.string().required('Este campo es requerido'),
+  amount: yup.string(),
+  total_due: yup.string(),
+  pending_to_collect: yup.string(),
   way_to_pay: yup.string().required('Este campo es requerido'),
   entity: yup.string().required('Este campo es requerido'),
   location: yup.string().required('Este campo es requerido'),
@@ -58,11 +59,38 @@ export default function UpdateCashFlowFormat() {
   });
 
   const watchedService = watch('service')
+  const watchedTransactionType = watch('transaction_type')
   const onSubmit = handleSubmit((data) => editFormat(data));
   const [loading, setLoading] = React.useState<boolean>()
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   const [options, setOptions] = React.useState<any[]>([])
+  const [properties, setProperties] = React.useState<Owner[]>([])
+  const [filtersData, setFiltersData] = React.useState<any>({
+    filters: [],
+    pageNumber: 1,
+    pageSize: 10
+  });
 
+  const [myFiles, setMyFiles] = React.useState<any>([])
+
+  const handleDrop = React.useCallback((acceptedFiles: any) => {
+    setMyFiles([...myFiles, ...acceptedFiles])
+  }, [myFiles])
+
+  const {getRootProps, getInputProps,} = useDropzone({
+    onDrop: handleDrop
+  });
+
+
+  const removeFile = (file: any) => () => {
+    const newFiles = [...myFiles]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    setMyFiles(newFiles)
+  }
+
+  const removeAll = () => {
+    setMyFiles([])
+  }
   async function getFormatById() {
     try {
       const response = await axiosInstance.get(`format/cashFlow/getById?id=${id}`);
@@ -153,19 +181,49 @@ export default function UpdateCashFlowFormat() {
     if (watchedService === 'Mantenimiento de Equipos Domésticos e Industriales') setOptions(SERVICE_TYPE_OPTIONS.maintenance)
   }, [watchedService])
 
+  React.useEffect(() => {
+    if (watchedTransactionType === 'Cuenta por cobrar' || watchedTransactionType === 'Cuenta por pagar') {
+      // if (watchedService)
+      setValue('pending_to_collect', '');
+      setValue('total_due', '');
+      setValue('amount', '')
+    }
+  }, [watchedTransactionType])
+
+  function showAmountField() {
+    return watchedTransactionType === 'Ingreso' ||  watchedTransactionType === 'Egreso' ||  watchedTransactionType === 'Interbancaria'
+  }
+
+  async function getProperties(data: any) {
+    try {
+      const response = await axiosInstance.post('/property/getallDataFilter', data);
+      if (response.status === 200) {
+        console.log(response.data.data);
+        setProperties(response.data.data)
+      }
+    } catch (err) {
+      enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
+    }
+  }
+
+  React.useEffect(() => {
+    getProperties(filtersData);
+  }, [])
+
+
 
   return (
-    <AdminLayout title='Crear nuevo formato de flujo de efectivo | Vision inmobiliaria'>
+    <AdminLayout title='Crear nuevo formato de flujo de caja | Vision inmobiliaria'>
       <Box>
         {loadingData && <p>Cargando...</p>}
         {
           !loadingData &&
           <>
             {/*TODO hacer un componente de breadcrumb*/}
-            <Box display='flex' alignItems='center'>
-              <NextLink href='/admin/formatos/flujo-de-efectivo'>Formatos de cliente</NextLink>
+            <Box display='flex' alignItems='center' mb={2}>
+              <NextLink href='/admin/formatos/flujo-de-caja'>Formatos de flujo de caja</NextLink>
               <ArrowRightIcon sx={{color: 'gray'}}/>
-              <Typography> Editar formato de flujo de efectivo</Typography>
+              <Typography> Editar formato de flujo de caja</Typography>
             </Box>
             <form onSubmit={onSubmit}>
               <Grid container spacing={2}>
@@ -198,30 +256,18 @@ export default function UpdateCashFlowFormat() {
                           variant="outlined"
                         />
                       </Grid>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12}>
+                        <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
                         <RHFAutocomplete
-                          name="type_of_property"
-                          control={control}
-                          options={TYPE_OF_PROPERTY}
-                          getOptionLabel={(option: any) => option || ''}
-                          defaultValue={null}
-                          label='Tipo de Inmueble'
+                            name="property"
+                            control={control}
+                            options={properties}
+                            getOptionLabel={(option: any) =>`${option.code} - ${option.propertyType} - ${option.operationType}`  || ''}
+                            defaultValue={null}
+                            label='Seleccionar propiedad'
                         />
                         <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.type_of_property?.message}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Inmueble'
-                          {...register('property')}
-                          error={Boolean(errors?.property)}
-                          label='Inmueble'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.property?.message}</Typography>
+                                    sx={{color: '#FF0000'}}>Este campo es requerido!</Typography>
                       </Grid>
                       <Grid item xs={12} >
                         <TextField
@@ -376,7 +422,7 @@ export default function UpdateCashFlowFormat() {
                         <RHFAutocomplete
                           name="entity"
                           control={control}
-                          options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Venezuela', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería']}
+                          options={['Banco Nacional de Crédito (BNC)', 'Banesco Panamá', 'Banesco Venezuela', 'Banco Nacional de Terceros', 'Oficina Paseo La Granja', 'Oficina San Carlos', 'Tesorería', 'Ingreso a cuenta de terceros']}
                           getOptionLabel={(option: any) => option || ''}
                           defaultValue={null}
                           label='Entidad'
@@ -384,19 +430,23 @@ export default function UpdateCashFlowFormat() {
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.entity?.message}</Typography>
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Monto'
-                          {...register('amount')}
-                          error={Boolean(errors?.amount)}
-                          label='Monto'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.amount?.message}</Typography>
-                      </Grid>
+                      {
+                          showAmountField() &&
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                sx={{mt: 2, borderColor: 'red'}}
+                                placeholder='Monto'
+                                {...register('amount')}
+                                error={Boolean(errors?.amount)}
+                                label='Monto'
+                                variant="outlined"
+                            />
+                            <Typography variant='caption' fontWeight='bold'
+                                        sx={{color: '#FF0000'}}>{errors?.amount?.message}</Typography>
+                          </Grid>
+                      }
+
 
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -412,33 +462,70 @@ export default function UpdateCashFlowFormat() {
                                     sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
                       </Grid>
 
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Retencion para pagos'
-                          {...register('total_due')}
-                          error={Boolean(errors?.total_due)}
-                          label='Retencion para pagos'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
-                      </Grid>
+                      {
+                          watchedTransactionType === 'Ingreso' &&
+                          <>
+                            <Grid item xs={12} md={6}>
+                              <TextField
+                                  fullWidth
+                                  sx={{mt: 2, borderColor: 'red'}}
+                                  placeholder='Monto por pagar'
+                                  {...register('total_due')}
+                                  error={Boolean(errors?.total_due)}
+                                  label='Monto por pagar'
+                                  variant="outlined"
+                              />
+                              <Typography variant='caption' fontWeight='bold'
+                                          sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
+                            </Grid>
 
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          sx={{mt: 2, borderColor: 'red'}}
-                          placeholder='Por cobrar'
-                          {...register('pending_to_collect')}
-                          error={Boolean(errors?.pending_to_collect)}
-                          label='Por cobrar'
-                          variant="outlined"
-                        />
-                        <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
-                      </Grid>
+                            <Grid item xs={12} md={6}>
+                              <TextField
+                                  fullWidth
+                                  sx={{mt: 2, borderColor: 'red'}}
+                                  placeholder='Monto por cobrar'
+                                  {...register('pending_to_collect')}
+                                  error={Boolean(errors?.pending_to_collect)}
+                                  label='Monto por cobrar'
+                                  variant="outlined"
+                              />
+                              <Typography variant='caption' fontWeight='bold'
+                                          sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
+                            </Grid>
+                          </>
+                      }
+                      {
+                          watchedTransactionType === 'Cuenta por cobrar' &&
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                sx={{mt: 2, borderColor: 'red'}}
+                                placeholder='Monto por cobrar'
+                                {...register('pending_to_collect')}
+                                error={Boolean(errors?.pending_to_collect)}
+                                label='Monto por cobrar'
+                                variant="outlined"
+                            />
+                            <Typography variant='caption' fontWeight='bold'
+                                        sx={{color: '#FF0000'}}>{errors?.pending_to_collect?.message}</Typography>
+                          </Grid>
+                      }
+                      {
+                          watchedTransactionType === 'Cuenta por pagar' &&
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                sx={{mt: 2, borderColor: 'red'}}
+                                placeholder='Monto por pagar'
+                                {...register('total_due')}
+                                error={Boolean(errors?.total_due)}
+                                label='Monto por pagar'
+                                variant="outlined"
+                            />
+                            <Typography variant='caption' fontWeight='bold'
+                                        sx={{color: '#FF0000'}}>{errors?.total_due?.message}</Typography>
+                          </Grid>
+                      }
 
                       <Grid item xs={12}>
                         <TextField
@@ -455,6 +542,31 @@ export default function UpdateCashFlowFormat() {
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>{errors?.observations?.message}</Typography>
                       </Grid>
+
+                      {/*<Grid item xs={12}>*/}
+                      {/*  <Box {...getRootProps({className: 'dropzone'})} p={5} sx={{border: '2px dashed gray'}} my={3}>*/}
+                      {/*    <input {...getInputProps()} />*/}
+                      {/*    <Box display='flex' alignItems='center' justifyContent='center'>*/}
+                      {/*      <FilePresentIcon/>*/}
+                      {/*      <Typography align='center' fontWeight='bold' color='gray'>Adjuntar evidencias</Typography>*/}
+                      {/*    </Box>*/}
+                      {/*  </Box>*/}
+
+                      {/*  {*/}
+                      {/*      myFiles.length > 0 && myFiles.map((file: any) => (*/}
+                      {/*          <Box key={file.path}>*/}
+                      {/*            <Box display='flex' alignItems='center' justifyContent='space-between'>*/}
+                      {/*              <Box  display='flex' alignItems='center'>*/}
+                      {/*                <InsertDriveFileIcon sx={{mx: 2}}/>*/}
+                      {/*                <Typography>{file.path} </Typography>*/}
+                      {/*              </Box>*/}
+                      {/*              <IconButton onClick={removeFile(file)}><DeleteForeverIcon color='error'/></IconButton>*/}
+                      {/*            </Box>*/}
+                      {/*            <Divider />*/}
+                      {/*          </Box>*/}
+                      {/*      ))*/}
+                      {/*  }*/}
+                      {/*</Grid>*/}
 
                     </Grid>
                   </Container>
@@ -482,7 +594,7 @@ export default function UpdateCashFlowFormat() {
                         type='submit'
                         variant='contained'
                       >
-                        Registrar formato de flujo de efectivo
+                        Registrar formato de flujo de caja
                       </Button>
                     </Grid>
                   </Container>

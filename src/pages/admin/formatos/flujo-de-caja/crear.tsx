@@ -22,11 +22,12 @@ import * as yup from "yup";
 import {FormatCashFlow, Owner} from "../../../../../interfaces";
 import {RHFAutocomplete, RHFSelect} from "../../../../../components/ui/forms";
 import {TYPE_OF_PROPERTY, SERVICE_OPTIONS, SERVICE_TYPE_OPTIONS} from "../../../../../utils/properties";
+import {useDropzone} from "react-dropzone";
 
 
 const schema = yup.object({
   month: yup.string().required('Este campo es requerido'),
-  client: yup.object().required('Este campo es requerido'),
+  client: yup.string().required('Este campo es requerido'),
   date: yup.string().required('Este campo es requerido'),
   property: yup.object().required('Este campo es requerido'),
   reason: yup.string().required('Este campo es requerido'),
@@ -67,17 +68,35 @@ export default function CashFlowCreateFormat() {
   const onSubmit = handleSubmit((data) => createFormat(data));
   const [options, setOptions] = React.useState<string[]>([])
   const [loading, setLoading] = React.useState<boolean>()
-  const [owners, setOwners] = React.useState<Owner[]>([])
   const [properties, setProperties] = React.useState<Owner[]>([])
   const [filtersData, setFiltersData] = React.useState<any>({
     filters: [],
     pageNumber: 1,
     pageSize: 10
   });
+  const [myFiles, setMyFiles] = React.useState<any>([])
+
+  const handleDrop = React.useCallback((acceptedFiles: any) => {
+    setMyFiles([...myFiles, ...acceptedFiles])
+  }, [myFiles])
+
+  const {getRootProps, getInputProps,} = useDropzone({
+    onDrop: handleDrop
+  });
+
+
+  const removeFile = (file: any) => () => {
+    const newFiles = [...myFiles]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    setMyFiles(newFiles)
+  }
+
+  const removeAll = () => {
+    setMyFiles([])
+  }
 
   async function createFormat(data: any) {
     console.log(data);
-    return
     const fullObj = {...data};
     fullObj.createdAt = new Date();
     try {
@@ -124,14 +143,7 @@ export default function CashFlowCreateFormat() {
     return watchedTransactionType === 'Ingreso' ||  watchedTransactionType === 'Egreso' ||  watchedTransactionType === 'Interbancaria'
   }
 
-  async function getOwners() {
-    try {
-      const response = await axiosInstance.get('/owner/getAllData?type=Propietarios');
-      setOwners(response.data)
-    } catch (err) {
-      enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})
-    }
-  }
+
 
   async function getProperties(data: any) {
     try {
@@ -145,24 +157,19 @@ export default function CashFlowCreateFormat() {
     }
   }
 
-
-  React.useEffect(() => {
-    getOwners()
-  }, [])
-
   React.useEffect(() => {
     getProperties(filtersData);
   }, [])
 
 
   return (
-    <AdminLayout title='Crear nuevo formato de flujo de efectivo | Vision inmobiliaria'>
+    <AdminLayout title='Crear nuevo formato de flujo de caja | Vision inmobiliaria'>
       <>
         {/*TODO hacer un componente de breadcrumb*/}
         <Box display='flex' alignItems='center'>
-          <NextLink href='/admin/formatos/flujo-de-efectivo'>Formatos de flujo de efectivo</NextLink>
+          <NextLink href='/admin/formatos/flujo-de-caja'>Formatos de flujo de caja</NextLink>
           <ArrowRightIcon sx={{color: 'gray'}}/>
-          <Typography> Crear nuevo formato de flujo de efectivo</Typography>
+          <Typography> Crear nuevo formato de flujo de caja</Typography>
         </Box>
         <form onSubmit={onSubmit}>
           <Grid container spacing={2}>
@@ -209,7 +216,9 @@ export default function CashFlowCreateFormat() {
                       label='Seleccionar propiedad'
                     />
                     <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.property?.message}</Typography>
+                                sx={{color: '#FF0000'}}>
+                      Este campo es requerido!
+                    </Typography>
                   </Grid>
                   <Grid item xs={12} >
                     <TextField
@@ -307,14 +316,15 @@ export default function CashFlowCreateFormat() {
                     </Grid>
                   }
                   <Grid item xs={12} md={6}>
-                    <Typography fontWeight='bold' >Seleccionar cliente</Typography>
-                    <RHFAutocomplete
-                        name="client"
-                        control={control}
-                        options={owners}
-                        getOptionLabel={(option: any) => option.first_name || ''}
-                        defaultValue={null}
-                        label='Seleccionar cliente'
+                    <Typography fontWeight='bold' >Cliente</Typography>
+                    <TextField
+                        fullWidth
+                        sx={{mt: 2, borderColor: 'red'}}
+                        placeholder='Cliente'
+                        {...register('client')}
+                        error={Boolean(errors?.client)}
+                        label='Cliente'
+                        variant="outlined"
                     />
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>
@@ -485,6 +495,31 @@ export default function CashFlowCreateFormat() {
                                 sx={{color: '#FF0000'}}>{errors?.observations?.message}</Typography>
                   </Grid>
 
+                  {/*<Grid item xs={12}>*/}
+                  {/*  <Box {...getRootProps({className: 'dropzone'})} p={5} sx={{border: '2px dashed gray'}} my={3}>*/}
+                  {/*    <input {...getInputProps()} />*/}
+                  {/*    <Box display='flex' alignItems='center' justifyContent='center'>*/}
+                  {/*      <FilePresentIcon/>*/}
+                  {/*      <Typography align='center' fontWeight='bold' color='gray'>Adjuntar evidencias</Typography>*/}
+                  {/*    </Box>*/}
+                  {/*  </Box>*/}
+
+                  {/*  {*/}
+                  {/*      myFiles.length > 0 && myFiles.map((file: any) => (*/}
+                  {/*          <Box key={file.path}>*/}
+                  {/*            <Box display='flex' alignItems='center' justifyContent='space-between'>*/}
+                  {/*              <Box  display='flex' alignItems='center'>*/}
+                  {/*                <InsertDriveFileIcon sx={{mx: 2}}/>*/}
+                  {/*                <Typography>{file.path} </Typography>*/}
+                  {/*              </Box>*/}
+                  {/*              <IconButton onClick={removeFile(file)}><DeleteForeverIcon color='error'/></IconButton>*/}
+                  {/*            </Box>*/}
+                  {/*            <Divider />*/}
+                  {/*          </Box>*/}
+                  {/*      ))*/}
+                  {/*  }*/}
+                  {/*</Grid>*/}
+
                 </Grid>
               </Container>
               <Divider sx={{borderWidth: '2px', my: 3}}/>
@@ -511,7 +546,7 @@ export default function CashFlowCreateFormat() {
                     type='submit'
                     variant='contained'
                   >
-                    Registrar formato de flujo de efectivo
+                    Registrar formato de flujo de caja
                   </Button>
                 </Grid>
               </Container>

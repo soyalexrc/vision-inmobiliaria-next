@@ -7,7 +7,6 @@ import {
   Button, Divider,
   Grid,
   IconButton,
-  InputAdornment,
   Tab,
   Tabs,
   TextField,
@@ -26,6 +25,7 @@ import {MONTHS} from "../../../../../utils";
 import {TYPE_OF_PROPERTY, SERVICE_OPTIONS} from "../../../../../utils/properties";
 import {RHFAutocomplete} from "../../../../../components/ui/forms";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 
 interface FormValues {
   month: filterData,
@@ -48,7 +48,7 @@ type filterData = {
 export default function CashFlowPage() {
   const [tab, setTab] = React.useState<number>(0)
   const [searchTerm, setSearchTerm] = React.useState('')
-
+  const [sampleDate, setSampleDate] = React.useState<any>([null, null])
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
   const [data, setData] = React.useState<FormatCashFlow[]>([]);
   const [chartData, setChartData] = React.useState<FormatCashFlow[]>([]);
@@ -193,11 +193,15 @@ export default function CashFlowPage() {
   }, [])
 
 
+
+
+
+
   return (
-    <AdminLayout title='Formato de flujo de efectivo | Vision inmobiliaria'>
+    <AdminLayout title='Formato de flujo de caja | Vision inmobiliaria'>
       <>
         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-          <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de efectivo" centered>
+          <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de caja" centered>
             <Tab label="Tabla" {...a11yProps(0)} />
             <Tab label="Grafico" {...a11yProps(1)} />
           </Tabs>
@@ -268,7 +272,7 @@ export default function CashFlowPage() {
                       <TextField
                           color='secondary'
                           fullWidth
-                          disabled={Boolean(watchedMonth.value)}
+                          disabled={Boolean(watchedMonth.value || !watchedDateOne?.value)}
                           type='date'
                           {...register('dateTwo.value')}
                           variant="outlined"

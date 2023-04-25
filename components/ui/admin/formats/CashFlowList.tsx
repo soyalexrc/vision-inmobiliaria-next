@@ -84,11 +84,11 @@ export function CashFlowList({
       <Box p={2}>
         <Box display='fllex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
           <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
-            <Typography variant='h2'>Formato de flujo de efectivo</Typography>
+            <Typography variant='h2'>Formato de flujo de caja</Typography>
             <Typography sx={{mx: 2}} color='gray'>{data.length} registros</Typography>
           </Box>
           <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                  sx={{display: 'flex', mt: !largeScreen ? 2 : 0, height: 40}} onClick={() => router.push('/admin/formatos/flujo-de-efectivo/crear')}>
+                  sx={{display: 'flex', mt: !largeScreen ? 2 : 0, height: 40}} onClick={() => router.push('/admin/formatos/flujo-de-caja/crear')}>
             <AddIcon/>
             registro
           </Button>
@@ -156,7 +156,7 @@ export function CashFlowList({
         </Box>
         {/*  Properties Table*/}
         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-          <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de efectivo" centered>
+          <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de caja" centered>
             <Tab label="Ingresos" {...a11yProps(0)} />
             <Tab label="Egresos" {...a11yProps(1)} />
             <Tab label="Cuentas por pagar" {...a11yProps(2)} />

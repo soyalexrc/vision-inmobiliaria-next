@@ -40,7 +40,7 @@ export interface FormatCashFlow {
   tax_payer?: string;
   contract?: string;
   date: string;
-  property: string;
+  property: any;
   reason: string;
   service: string;
   transaction_type: TransactionTypeOption,
