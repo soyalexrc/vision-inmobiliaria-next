@@ -217,7 +217,7 @@ export default function CashFlowCreateFormat() {
                     />
                     <Typography variant='caption' fontWeight='bold'
                                 sx={{color: '#FF0000'}}>
-                      Este campo es requerido!
+                      {errors.property && 'Este campo es requerido!'}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} >

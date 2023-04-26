@@ -267,7 +267,9 @@ export default function UpdateCashFlowFormat() {
                             label='Seleccionar propiedad'
                         />
                         <Typography variant='caption' fontWeight='bold'
-                                    sx={{color: '#FF0000'}}>Este campo es requerido!</Typography>
+                                    sx={{color: '#FF0000'}}>
+                          {errors.property && 'Este campo es requerido!'}
+                        </Typography>
                       </Grid>
                       <Grid item xs={12} >
                         <TextField

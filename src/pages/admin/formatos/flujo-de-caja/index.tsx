@@ -291,28 +291,7 @@ export default function CashFlowPage() {
                       label='Filtrar por tipo de servicio'
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Typography variant='h6'>Tipo de inmueble</Typography>
-                    <RHFAutocomplete
-                      name="type_of_property.value"
-                      control={control}
-                      options={TYPE_OF_PROPERTY}
-                      getOptionLabel={(option: any) => option || ''}
-                      defaultValue={null}
-                      label='Filtrar por tipo de inmueble'
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Typography variant='h6'>Tipo de transaccion</Typography>
-                    <RHFAutocomplete
-                      name="transaction_type.value"
-                      control={control}
-                      options={['Ingreso', 'Egreso', 'Ingreso a cuenta de terceros', 'Interbancaria']}
-                      getOptionLabel={(option: any) => option || ''}
-                      defaultValue={null}
-                      label='Filtrar por tipo de transaccion'
-                    />
-                  </Grid>
+
                   <Grid item xs={12} md={6}>
                     <Typography variant='h6'>Tipo de moneda</Typography>
                     <RHFAutocomplete
