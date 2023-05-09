@@ -17,6 +17,13 @@ export const lightTheme = createTheme({
         // elevation: 0
       },
       styleOverrides: {}
+    },
+    MuiTabs: {
+      styleOverrides: {
+        flexContainer: {
+          marginTop: '1rem'
+        }
+      }
     }
   }
 })

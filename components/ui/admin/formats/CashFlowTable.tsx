@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import {useRouter} from "next/router";
 import {DeleteButton} from "../DeleteButton";
 import {FormatCashFlow} from "../../../../interfaces";
+import {NumericFormat} from "react-number-format";
 
 interface CashFlowTableProps {
   loading: boolean;
@@ -104,7 +105,8 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
                 {
                   showAmount &&
                     <TableCell align='center'>
-                      {row.amount}
+                      <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={row.amount} prefix={row.currency} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
+
                     </TableCell>
                 }
 
@@ -117,14 +119,14 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
                 {
                   showTotalDue &&
                     <TableCell align='center'>
-                      {row.total_due}
+                      <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={row.total_due} prefix={row.currency} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
                     </TableCell>
                 }
 
                 {
                   showPendingToCollect &&
                     <TableCell align='center'>
-                      {row.pending_to_collect}
+                      <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={row.pending_to_collect} prefix={row.currency} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
                     </TableCell>
                 }
 

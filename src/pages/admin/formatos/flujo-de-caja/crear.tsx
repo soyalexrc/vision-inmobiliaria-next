@@ -2,13 +2,17 @@ import React from 'react';
 import {
   Box,
   Button,
+  Switch,
   Divider,
   Typography,
+  FormControlLabel,
   Container,
   Grid,
+  InputAdornment,
   TextField,
   useMediaQuery, MenuItem
 } from "@mui/material";
+import {NumericFormat} from 'react-number-format';
 import {useRouter} from "next/router";
 import {AdminLayout} from "../../../../../components/layouts";
 import NextLink from 'next/link';
@@ -16,7 +20,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {axiosInstance, parseCookie, dateFunctions, MONTHS} from "../../../../../utils";
 import {useSnackbar} from "notistack";
 import {GetServerSideProps} from "next";
-import {useForm} from 'react-hook-form';
+import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {FormatCashFlow, Owner} from "../../../../../interfaces";
@@ -31,16 +35,16 @@ const schema = yup.object({
   date: yup.string().required('Este campo es requerido'),
   property: yup.object().required('Este campo es requerido'),
   reason: yup.string().required('Este campo es requerido'),
-  service: yup.string().required('Este campo es requerido'),
-  type_of_service: yup.string().required('Este campo es requerido'),
+  service: yup.string(),
+  type_of_service: yup.string(),
   transaction_type: yup.string().required('Este campo es requerido'),
   amount: yup.string(),
   total_due: yup.string(),
   pending_to_collect: yup.string(),
   way_to_pay: yup.string().required('Este campo es requerido'),
   entity: yup.string().required('Este campo es requerido'),
-  location: yup.string().required('Este campo es requerido'),
-  observations: yup.string().required('Este campo es requerido'),
+  location: yup.string(),
+  observations: yup.string(),
   canon: yup.string(),
   guarantee: yup.string(),
   contract: yup.string(),
@@ -64,6 +68,9 @@ export default function CashFlowCreateFormat() {
     }
   });
   const watchedService = watch('service');
+  const watchedCurrency = watch('currency');
+  const watchedProperty = watch('property');
+  const watchedAmount = watch('amount')
   const watchedTransactionType = watch('transaction_type')
   const onSubmit = handleSubmit((data) => createFormat(data));
   const [options, setOptions] = React.useState<string[]>([])
@@ -75,6 +82,8 @@ export default function CashFlowCreateFormat() {
     pageSize: 10
   });
   const [myFiles, setMyFiles] = React.useState<any>([])
+  const [hasProperty, setHasProperty] = React.useState<boolean>(true)
+  const [customAmount, setCustomAmount] = React.useState<string>('')
 
   const handleDrop = React.useCallback((acceptedFiles: any) => {
     setMyFiles([...myFiles, ...acceptedFiles])
@@ -96,7 +105,6 @@ export default function CashFlowCreateFormat() {
   }
 
   async function createFormat(data: any) {
-    console.log(data);
     const fullObj = {...data};
     fullObj.createdAt = new Date();
     try {
@@ -120,14 +128,43 @@ export default function CashFlowCreateFormat() {
 
   React.useEffect(() => {
     setValue('type_of_service', '')
-    if (watchedService === 'Inmobiliario') setOptions(SERVICE_TYPE_OPTIONS.inmueble)
-    if (watchedService === 'Legal') setOptions(SERVICE_TYPE_OPTIONS.legal)
-    if (watchedService === 'Contabilidad') setOptions(SERVICE_TYPE_OPTIONS.accounting)
-    if (watchedService === 'Administración Inmuebles Alquilados') setOptions(SERVICE_TYPE_OPTIONS.propertiesAdministration)
-    if (watchedService === 'Limpieza (Ama de Llaves)') setOptions(SERVICE_TYPE_OPTIONS.cleanliness)
-    if (watchedService === 'Administración Empresas') setOptions(SERVICE_TYPE_OPTIONS.companyAdministration)
-    if (watchedService === 'Remodelación/ Acondicionamiento de Espacios') setOptions(SERVICE_TYPE_OPTIONS.remodeling)
-    if (watchedService === 'Mantenimiento de Equipos Domésticos e Industriales') setOptions(SERVICE_TYPE_OPTIONS.maintenance)
+    switch(watchedService) {
+      case 'Inmobiliario':
+        setOptions(SERVICE_TYPE_OPTIONS.inmueble)
+        break;
+
+      case 'Legal':
+        setOptions(SERVICE_TYPE_OPTIONS.legal)
+        break;
+
+      case 'Contabilidad':
+        setOptions(SERVICE_TYPE_OPTIONS.accounting)
+        break;
+
+      case 'Administración Inmuebles Alquilados':
+        setOptions(SERVICE_TYPE_OPTIONS.propertiesAdministration)
+        break;
+
+      case 'Limpieza (Ama de Llaves)':
+        setOptions(SERVICE_TYPE_OPTIONS.cleanliness)
+        break;
+
+      case 'Administración Empresas':
+        setOptions(SERVICE_TYPE_OPTIONS.companyAdministration)
+        break;
+
+      case 'Remodelación/ Acondicionamiento de Espacios':
+        setOptions(SERVICE_TYPE_OPTIONS.remodeling)
+        break;
+
+      case 'Mantenimiento de Equipos Domésticos e Industriales':
+        setOptions(SERVICE_TYPE_OPTIONS.maintenance)
+        break;
+
+      default:
+        return;
+    }
+
   }, [watchedService])
 
   React.useEffect(() => {
@@ -149,7 +186,6 @@ export default function CashFlowCreateFormat() {
     try {
       const response = await axiosInstance.post('/property/getallDataFilter', data);
       if (response.status === 200) {
-        console.log(response.data.data);
         setProperties(response.data.data)
       }
     } catch (err) {
@@ -160,6 +196,25 @@ export default function CashFlowCreateFormat() {
   React.useEffect(() => {
     getProperties(filtersData);
   }, [])
+
+  React.useEffect(() => {
+    setValue('property', null)
+    setValue('location', '')
+  }, [hasProperty])
+
+  const formatCurrency = (value: any) => {
+    if (!value) return '';
+    const amount = parseFloat(value).toFixed(2);
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  const parseCurrency = (value: string) => {
+    if (!value) return 0;
+    const cleanedValue = value.replace(/[^0-9.-]/g, '');
+    return parseFloat(cleanedValue).toString();
+  }
+
+
 
 
   return (
@@ -181,7 +236,7 @@ export default function CashFlowCreateFormat() {
                   <Grid item xs={12} md={6}>
                     <RHFSelect
                       name='month'
-                      label='Tipo de operacion'
+                      label='Mes'
                       defaultValue={''}
                       control={control}
                     >
@@ -205,33 +260,54 @@ export default function CashFlowCreateFormat() {
                       variant="outlined"
                     />
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography fontWeight='bold' >Persona</Typography>
+                    <TextField
+                        fullWidth
+                        sx={{mt: 2, borderColor: 'red'}}
+                        placeholder='Cliente'
+                        {...register('client')}
+                        error={Boolean(errors?.client)}
+                        label='Persona'
+                        variant="outlined"
+                    />
+                    <Typography variant='caption' fontWeight='bold'
+                                sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>
+                  </Grid>
                   <Grid item xs={12}>
-                    <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
+                    <Divider sx={{ my: 2 }} />
+                  </Grid>
+                  <Grid item xs={12}>
+
+                    <Box display='flex' justifyContent='space-between'>
+                      <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
+                      <FormControlLabel
+                          control={
+                            <Switch size='small' checked={hasProperty} onChange={() => setHasProperty(!hasProperty)}  />
+                          }
+                          label={hasProperty ? 'Aplica' : 'No aplica'}
+                      />
+                    </Box>
                     <RHFAutocomplete
+                      disabled={!hasProperty}
                       name="property"
                       control={control}
                       options={properties}
-                      getOptionLabel={(option: any) =>`${option.code} - ${option.propertyType} - ${option.operationType}`  || ''}
+                      getOptionLabel={(option: any) =>`${option.code} - ${option.propertyType}`  || ''}
                       defaultValue={null}
                       label='Seleccionar propiedad'
                     />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>
-                      {errors.property && 'Este campo es requerido!'}
-                    </Typography>
                   </Grid>
                   <Grid item xs={12} >
                     <TextField
                       fullWidth
                       sx={{mt: 2, borderColor: 'red'}}
                       placeholder='Ubicacion'
+                      disabled={!watchedProperty}
                       {...register('location')}
-                      error={Boolean(errors?.location)}
                       label='Ubicacion'
                       variant="outlined"
                     />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.location?.message}</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <Divider sx={{ my: 2 }} />
@@ -258,8 +334,6 @@ export default function CashFlowCreateFormat() {
                       defaultValue={null}
                       label='Tipo de servicio'
                     />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.type_of_service?.message}</Typography>
                   </Grid>
                   {
                     watchedService === 'Administración Inmuebles Alquilados' &&
@@ -315,20 +389,19 @@ export default function CashFlowCreateFormat() {
                       />
                     </Grid>
                   }
-                  <Grid item xs={12} md={6}>
-                    <Typography fontWeight='bold' >Cliente</Typography>
-                    <TextField
-                        fullWidth
-                        sx={{mt: 2, borderColor: 'red'}}
-                        placeholder='Cliente'
-                        {...register('client')}
-                        error={Boolean(errors?.client)}
-                        label='Cliente'
-                        variant="outlined"
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.client?.message}</Typography>
-                  </Grid>
+                    <Grid item xs={12} md={6}>
+                        <TextField
+                            fullWidth
+                            sx={{mt: 2, borderColor: 'red'}}
+                            placeholder='Concepto'
+                            {...register('reason')}
+                            error={Boolean(errors?.reason)}
+                            label='Concepto'
+                            variant="outlined"
+                        />
+                        <Typography variant='caption' fontWeight='bold'
+                                    sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
+                    </Grid>
                   <Grid item xs={12}>
                     <Divider sx={{ my: 2 }} />
                   </Grid>
@@ -350,7 +423,7 @@ export default function CashFlowCreateFormat() {
                     <RHFAutocomplete
                       name="currency"
                       control={control}
-                      options={['$ Estados Unidos', 'Bs', 'Euros',]}
+                      options={['$', 'Bs', '€',]}
                       getOptionLabel={(option: any) => option || ''}
                       defaultValue={null}
                       label='Moneda'
@@ -400,20 +473,6 @@ export default function CashFlowCreateFormat() {
                   }
 
 
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      sx={{mt: 2, borderColor: 'red'}}
-                      placeholder='Concepto'
-                      {...register('reason')}
-                      error={Boolean(errors?.reason)}
-                      label='Concepto'
-                      variant="outlined"
-                    />
-                    <Typography variant='caption' fontWeight='bold'
-                                sx={{color: '#FF0000'}}>{errors?.reason?.message}</Typography>
-                  </Grid>
-
                   {
                      watchedTransactionType === 'Ingreso' &&
                       <>
@@ -421,10 +480,10 @@ export default function CashFlowCreateFormat() {
                           <TextField
                               fullWidth
                               sx={{mt: 2, borderColor: 'red'}}
-                              placeholder='Monto por pagar'
+                              placeholder='Por pagar'
                               {...register('total_due')}
                               error={Boolean(errors?.total_due)}
-                              label='Monto por pagar'
+                              label='Por pagar'
                               variant="outlined"
                           />
                           <Typography variant='caption' fontWeight='bold'
@@ -435,10 +494,11 @@ export default function CashFlowCreateFormat() {
                           <TextField
                               fullWidth
                               sx={{mt: 2, borderColor: 'red'}}
-                              placeholder='Monto por cobrar'
+                              placeholder='Por cobrar'
                               {...register('pending_to_collect')}
                               error={Boolean(errors?.pending_to_collect)}
-                              label='Monto por cobrar'
+                              label='Por cobrar'
+
                               variant="outlined"
                           />
                           <Typography variant='caption' fontWeight='bold'

@@ -7,7 +7,7 @@ import {
   Container,
   Grid,
   TextField,
-  useMediaQuery
+  useMediaQuery, FormControlLabel, Switch
 } from "@mui/material";
 import {useRouter} from "next/router";
 import {AdminLayout} from "../../../../../components/layouts";
@@ -29,7 +29,7 @@ const schema = yup.object({
   month: yup.string().required('Este campo es requerido'),
   client: yup.string().required('Este campo es requerido'),
   date: yup.string().required('Este campo es requerido'),
-  property: yup.object().required('Este campo es requerido'),
+  property: yup.object(),
   reason: yup.string().required('Este campo es requerido'),
   service: yup.string().required('Este campo es requerido'),
   type_of_service: yup.string().required('Este campo es requerido'),
@@ -39,8 +39,8 @@ const schema = yup.object({
   pending_to_collect: yup.string(),
   way_to_pay: yup.string().required('Este campo es requerido'),
   entity: yup.string().required('Este campo es requerido'),
-  location: yup.string().required('Este campo es requerido'),
-  observations: yup.string().required('Este campo es requerido'),
+  location: yup.string(),
+  observations: yup.string(),
   canon: yup.string(),
   guarantee: yup.string(),
   contract: yup.string(),
@@ -59,8 +59,10 @@ export default function UpdateCashFlowFormat() {
   });
 
   const watchedService = watch('service')
+  const watchedProperty = watch('property');
   const watchedTransactionType = watch('transaction_type')
   const onSubmit = handleSubmit((data) => editFormat(data));
+  const [hasProperty, setHasProperty] = React.useState<boolean>(true)
   const [loading, setLoading] = React.useState<boolean>()
   const [loadingData, setLoadingData] = React.useState<boolean>(true)
   const [options, setOptions] = React.useState<any[]>([])
@@ -211,6 +213,13 @@ export default function UpdateCashFlowFormat() {
   }, [])
 
 
+  React.useEffect(() => {
+    setValue('property', {})
+    setValue('location', '')
+  }, [hasProperty])
+
+  console.log(errors);
+
 
   return (
     <AdminLayout title='Crear nuevo formato de flujo de caja | Vision inmobiliaria'>
@@ -257,18 +266,26 @@ export default function UpdateCashFlowFormat() {
                         />
                       </Grid>
                       <Grid item xs={12}>
-                        <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
+                        <Box display='flex' justifyContent='space-between'>
+                          <Typography fontWeight='bold' >Seleccionar propiedad</Typography>
+                          <FormControlLabel
+                              control={
+                                <Switch size='small' checked={hasProperty} onChange={() => setHasProperty(!hasProperty)}  />
+                              }
+                              label={hasProperty ? 'Aplica' : 'No aplica'}
+                          />
+                        </Box>
                         <RHFAutocomplete
+                            disabled={!hasProperty}
                             name="property"
                             control={control}
                             options={properties}
-                            getOptionLabel={(option: any) =>`${option.code} - ${option.propertyType} - ${option.operationType}`  || ''}
+                            getOptionLabel={(option: any) => option.code  || ''}
                             defaultValue={null}
                             label='Seleccionar propiedad'
                         />
                         <Typography variant='caption' fontWeight='bold'
                                     sx={{color: '#FF0000'}}>
-                          {errors.property && 'Este campo es requerido!'}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} >
@@ -276,6 +293,7 @@ export default function UpdateCashFlowFormat() {
                           fullWidth
                           sx={{mt: 2, borderColor: 'red'}}
                           placeholder='Ubicacion'
+                          disabled={!watchedProperty}
                           {...register('location')}
                           error={Boolean(errors?.location)}
                           label='Ubicacion'
@@ -400,7 +418,7 @@ export default function UpdateCashFlowFormat() {
                         <RHFAutocomplete
                           name="currency"
                           control={control}
-                          options={['$ Estados Unidos', 'Bs', 'Euros',]}
+                          options={['$', 'Bs', '€',]}
                           getOptionLabel={(option: any) => option || ''}
                           defaultValue={null}
                           label='Moneda'

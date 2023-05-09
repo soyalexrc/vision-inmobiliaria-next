@@ -13,6 +13,7 @@ import {
 import {CashFlowTable} from "./";
 import {formatPrice} from "../../../../utils";
 import {a11yProps, TabPanel} from "../../tabs";
+import { NumericFormat, PatternFormat } from 'react-number-format';
 
 export function CashFlowList({
   data,
@@ -45,37 +46,76 @@ export function CashFlowList({
     return d.filter((x: any) => x.transaction_type === 'Cuenta por pagar')
   }
 
-  function getTotalAmounts(d: any, returnNumber = false) {
-    let total = 0
+  function getTotalAmounts(d: any) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
     d.forEach((x: any) => {
-      total += Number(x.amount)
+      if (x.currency === 'Bs') totalBs += Number(x.amount);
+      if (x.currency === '$') totalUSD += Number(x.amount);
+      if (x.currency === '€') totalEUR += Number(x.amount);
     })
-    if (returnNumber) return total
-    return formatPrice(total);
+    return {bs: totalBs, usd: totalUSD, eur: totalEUR};
   }
 
-  function getTotalPendingToCollect(d: any, returnNumber = false) {
-    let total = 0
+  function getTotalPendingToCollect(d: any) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
     d.forEach((x: any) => {
-      total += Number(x.pending_to_collect)
+      if (x.currency === 'Bs') totalBs += Number(x.pending_to_collect);
+      if (x.currency === '$') totalUSD += Number(x.pending_to_collect);
+      if (x.currency === '€') totalEUR += Number(x.pending_to_collect);
     })
-    if (returnNumber) return total
-    return formatPrice(total);
+    return {bs: totalBs, usd: totalUSD, eur: totalEUR};
   }
 
-  function getTotalDue(d : any, returnNumber = false) {
-    let total = 0
+  function getTotalDue(d : any ) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
     d.forEach((x: any) => {
-      total += Number(x.total_due)
+      console.log(x.currency)
+      if (x.currency === 'Bs') totalBs += Number(x.total_due);
+      if (x.currency === '$') totalUSD += Number(x.total_due);
+      if (x.currency === '€') totalEUR += Number(x.total_due);
     })
-    if (returnNumber) return total
-    return formatPrice(total);
-
+    return {bs: totalBs, usd: totalUSD, eur: totalEUR};
   }
 
   function getUtility(d: any) {
-    return formatPrice(+getTotalAmounts(getDataByIncome(d), true) - +getTotalPendingToCollect(d, true))
+    let bs = getTotalAmounts(getDataByIncome(d)).bs - getTotalPendingToCollect(d).bs;
+    let usd = getTotalAmounts(getDataByIncome(d)).usd - getTotalPendingToCollect(d).usd;
+    let eur = getTotalAmounts(getDataByIncome(d)).eur - getTotalPendingToCollect(d).eur;
 
+
+    return {bs, usd, eur};
+  }
+
+
+  function TotalList({currencyObj}: {currencyObj: {bs: number, usd: number, eur: number}}) {
+    return (
+        <Box mt={1}>
+          <Typography
+              variant='body1'
+              fontWeight='bold'
+          >
+            <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={currencyObj.bs} prefix={"Bs. "} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
+          </Typography>
+          <Typography
+              variant='body1'
+              fontWeight='bold'
+          >
+            <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={currencyObj.usd} prefix={"$ "} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
+          </Typography>
+          <Typography
+              variant='body1'
+              fontWeight='bold'
+          >
+            <NumericFormat displayType='text' fixedDecimalScale decimalScale={2} value={currencyObj.eur} prefix={"€ "} allowNegative={true} allowLeadingZeros={true} thousandSeparator="," />
+          </Typography>
+        </Box>
+    )
   }
 
 
@@ -103,49 +143,51 @@ export function CashFlowList({
 
       </Box>
 
+
+
       <Grid container spacing={2} sx={{display: 'flex', justifyContent: 'center'}}>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 4, display: 'flex' }} elevation={2}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
             <Box component='img' width='50px' mr={2} src='/icons/piggy-bank.png' />
             <Box>
-              <Typography>Total Ingresos</Typography>
-              <Typography variant='h5' fontWeight='bold'>{getTotalAmounts(getDataByIncome(data))}</Typography>
+              <Typography variant='body2'>Total Ingresos</Typography>
+              <TotalList currencyObj={getTotalAmounts(getDataByIncome(data))} />
             </Box>
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 4, display: 'flex' }} elevation={2}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
             <Box component='img' width='50px' mr={2} src='/icons/piggy-bank.png' />
             <Box>
-              <Typography>Total Egresos</Typography>
-              <Typography variant='h5' fontWeight='bold'>{getTotalAmounts(getDataByOutcome(data))}</Typography>
+              <Typography variant='body2'>Total Egresos</Typography>
+              <TotalList currencyObj={getTotalAmounts(getDataByOutcome(data))} />
             </Box>
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 4, display: 'flex' }} elevation={2}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
             <Box component='img' width='50px' mr={2} src='/icons/piggy-bank.png' />
             <Box>
-              <Typography>Utilidad estimada</Typography>
-              <Typography variant='h5' fontWeight='bold'>{getUtility(data)}</Typography>
+              <Typography variant='body2'>Utilidad estimada</Typography>
+              <TotalList currencyObj={getUtility(data)} />
             </Box>
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 4, display: 'flex' }} elevation={2}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
             <Box component='img' width='50px' mr={2} src='/icons/profit.png' />
             <Box>
-              <Typography>Total por Pagar</Typography>
-              <Typography variant='h5' fontWeight='bold'>{getTotalDue(data)}</Typography>
+              <Typography variant='body2'>Total por Pagar</Typography>
+              <TotalList currencyObj={getTotalDue(data)} />
             </Box>
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 4, display: 'flex' }} elevation={2}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
             <Box component='img' width='50px' mr={2} src='/icons/expense.png' />
             <Box>
-              <Typography>Total de por cobrar</Typography>
-              <Typography variant='h5' fontWeight='bold'>{getTotalPendingToCollect(data)}</Typography>
+              <Typography variant='body2'>Total por cobrar</Typography>
+              <TotalList currencyObj={getTotalPendingToCollect(data)} />
             </Box>
           </Paper>
         </Grid>
@@ -157,7 +199,7 @@ export function CashFlowList({
         {/*  Properties Table*/}
         <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
           <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de caja" centered>
-            <Tab label="Ingresos" {...a11yProps(0)} />
+                  <Tab label="Ingresos" {...a11yProps(0)} />
             <Tab label="Egresos" {...a11yProps(1)} />
             <Tab label="Cuentas por pagar" {...a11yProps(2)} />
             <Tab label="Cuentas por cobrar" {...a11yProps(3)} />
