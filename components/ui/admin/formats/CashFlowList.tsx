@@ -2,6 +2,7 @@ import React from 'react';
 import {useRouter} from "next/router";
 import AddIcon from "@mui/icons-material/Add";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import {
   Box,
   LinearProgress,
@@ -133,14 +134,21 @@ export function CashFlowList({
             registro
           </Button>
         </Box>
-        <Badge badgeContent={currentFiltersAmount} color="primary">
-          <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)}
-                  sx={{display: 'flex'}}>
-            <FilterAltIcon/>
-            Filtros
-          </Button>
-        </Badge>
+        <Box display='flex' gap={2} mt={3} flexDirection={largeScreen ? 'row' : 'column'}>
+          <Badge badgeContent={currentFiltersAmount} color="primary">
+            <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)}
+                    sx={{display: 'flex'}}>
+              <FilterAltIcon/>
+              Filtros
+            </Button>
+          </Badge>
 
+          <Button fullWidth={!largeScreen} size="small" onClick={() => router.push('flujo-de-caja/resumen-de-operaciones')}
+                  sx={{display: 'flex'}}>
+            <PointOfSaleIcon/>
+            Resumen de operaciones
+          </Button>
+        </Box>
       </Box>
 
 
