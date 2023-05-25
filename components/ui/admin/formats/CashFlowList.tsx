@@ -76,7 +76,6 @@ export function CashFlowList({
     let totalEUR = 0;
     let totalUSD = 0;
     d.forEach((x: any) => {
-      console.log(x.currency)
       if (x.currency === 'Bs') totalBs += Number(x.total_due);
       if (x.currency === '$') totalUSD += Number(x.total_due);
       if (x.currency === '€') totalEUR += Number(x.total_due);

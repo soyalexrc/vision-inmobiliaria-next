@@ -62,7 +62,6 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
               <TableHeaderItem>Fecha</TableHeaderItem>
               <TableHeaderItem>Inmueble </TableHeaderItem>
               <TableHeaderItem>Persona / Cliente</TableHeaderItem>
-              <TableHeaderItem>Moneda</TableHeaderItem>
               {showAmount && <TableHeaderItem align='center'>Monto </TableHeaderItem>}
               <TableHeaderItem>Concepto</TableHeaderItem>
               {showTotalDue && <TableHeaderItem align='center'>Por Pagar</TableHeaderItem>}
@@ -95,11 +94,6 @@ export function CashFlowTable({loading, data, onDelete, showPendingToCollect = t
 
 
                 <TableCell>{row.client}</TableCell>
-                <TableCell>
-                  <Box width={80}>
-                    {row.currency}
-                  </Box>
-                </TableCell>
 
 
                 {

@@ -22,7 +22,6 @@ export function ChangeStatusModal({close, open, data, trigger, reload}: any) {
   const { enqueueSnackbar} = useSnackbar()
 
   React.useEffect(() => {
-    console.log(data);
   }, [open])
 
   async function middleWare(id: any, value: any) {
@@ -35,7 +34,6 @@ export function ChangeStatusModal({close, open, data, trigger, reload}: any) {
     }
     await updateStatusProperty(id, value, payload)
     if (value === 'Cerrado por Externo') {
-      console.log('handle trigger')
       trigger()
     }
     close();

@@ -121,7 +121,6 @@ export default function CashFlowPage() {
     const rawFilters = {
       filters: Object.values(obj).filter((ftr: filterData) => ftr.value )
     };
-    console.log(rawFilters)
     evaluateQtyFilters()
     if (rawFilters.filters.length < 1) {
       getProperties()

@@ -200,7 +200,6 @@ export default function UpdateCashFlowFormat() {
     try {
       const response = await axiosInstance.post('/property/getallDataFilter', data);
       if (response.status === 200) {
-        console.log(response.data.data);
         setProperties(response.data.data)
       }
     } catch (err) {
@@ -218,7 +217,6 @@ export default function UpdateCashFlowFormat() {
     setValue('location', '')
   }, [hasProperty])
 
-  console.log(errors);
 
 
   return (

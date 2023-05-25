@@ -57,7 +57,6 @@ export function PropertyImagesForm() {
             obj.imageData = reader.result;
             obj.id = uuidv4();
             const dataImage = await uploadFile(obj);
-            console.log('dataImage', dataImage);
             // TODO validar imagenes del server que no estan exisitiendo bajo path
             const objImage = {
               id: dataImage,
@@ -65,7 +64,6 @@ export function PropertyImagesForm() {
               imageType: files[i].type
             }
             // Add image to some store or state...
-            console.log(objImage);
             append(objImage);
           }
         } catch (e) {

@@ -87,9 +87,7 @@ export default function EditAdviserPage() {
     getAdviserById()
   }, [])
 
-  React.useEffect(() => {
-    console.log('erros', errors);
-  }, [errors])
+
 
   return (
     <AdminLayout title='Editar asesor | Vision inmobiliaria'>

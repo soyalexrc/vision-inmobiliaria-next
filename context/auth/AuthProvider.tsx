@@ -48,6 +48,8 @@ export const AuthProvider: React.FC<{children: JSX.Element}> = ({children}) => {
   const [state, dispatch] = React.useReducer(authReducer, AUTH_INITIAL_STATE)
 
   const login = async (loginData: {email: string, password: string}) => {
+    Cookie.set('isAuthenticated', 'true')
+
     try {
       dispatch({type: 'Auth - Loading State', payload: true})
 
@@ -69,7 +71,6 @@ export const AuthProvider: React.FC<{children: JSX.Element}> = ({children}) => {
       }
 
     } catch (e) {
-      console.log(e)
     } finally {
       dispatch({type: 'Auth - Loading State', payload: false})
     }
