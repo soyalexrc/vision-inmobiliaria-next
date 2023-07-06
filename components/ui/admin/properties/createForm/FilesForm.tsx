@@ -24,7 +24,9 @@ import {PropertyFile} from "../../../../../interfaces/properties";
 import {axiosInstance} from "../../../../../utils";
 import {useSnackbar} from "notistack";
 import {UIContext} from "../../../../../context/ui";
-
+import {DeleteButton} from "../../DeleteButton";
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
+import pdfSrc from '../../../../../public/icons/pdf-icon.png'
 export function FilesForm() {
   const {register, control} = useFormContext()
   const {fields, append} = useFieldArray({name: 'files'})
@@ -35,6 +37,7 @@ export function FilesForm() {
   const {enqueueSnackbar} = useSnackbar()
   const inputRef = useRef<any>(null)
   const {openPreviewModal} = React.useContext(UIContext)
+
 
   function createNewDocument() {
     setIsEditing(true);
@@ -120,12 +123,18 @@ export function FilesForm() {
     setDocumentFiles([])
   }
 
-  function openFile(file: string) {
-    if (file.includes('.pdf')) {
-      window.open(`http://100.42.69.119:3000/images/${file}`);
+  function openFile(file: any) {
+    if (file.imageType.includes('pdf')) {
+      window.open(`http://100.42.69.119:3000/images/${file.id}.pdf`);
+    } else {
+      openPreviewModal(`${file}.png`)
     }
-    openPreviewModal(file)
   }
+
+  function handleSrc(src: string) {
+    if (src.includes('pdf')) return pdfSrc
+      return`http://100.42.69.119:3000/images/${src}`
+    }
 
 
   return (
@@ -204,40 +213,91 @@ export function FilesForm() {
           }
         </Grid>
       }
-      <Box width='100%'>
+      {/*<Box width='100%'>*/}
+      {/*  {*/}
+      {/*    // @ts-ignore*/}
+      {/*    // TODO corregir este tipado*/}
+      {/*    fields.map((field: PropertyFile, index) => (*/}
+      {/*        <Box*/}
+      {/*          key={field.id}*/}
+      {/*          p={2}*/}
+      {/*          width='100%'*/}
+      {/*        >*/}
+      {/*          <Box>*/}
+      {/*            <Box display='flex' alignItems='center' justifyContent='space-between'>*/}
+      {/*              <Box display='flex' p={2} gap={2}>*/}
+      {/*                <ArticleIcon/>*/}
+      {/*                <Typography>{field.title} </Typography>*/}
+      {/*              </Box>*/}
+      {/*              <IconButton onClick={handleDeleteFile}>*/}
+      {/*                <DeleteIcon color='error'/>*/}
+      {/*              </IconButton>*/}
+      {/*            </Box>*/}
+      {/*            <Box px={2} display='flex' flexWrap='wrap' gap={2}>*/}
+      {/*              {field.data.map((file: any) => (*/}
+      {/*                <Box key={file.id}>*/}
+      {/*                  <Chip label={file.imageData} onClick={() => openFile(file.imageData)}/>*/}
+      {/*                </Box>*/}
+      {/*              ))}*/}
+      {/*            </Box>*/}
+      {/*          </Box>*/}
+      {/*          <Divider sx={{my: 2}} />*/}
+      {/*        </Box>*/}
+      {/*      )*/}
+      {/*    )*/}
+      {/*  }*/}
+      {/*</Box>*/}
+      <Grid container spacing={2} sx={{mt: 3}}>
         {
-          // @ts-ignore
-          // TODO corregir este tipado
-          fields.map((field: PropertyFile, index) => (
-              <Box
-                key={field.id}
-                p={2}
-                width='100%'
-              >
-                <Box>
-                  <Box display='flex' alignItems='center' justifyContent='space-between'>
-                    <Box display='flex' p={2} gap={2}>
-                      <ArticleIcon/>
-                      <Typography>{field.title} </Typography>
+          fields.map((field: any, index: number) => (
+              <Grid key={field.id} item xs={12} md={4} lg={3} xl={2}>
+                <Box
+                    sx={{position: 'relative'}}
+                    // draggable
+                    // onDragStart={() => handleDragStart(index)}
+                    // onDragEnter={(e) => handleDragEnter(e, index)}
+                    // onDragLeave={(e) => handleDragLeave(e, index)}
+                    // onDrop={(e) => handleDrop(e, index)}
+                    // onDragOver={(e) => e.preventDefault()}
+                >
+                  {
+                    field?.imageType?.includes('pdf') ? (
+                        <Box component='img' src='/icons/pdf-icon.png' width='100%' height='100%'/>
+                    ) : (
+                        <Box component='img' src={`http://100.42.69.119:3000/images/${field.id}`} width='100%' height='100%'/>
+                    )
+                  }
+                  <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                        zIndex: 111
+                      }}
+                  >
+                    <Box display='flex' alignItems='center' justifyContent='center' height='100%'>
+                      <DeleteButton
+                          sx={{color: '#fff'}}
+                          onClick={() => console.log('deleted')}
+                          title='Se eliminara la imagen'
+                          element='imagen.png'
+                      />
+                      <IconButton onClick={() => openFile(field)}>
+                        <OpenInFullIcon sx={{color: '#fff'}}/>
+                      </IconButton>
                     </Box>
-                    <IconButton onClick={handleDeleteFile}>
-                      <DeleteIcon color='error'/>
-                    </IconButton>
                   </Box>
-                  <Box px={2} display='flex' flexWrap='wrap' gap={2}>
-                    {field.data.map((file: any) => (
-                      <Box key={file.id}>
-                        <Chip label={file.imageData} onClick={() => openFile(file.imageData)}/>
-                      </Box>
-                    ))}
+                  <Box sx={{position: 'absolute', top: '5px', left: '5px'}}>
+                    <Typography variant='h1' color='#fff'>{index + 1}</Typography>
                   </Box>
                 </Box>
-                <Divider sx={{my: 2}} />
-              </Box>
-            )
-          )
+              </Grid>
+          ))
         }
-      </Box>
+      </Grid>
     </Grid>
   )
 }
