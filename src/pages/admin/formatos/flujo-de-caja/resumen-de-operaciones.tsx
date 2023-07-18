@@ -1,15 +1,17 @@
 import {AdminLayout} from "../../../../../components/layouts";
-import {Box, MenuItem, Select, Typography} from "@mui/material";
+import {Box, MenuItem, Paper, Select, Typography} from "@mui/material";
 import NextLink from "next/link";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import React from "react";
+import React, {useState} from "react";
 import {axiosInstance} from "../../../../../utils";
 import {FormatCashFlow} from "../../../../../interfaces";
 import {useSnackbar} from "notistack";
 import * as Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official'
+import {useRouter} from "next/router";
+import moment from 'moment';
 
-
+moment.locale('es-us')
 
 const colors: any = {
     'Banco Nacional de Crédito (BNC)': '#2e7bbc',
@@ -24,13 +26,14 @@ const colors: any = {
 
 
 export default function ResumenDeOperacionesPage() {
+    const router = useRouter();
     const [formatData, setFormatData] = React.useState<any[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
     const {enqueueSnackbar} = useSnackbar();
     const [dataSet, setDataSet] = React.useState<any>([]);
     const [options, setOptions] = React.useState<any>({})
     const [currency, setCurrency] = React.useState<string>('bs');
-
+    const [temporalTransactions, setTemporalTransactions] = useState<any[]>([]);
 
 
     async function getFormatsData() {
@@ -149,9 +152,29 @@ export default function ResumenDeOperacionesPage() {
 
 
         React.useEffect(() => {
-            getFormatsData()
+            // getFormatsData()
+            getTemporalTransactions()
+            console.log('i fire once');
         }, [])
 
+
+    async function getTemporalTransactions() {
+        try {
+            // GET /api/format/cashFlow/getAllByTemporalTransaction
+            setLoading(true);
+            const response = await axiosInstance.get(`format/cashFlow/getAllByTemporalTransaction`);
+            if (response.status === 200) {
+               const data = Array.from(groupBy(response.data, (transaction: any) => transaction.temporalTransactionId))
+                console.log(data);
+                setTemporalTransactions(data)
+            }
+        } catch (err) {
+            enqueueSnackbar('Error!', {variant: 'error'} )
+        } finally {
+            setLoading(false);
+            close();
+        }
+    }
 
     return (
         <AdminLayout title='Formato de flujo de caja | Vision inmobiliaria'>
@@ -161,19 +184,34 @@ export default function ResumenDeOperacionesPage() {
                     <ArrowRightIcon sx={{ color: 'gray' }} />
                     <Typography> Resumen de operaciones</Typography>
                 </Box>
-                <Select
-                    value={currency}
-                    onChange={handleChangeCurrency}
-                >
-                    <MenuItem value='bs'>bs</MenuItem>
-                    <MenuItem value='usd'>$ usd</MenuItem>
-                    <MenuItem value='eur'>€ eur</MenuItem>
-                </Select>
-                {/*<Typography variant='h1' align='center'>Grafico</Typography>*/}
-                <HighchartsReact
-                    highcharts={Highcharts}
-                    options={options}
-                />
+
+                {
+                    temporalTransactions.map((transaction: any) => (
+                        <Paper elevation={2} sx={{ my: 3, p: 3 }} key={transaction.id}>
+                            <p> <b>ID de transaccion:</b> {transaction[0]}</p>
+                            <p> <b>Fecha de transaccion:</b> {moment(transaction[1][0].createdAt).calendar()}</p>
+                            <p> <b>Desde:</b> {transaction[1][0].entity}</p>
+                            <p><b>Hasta: </b> {transaction[1][1].entity}</p>
+                            <p><b>Monto: </b> {transaction[1][0].currency} {transaction[1][0].amount}</p>
+                            <p><b>Responsable: </b> {transaction[1][1].createdBy}</p>
+
+                        </Paper>
+                    ))
+                }
+
+                {/*<Select*/}
+                {/*    value={currency}*/}
+                {/*    onChange={handleChangeCurrency}*/}
+                {/*>*/}
+                {/*    <MenuItem value='bs'>bs</MenuItem>*/}
+                {/*    <MenuItem value='usd'>$ usd</MenuItem>*/}
+                {/*    <MenuItem value='eur'>€ eur</MenuItem>*/}
+                {/*</Select>*/}
+                {/*/!*<Typography variant='h1' align='center'>Grafico</Typography>*!/*/}
+                {/*<HighchartsReact*/}
+                {/*    highcharts={Highcharts}*/}
+                {/*    options={options}*/}
+                {/*/>*/}
 
             </Box>
         </AdminLayout>

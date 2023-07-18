@@ -15,6 +15,7 @@ import {CashFlowTable} from "./";
 import {formatPrice} from "../../../../utils";
 import {a11yProps, TabPanel} from "../../tabs";
 import { NumericFormat, PatternFormat } from 'react-number-format';
+import {CreateTransactionModal} from "./CreateTransactionModal";
 
 export function CashFlowList({
   data,
@@ -27,6 +28,7 @@ export function CashFlowList({
 
   const router = useRouter();
   const [tab, setTab] = React.useState<number>(0)
+  const [showModalCreateTransaction, setShowModalCreateTransaction] = React.useState<boolean>(false)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
@@ -127,11 +129,19 @@ export function CashFlowList({
             <Typography variant='h2'>Formato de flujo de caja</Typography>
             <Typography sx={{mx: 2}} color='gray'>{data.length} registros</Typography>
           </Box>
+        <Box display='flex' gap={2}>
+
+          <Button fullWidth={!largeScreen} variant='outlined' color='primary'
+                  sx={{display: 'flex', mt: !largeScreen ? 2 : 0, height: 40}} onClick={() => setShowModalCreateTransaction(true)}>
+            <AddIcon/>
+            Nuevo traslado de dinero
+          </Button>
           <Button fullWidth={!largeScreen} variant='contained' color='primary'
                   sx={{display: 'flex', mt: !largeScreen ? 2 : 0, height: 40}} onClick={() => router.push('/admin/formatos/flujo-de-caja/crear')}>
             <AddIcon/>
             registro
           </Button>
+        </Box>
         </Box>
         <Box display='flex' gap={2} mt={3} flexDirection={largeScreen ? 'row' : 'column'}>
           <Badge badgeContent={currentFiltersAmount} color="primary">
@@ -248,6 +258,7 @@ export function CashFlowList({
         </TabPanel>
 
         </Box>
+          <CreateTransactionModal open={showModalCreateTransaction} close={() => setShowModalCreateTransaction(false)} />
     </>
   )
 }

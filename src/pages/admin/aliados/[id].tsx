@@ -36,6 +36,7 @@ export default function EditAllyPage() {
   const id = router.query?.id;
   const { enqueueSnackbar } = useSnackbar()
   const {register, handleSubmit, formState: {errors}, setValue} = useForm<Ally>({
+    // @ts-ignore
     resolver: yupResolver(schema),
     mode: 'all'
   });

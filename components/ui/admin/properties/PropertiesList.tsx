@@ -43,6 +43,7 @@ export function PropertiesList() {
       const response = await axiosInstance.post('/property/getallDataFilter', data);
       if (response.status === 200) {
         setProperties(response.data)
+        console.log(response.data);
       }
     } catch (err) {
       enqueueSnackbar(`Error ${JSON.stringify(err)}`, {variant: 'error'})

@@ -38,8 +38,9 @@ export default function EditAdviserPage() {
   const { enqueueSnackbar } = useSnackbar()
   const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
   const {register, handleSubmit, formState: {errors}, setValue} = useForm<ExternalAdviser>({
+    // @ts-ignore
     resolver: yupResolver(schema),
-    mode: 'all',
+    mode: 'all'
   });
   const onSubmit = handleSubmit((data) => editAdviser(data));
   const [loading, setLoading] = React.useState<boolean>(false)
