@@ -15,9 +15,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 import {useSnackbar} from "notistack";
 import {useForm} from "react-hook-form";
-import {Ally} from "../../../../interfaces";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {object, string, InferType} from "yup";
+import {object, string} from "yup";
 import {axiosInstance} from "../../../../utils";
 import {useRouter} from "next/router";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
