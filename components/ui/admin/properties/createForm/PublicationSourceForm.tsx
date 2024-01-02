@@ -1,15 +1,9 @@
-
 import React from 'react';
-import {
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Box
-} from "@mui/material";
-import {useFormContext} from "react-hook-form";
+import { Checkbox, FormControlLabel, FormGroup, Box } from '@mui/material';
+import { useFormContext } from 'react-hook-form';
 
 export function PublicationSourceForm() {
-  const {register} = useFormContext()
+  const { register } = useFormContext();
   return (
     <Box px={3}>
       <FormGroup>
@@ -21,5 +15,5 @@ export function PublicationSourceForm() {
         <FormControlLabel {...register('publicationSource.whatsapp')} control={<Checkbox />} label="Grupos de whatsapp" />
       </FormGroup>
     </Box>
-  )
+  );
 }

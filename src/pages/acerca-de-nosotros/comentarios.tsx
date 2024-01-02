@@ -1,20 +1,15 @@
-import {ClientLayout} from 'components/layouts';
+import { ClientLayout } from 'components/layouts';
 import React from 'react';
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from '@mui/material';
 
 const mainData = [
   {
     url: '',
     alt: '',
-    image: '/images/about/aboutBanner.jpg'
-  }
-]
-function BannerComponent({item}: any) {
-
-
+    image: '/images/about/aboutBanner.jpg',
+  },
+];
+function BannerComponent({ item }: any) {
   return (
     <Box
       sx={{
@@ -23,10 +18,10 @@ function BannerComponent({item}: any) {
     >
       <Box
         // onClick={() => goTo(item.url)}
-        component='img'
+        component="img"
         alt={item.alt}
-        width='100%'
-        height='100%'
+        width="100%"
+        height="100%"
         sx={{
           width: '100%',
           height: '350px',
@@ -41,22 +36,22 @@ function BannerComponent({item}: any) {
           position: 'absolute',
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)'
+          transform: 'translate(-50%, -50%)',
         }}
       >
-        <Typography variant='h1' align='center' color='#fff' sx={{letterSpacing: '3px'}}>Lo que nuestros clientes dicen de nosotros</Typography>
+        <Typography variant="h1" align="center" color="#fff" sx={{ letterSpacing: '3px' }}>
+          Lo que nuestros clientes dicen de nosotros
+        </Typography>
       </Box>
     </Box>
-
-  )
+  );
 }
-
 
 export default function CommentsPage() {
   return (
     <ClientLayout title="Vision Inmobiliaria - Acerca de vision - Comentarios">
       <>
-        <BannerComponent item={mainData[0]}/>
+        <BannerComponent item={mainData[0]} />
       </>
     </ClientLayout>
   );

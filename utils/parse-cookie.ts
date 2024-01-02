@@ -1,4 +1,3 @@
-
 export const parseCookie = (param: string, cookie: string) => {
   const valueToRead = cookie.split(';').filter((value: any) => value.includes(param))[0];
   if (valueToRead) {
@@ -6,4 +5,4 @@ export const parseCookie = (param: string, cookie: string) => {
     return JSON.parse(cookieValue);
   }
   return false;
-}
+};

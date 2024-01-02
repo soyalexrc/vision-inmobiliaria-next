@@ -1,151 +1,269 @@
 import React from 'react';
-import {useRouter} from "next/router";
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from "@mui/icons-material/Add";
+import { useRouter } from 'next/router';
+import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import {
-  Box,
-  LinearProgress,
-  Button,
-  Grid,
-  Pagination,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Badge,
-  useMediaQuery
-  , Typography
-} from "@mui/material";
-import {CashFlowTable} from "./";
-import {ClientsFilterDrawer} from "./";
-import {FormatCashFlow, CASH_FLOW} from "../../../../utils/mock-data";
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import { Box, LinearProgress, Button, Grid, Badge, Typography, Tabs, Tab, Paper } from '@mui/material';
+import { CashFlowTable } from './';
+import { formatPrice } from '../../../../utils';
+import { a11yProps, TabPanel } from '../../tabs';
+import { NumericFormat, PatternFormat } from 'react-number-format';
+import { CreateTransactionModal } from './CreateTransactionModal';
 
-export function CashFlowList() {
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const [page, setPage] = React.useState<number>(1);
-  const [searchTerm, setSearchTerm] = React.useState('')
+export function CashFlowList({ data, loading, deleteData, largeScreen, currentFiltersAmount, setFiltersDrawer }: any) {
   const router = useRouter();
-  const [filtersDrawer, setFiltersDrawer] = React.useState(false);
-  const [data, setData] = React.useState<FormatCashFlow[]>([]);
-  const [filtersData, setFiltersData] = React.useState<any>({
-    filters: [],
-    pageNumber: 1,
-    pageSize: 5
-  });
-
-  function getProperties() {
-    setData(CASH_FLOW)
-  }
-
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
+  const [tab, setTab] = React.useState<number>(0);
+  const [showModalCreateTransaction, setShowModalCreateTransaction] = React.useState<boolean>(false);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
   };
 
-  const applyFilters = () => {
-    setFiltersDrawer(false);
-    getProperties()
+  function getDataByIncome(d: any) {
+    return d.filter((x: any) => x.transaction_type === 'Ingreso');
   }
 
-  React.useEffect(() => {
-    getProperties();
-  }, [])
+  function getDataByOutcome(d: any) {
+    return d.filter((x: any) => x.transaction_type === 'Egreso');
+  }
 
-  const handleSelectFilter = (code: any, value: any) => {
-    const filters = [...filtersData.filters];
-    if (value === null) {
-      if (filters.length === 1) {
-        filters.pop();
-      }
-      const removed = filters.findIndex(x => x.parameter === code);
-      filters.splice(removed, 1);
-    } else if (filters.filter(x => x.parameter === code)[0]) {
-      const index = filters.findIndex(x => x.parameter === code);
-      filters.splice(index, 1);
-      filters.push(value);
-    } else {
-      filters.push(value);
-    }
-    setFiltersData((prevState: any) => ({
-      ...prevState,
-      filters,
-    }))
+  function getDataByPendingToCollect(d: any) {
+    return d.filter((x: any) => x.transaction_type === 'Cuenta por cobrar');
+  }
+
+  function getDataByTotalDue(d: any) {
+    return d.filter((x: any) => x.transaction_type === 'Cuenta por pagar');
+  }
+
+  function getTotalAmounts(d: any) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
+    d.forEach((x: any) => {
+      if (x.currency === 'Bs') totalBs += Number(x.amount);
+      if (x.currency === '$') totalUSD += Number(x.amount);
+      if (x.currency === '€') totalEUR += Number(x.amount);
+    });
+    return { bs: totalBs, usd: totalUSD, eur: totalEUR };
+  }
+
+  function getTotalPendingToCollect(d: any) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
+    d.forEach((x: any) => {
+      if (x.currency === 'Bs') totalBs += Number(x.pending_to_collect);
+      if (x.currency === '$') totalUSD += Number(x.pending_to_collect);
+      if (x.currency === '€') totalEUR += Number(x.pending_to_collect);
+    });
+    return { bs: totalBs, usd: totalUSD, eur: totalEUR };
+  }
+
+  function getTotalDue(d: any) {
+    let totalBs = 0;
+    let totalEUR = 0;
+    let totalUSD = 0;
+    d.forEach((x: any) => {
+      if (x.currency === 'Bs') totalBs += Number(x.total_due);
+      if (x.currency === '$') totalUSD += Number(x.total_due);
+      if (x.currency === '€') totalEUR += Number(x.total_due);
+    });
+    return { bs: totalBs, usd: totalUSD, eur: totalEUR };
+  }
+
+  function getUtility(d: any) {
+    let bs = getTotalAmounts(getDataByIncome(d)).bs - getTotalPendingToCollect(d).bs;
+    let usd = getTotalAmounts(getDataByIncome(d)).usd - getTotalPendingToCollect(d).usd;
+    let eur = getTotalAmounts(getDataByIncome(d)).eur - getTotalPendingToCollect(d).eur;
+
+    return { bs, usd, eur };
+  }
+
+  function TotalList({ currencyObj }: { currencyObj: { bs: number; usd: number; eur: number } }) {
+    return (
+      <Box mt={1}>
+        <Typography variant="body1" fontWeight="bold">
+          <NumericFormat
+            displayType="text"
+            fixedDecimalScale
+            decimalScale={2}
+            value={currencyObj.bs}
+            prefix={'Bs. '}
+            allowNegative={true}
+            allowLeadingZeros={true}
+            thousandSeparator=","
+          />
+        </Typography>
+        <Typography variant="body1" fontWeight="bold">
+          <NumericFormat
+            displayType="text"
+            fixedDecimalScale
+            decimalScale={2}
+            value={currencyObj.usd}
+            prefix={'$ '}
+            allowNegative={true}
+            allowLeadingZeros={true}
+            thousandSeparator=","
+          />
+        </Typography>
+        <Typography variant="body1" fontWeight="bold">
+          <NumericFormat
+            displayType="text"
+            fixedDecimalScale
+            decimalScale={2}
+            value={currencyObj.eur}
+            prefix={'€ '}
+            allowNegative={true}
+            allowLeadingZeros={true}
+            thousandSeparator=","
+          />
+        </Typography>
+      </Box>
+    );
   }
 
   return (
-    <Box sx={{width: '100%', p: 2}}>
+    <>
       <Box p={2}>
-        <Box display='flex' flexWrap='wrap' alignItems='center' mb={2}>
-          <Typography variant='h2'>Formato de flujo de efectivo</Typography>
-          <Typography sx={{mx: 2}} color='gray'>10 registros</Typography>
-        </Box>
-        <Grid container sx={{ mb: 2 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              sx={{width: '100%'}}
-              id="search-textfield"
-              placeholder="Buscar "
+        <Box display="fllex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+          <Box display="flex" flexWrap="wrap" alignItems="center" mb={2}>
+            <Typography variant="h2">Formato de flujo de caja</Typography>
+            <Typography sx={{ mx: 2 }} color="gray">
+              {data.length} registros
+            </Typography>
+          </Box>
+          <Box display="flex" gap={2}>
+            <Button
+              fullWidth={!largeScreen}
               variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon/>
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} sx={{display: 'flex', justifyContent: 'flex-end'}}>
-            <Button fullWidth={!largeScreen} variant='contained' color='primary'
-                    sx={{display: 'flex', mt: !largeScreen ? 2 : 0}} onClick={() => router.push('/admin/propiedades/crear')}>
-              <AddIcon/>
+              color="primary"
+              sx={{ display: 'flex', mt: !largeScreen ? 2 : 0, height: 40 }}
+              onClick={() => setShowModalCreateTransaction(true)}
+            >
+              <AddIcon />
+              Nuevo traslado de dinero
+            </Button>
+            <Button
+              fullWidth={!largeScreen}
+              variant="contained"
+              color="primary"
+              sx={{ display: 'flex', mt: !largeScreen ? 2 : 0, height: 40 }}
+              onClick={() => router.push('/admin/formatos/flujo-de-caja/crear')}
+            >
+              <AddIcon />
               registro
             </Button>
-          </Grid>
-        </Grid>
-        <Badge badgeContent={filtersData.filters.length} color="primary">
-          <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)}
-                  sx={{display: 'flex'}}>
-            <FilterAltIcon/>
-            Filtros
-          </Button>
-        </Badge>
-
-      </Box>
-      <Box sx={{width: '100%'}}>
-        {loading && <LinearProgress/>}
-      </Box>
-      {/*  Properties Table*/}
-      <CashFlowTable data={data} loading={loading}  />
-      {
-        (!data || data.length) < 1 &&
-        <Box sx={{height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
-          <Typography>No se encontradon propiedades...</Typography>
+          </Box>
         </Box>
-      }
-      <Box sx={{display: 'flex', justifyContent: 'end', pt: 5}}>
-        <Pagination
-          boundaryCount={1}
-          count={Math.round(10 / 10)}
-          defaultPage={1}
-          onChange={handleChangePage}
-          page={page}
-          showFirstButton
-          showLastButton
-        />
+        <Box display="flex" gap={2} mt={3} flexDirection={largeScreen ? 'row' : 'column'}>
+          <Badge badgeContent={currentFiltersAmount} color="primary">
+            <Button fullWidth={!largeScreen} size="small" onClick={() => setFiltersDrawer(true)} sx={{ display: 'flex' }}>
+              <FilterAltIcon />
+              Filtros
+            </Button>
+          </Badge>
+
+          <Button
+            fullWidth={!largeScreen}
+            size="small"
+            onClick={() => router.push('flujo-de-caja/resumen-de-operaciones')}
+            sx={{ display: 'flex' }}
+          >
+            <PointOfSaleIcon />
+            Resumen de operaciones
+          </Button>
+        </Box>
       </Box>
-      <ClientsFilterDrawer
-        open={filtersDrawer}
-        filters={filtersData.filters}
-        applyFilters={() => applyFilters()}
-        closeAction={() => setFiltersDrawer(false)}
-        selectFilter={handleSelectFilter}
-        largeScreen={largeScreen}
-      />
-    </Box>
-  )
+
+      <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
+            <Box component="img" width="50px" mr={2} src="/icons/piggy-bank.png" />
+            <Box>
+              <Typography variant="body2">Total Ingresos</Typography>
+              <TotalList currencyObj={getTotalAmounts(getDataByIncome(data))} />
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
+            <Box component="img" width="50px" mr={2} src="/icons/piggy-bank.png" />
+            <Box>
+              <Typography variant="body2">Total Egresos</Typography>
+              <TotalList currencyObj={getTotalAmounts(getDataByOutcome(data))} />
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
+            <Box component="img" width="50px" mr={2} src="/icons/piggy-bank.png" />
+            <Box>
+              <Typography variant="body2">Utilidad estimada</Typography>
+              <TotalList currencyObj={getUtility(data)} />
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
+            <Box component="img" width="50px" mr={2} src="/icons/profit.png" />
+            <Box>
+              <Typography variant="body2">Total por Pagar</Typography>
+              <TotalList currencyObj={getTotalDue(data)} />
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 4, display: 'flex', alignItems: 'center' }} elevation={2}>
+            <Box component="img" width="50px" mr={2} src="/icons/expense.png" />
+            <Box>
+              <Typography variant="body2">Total por cobrar</Typography>
+              <TotalList currencyObj={getTotalPendingToCollect(data)} />
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Box sx={{ width: '100%', p: 2 }}>
+        <Box sx={{ width: '100%' }}>{loading && <LinearProgress />}</Box>
+        {/*  Properties Table*/}
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={tab} onChange={handleChange} aria-label="panel de flujo de caja" centered>
+            <Tab label="Ingresos" {...a11yProps(0)} />
+            <Tab label="Egresos" {...a11yProps(1)} />
+            <Tab label="Cuentas por pagar" {...a11yProps(2)} />
+            <Tab label="Cuentas por cobrar" {...a11yProps(3)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={tab} index={0}>
+          <CashFlowTable data={getDataByIncome(data)} loading={loading} onDelete={(id) => deleteData(id)} />
+        </TabPanel>
+        <TabPanel value={tab} index={1}>
+          <CashFlowTable
+            data={getDataByOutcome(data)}
+            loading={loading}
+            showPendingToCollect={false}
+            showTotalDue={false}
+            onDelete={(id) => deleteData(id)}
+          />
+        </TabPanel>
+        <TabPanel value={tab} index={2}>
+          <CashFlowTable
+            data={getDataByTotalDue(data)}
+            loading={loading}
+            showPendingToCollect={false}
+            showAmount={false}
+            onDelete={(id) => deleteData(id)}
+          />
+        </TabPanel>
+        <TabPanel value={tab} index={3}>
+          <CashFlowTable
+            data={getDataByPendingToCollect(data)}
+            loading={loading}
+            showTotalDue={false}
+            showAmount={false}
+            onDelete={(id) => deleteData(id)}
+          />
+        </TabPanel>
+      </Box>
+      <CreateTransactionModal open={showModalCreateTransaction} close={() => setShowModalCreateTransaction(false)} />
+    </>
+  );
 }

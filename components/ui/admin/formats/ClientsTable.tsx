@@ -9,16 +9,18 @@ import {
   Box,
   Tooltip,
   IconButton,
-} from '@mui/material'
-import {styled} from '@mui/material/styles'
+  Typography,
+  Pagination,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-import EditIcon from "@mui/icons-material/Edit";
+import EditIcon from '@mui/icons-material/Edit';
 // import {AuthContext} from "../../../../context/auth";
-import {useRouter} from "next/router";
-import {DeleteButton} from "../DeleteButton";
-import {Formatclients} from "../../../../utils/mock-data";
-import axios from "axios";
-import {useSnackbar} from "notistack";
+import { useRouter } from 'next/router';
+import { DeleteButton } from '../DeleteButton';
+import { Formatclients } from '../../../../interfaces';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 interface PropertiesTableProps {
   loading: boolean;
@@ -26,24 +28,38 @@ interface PropertiesTableProps {
   onDelete: (id: number | string) => void;
 }
 
-const TableHeaderItem = styled(TableCell)(({theme}: { theme: any }) => ({
+const TableHeaderItem = styled(TableCell)(({ theme }: { theme: any }) => ({
   color: theme.palette.common.black,
   fontWeight: 'bold',
 }));
 
-
-export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps) {
+export function ClientsTable({ loading, clients, onDelete }: PropertiesTableProps) {
   // const {currentUser} = React.useContext(AuthContext)
-  const router = useRouter()
+  const [page, setPage] = React.useState<number>(1);
+
+  const router = useRouter();
+
+  const handleChangePage = (event: any, newPage: any) => {
+    setPage(newPage);
+  };
+
+  const getCurrentPage = () => {
+    return page === 1 ? 0 : page * 10 - 10;
+  };
+
+  const getCurrentPageLimit = () => {
+    return page === 1 ? 10 : page * 10;
+  };
 
   return (
     <>
       <TableContainer>
-        <Table width='100%'>
-          <TableHead sx={{backgroundColor: '#eaeaea'}}>
+        <Table width="100%">
+          <TableHead sx={{ backgroundColor: '#eaeaea' }}>
             <TableRow>
               <TableHeaderItem>Nº</TableHeaderItem>
               <TableHeaderItem>Propiedad</TableHeaderItem>
+              <TableHeaderItem align="center">Inquilino</TableHeaderItem>
               <TableHeaderItem>Contacto</TableHeaderItem>
               <TableHeaderItem>Ubicacion</TableHeaderItem>
               <TableHeaderItem>Canon</TableHeaderItem>
@@ -67,152 +83,140 @@ export function ClientsTable({loading, clients, onDelete}: PropertiesTableProps)
               <TableHeaderItem>Noviembre</TableHeaderItem>
               <TableHeaderItem>Diciembre</TableHeaderItem>
               <TableHeaderItem>Observaciones</TableHeaderItem>
-              <TableHeaderItem align='center'>Acciones</TableHeaderItem>
+              <TableHeaderItem align="center">Acciones</TableHeaderItem>
             </TableRow>
           </TableHead>
           <TableBody>
-            {!loading && clients && clients.length > 0 && clients.map((row, index: number) => (
-              <TableRow
-                key={row.id}
-                sx={{
-                  '&:last-child td, &:last-child th': {border: 0},
-                  '&:hover': {
-                    backgroundColor: 'rgba(0,0,0, 0.05)'
-                  }
-                }}
-              >
-                <TableCell sx={{px: 5}}>{index + 1}</TableCell>
-                <TableCell>{row.property}</TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.contact}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.location}
-                  </Box>
-                </TableCell>
-                <TableCell>{row.lease_fee}</TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.lease_fee_status}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={280} display='flex' justifyContent='center'>
-                    {row.owner_payment_status}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={300} display='flex' justifyContent='center'>
-                    {row.status_condo_cleanliness_payment}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={200} display='flex' justifyContent='center'>
-                    {row.status_electricity_payment}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={200} display='flex' justifyContent='center'>
-                    {row.date_to_collect_lease_fee}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={200} display='flex' justifyContent='center'>
-                    {row.next_adjustment}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={200} display='flex' justifyContent='center'>
-                    {row.next_subcription}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.january.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.february.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.march.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.april.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.may.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.june.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.july.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.august.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.september.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.october.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.november.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={180}>
-                    {row.december.text}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box width={400}>
-                    {row.observations}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box display='flex' alignItems='center' justifyContent='center' width={200}>
-                    <Tooltip title='Editar propiedad'>
-                      <IconButton onClick={() => router.push(`/admin/formatos/clientes/${row.id}`)}>
-                        <EditIcon/>
-                      </IconButton>
-                    </Tooltip>
-                    <DeleteButton
-                      title='Se eliminara la siguiente propiedad'
-                      element={`sample`}
-                      onClick={() => onDelete(row.id)}
-                    />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+            {!loading &&
+              clients &&
+              clients.length > 0 &&
+              clients.slice(getCurrentPage(), getCurrentPageLimit()).map((row, index: number) => (
+                <TableRow
+                  key={row.id}
+                  sx={{
+                    '&:last-child td, &:last-child th': { border: 0 },
+                    '&:hover': {
+                      backgroundColor: 'rgba(0,0,0, 0.05)',
+                    },
+                  }}
+                >
+                  <TableCell sx={{ px: 5 }}>{index + 1}</TableCell>
+                  <TableCell>{row.property}</TableCell>
+                  <TableCell>
+                    <Box width={150} display="flex" justifyContent="center">
+                      {row.tenant}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.contact}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.location}</Box>
+                  </TableCell>
+                  <TableCell>{row.lease_fee}</TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.lease_fee_status}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={280} display="flex" justifyContent="center">
+                      {row.owner_payment_status}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={300} display="flex" justifyContent="center">
+                      {row.status_condo_cleanliness_payment}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={200} display="flex" justifyContent="center">
+                      {row.status_electricity_payment}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={200} display="flex" justifyContent="center">
+                      {row.date_to_collect_lease_fee}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={200} display="flex" justifyContent="center">
+                      {row.next_adjustment}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={200} display="flex" justifyContent="center">
+                      {row.next_subcription}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.january}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.february}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.march}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.april}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.may}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.june}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.july}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.august}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.september}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.october}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.november}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={180}>{row.december}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box width={400}>{row.observations}</Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box display="flex" alignItems="center" justifyContent="center" width={200}>
+                      <Tooltip title="Editar propiedad">
+                        <IconButton onClick={() => router.push(`/admin/formatos/clientes/${row.id}`)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <DeleteButton title="Se eliminara la siguiente propiedad" element={`sample`} onClick={() => onDelete(row.id)} />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
+      {(!clients || clients.length) < 1 && (
+        <Box sx={{ height: '50vh', display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center' }}>
+          <Typography>No se encontradon propiedades...</Typography>
+        </Box>
+      )}
+      <Box sx={{ display: 'flex', justifyContent: 'end', pt: 5 }}>
+        <Pagination
+          boundaryCount={1}
+          count={Math.ceil(clients.length / 10)}
+          defaultPage={1}
+          onChange={handleChangePage}
+          page={page}
+          showFirstButton
+          showLastButton
+        />
+      </Box>
     </>
-  )
+  );
 }

@@ -1,17 +1,17 @@
 import React from 'react';
-import {AdminLayout} from "../../../../../components/layouts";
-import {Box, Button, DialogActions, DialogContent, Divider, Grid, Typography} from "@mui/material";
-import { useSnackbar} from 'notistack'
-import {axiosInstance} from "../../../../../utils";
-import {useRouter} from 'next/router';
-import NextLink from "next/link";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { AdminLayout } from '../../../../../components/layouts';
+import { Box, Button, DialogActions, DialogContent, Divider, Grid, Typography } from '@mui/material';
+import { useSnackbar } from 'notistack';
+import { axiosInstance } from '../../../../../utils';
+import { useRouter } from 'next/router';
+import NextLink from 'next/link';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 export default function HistoricPropertyPage() {
-  const [historyData, setHistoryData] = React.useState<any>([])
-  const [loading, setLoading] = React.useState<boolean>(true)
-  const {enqueueSnackbar} = useSnackbar()
-  const router = useRouter()
-  const id = router.query?.id
+  const [historyData, setHistoryData] = React.useState<any>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const id = router.query?.id;
 
   async function getPropertyHistory() {
     try {
@@ -20,56 +20,56 @@ export default function HistoricPropertyPage() {
         setHistoryData(response.data);
       }
     } catch (e) {
-      enqueueSnackbar('No se consiguio informacion de esta propiedad, ocurrio un error!', {variant: 'error'})
+      enqueueSnackbar('No se consiguio informacion de esta propiedad, ocurrio un error!', { variant: 'error' });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   React.useEffect(() => {
     if (id) {
-      getPropertyHistory()
+      getPropertyHistory();
     }
-  }, [id])
-
+  }, [id]);
 
   return (
-    <AdminLayout title='Historico de propiedad | Vision Inmobiliaria'>
+    <AdminLayout title="Historico de propiedad | Vision Inmobiliaria">
       <>
         {/*TODO hacer un componente de breadcrumb*/}
-        <Box display='flex' alignItems='center' mb={4}>
-          <NextLink href='/admin/propiedades'>Propiedades</NextLink>
+        <Box display="flex" alignItems="center" mb={4}>
+          <NextLink href="/admin/propiedades">Propiedades</NextLink>
           <ArrowRightIcon sx={{ color: 'gray' }} />
           <Typography> Historico de estatus de propiedad</Typography>
         </Box>
-        {
-          loading && <p>cargando...</p>
-        }
-        {!loading && historyData &&
+        {loading && <p>cargando...</p>}
+        {!loading && historyData && (
           <>
-              <Typography variant='h1' align='center' color='primary'>Historico de estatus </Typography>
-              <Grid container spacing={2} sx={{ mt: 3 }}>
-                {historyData.length < 1 &&
-                  <Grid item xs={12}>
-                    <Typography>No hay record de status en esta propiedad...</Typography>
-                  </Grid>
-                }
-                {historyData.length > 0 && historyData.map((item: any) => (
+            <Typography variant="h1" align="center" color="primary">
+              Historico de estatus{' '}
+            </Typography>
+            <Grid container spacing={2} sx={{ mt: 3 }}>
+              {historyData.length < 1 && (
+                <Grid item xs={12}>
+                  <Typography>No hay record de status en esta propiedad...</Typography>
+                </Grid>
+              )}
+              {historyData.length > 0 &&
+                historyData.map((item: any) => (
                   <>
                     <Grid item xs={12} md={3}>
-                      <Typography fontWeight='bold'>Usuario</Typography>
+                      <Typography fontWeight="bold">Usuario</Typography>
                       <Typography>{item.username}</Typography>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                      <Typography fontWeight='bold'>Fecha</Typography>
+                      <Typography fontWeight="bold">Fecha</Typography>
                       <Typography>{item.created_date}</Typography>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                      <Typography fontWeight='bold'>Estatus</Typography>
+                      <Typography fontWeight="bold">Estatus</Typography>
                       <Typography>{item.status}</Typography>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                      <Typography fontWeight='bold'>Comentarios</Typography>
+                      <Typography fontWeight="bold">Comentarios</Typography>
                       <Typography>{item.comments}</Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -77,10 +77,10 @@ export default function HistoricPropertyPage() {
                     </Grid>
                   </>
                 ))}
-              </Grid>
+            </Grid>
           </>
-        }
+        )}
       </>
     </AdminLayout>
-  )
+  );
 }

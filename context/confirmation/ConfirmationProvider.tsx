@@ -1,27 +1,26 @@
 import React from 'react';
-import {ConfirmationContext, confirmationReducer} from "./";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@mui/material";
-
+import { ConfirmationContext, confirmationReducer } from './';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
 export interface ConfirmationState {
   showConfirmationModal: boolean;
   title: string;
-  element: string
+  element: string;
 }
 
 const CONFIRMATION_INITIAL_STATE = {
   showConfirmationModal: false,
   title: '',
-  element: ''
-}
+  element: '',
+};
 
-export const ConfirmationProvider: React.FC<{children: JSX.Element}> = ({children}) => {
+export const ConfirmationProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const resolver: React.MutableRefObject<any> = React.useRef();
 
-  const [state, dispatch] = React.useReducer(confirmationReducer, CONFIRMATION_INITIAL_STATE)
+  const [state, dispatch] = React.useReducer(confirmationReducer, CONFIRMATION_INITIAL_STATE);
 
-    const toggleModal = (title: string, element: string): Promise<any> => {
-    dispatch({type: 'Confirmation - Show Confirmation Modal', payload: {title, element}} )
+  const toggleModal = (title: string, element: string): Promise<any> => {
+    dispatch({ type: 'Confirmation - Show Confirmation Modal', payload: { title, element } });
 
     return new Promise(function (resolve: any) {
       resolver.current = resolve;
@@ -30,19 +29,21 @@ export const ConfirmationProvider: React.FC<{children: JSX.Element}> = ({childre
 
   const handleOk = () => {
     resolver.current && resolver.current(true);
-    dispatch({type: 'Confirmation - Hide Confirmation Modal'})
+    dispatch({ type: 'Confirmation - Hide Confirmation Modal' });
   };
 
   const handleCancel = () => {
     resolver.current && resolver.current(false);
-    dispatch({type: 'Confirmation - Hide Confirmation Modal'})
+    dispatch({ type: 'Confirmation - Hide Confirmation Modal' });
   };
 
-  const providerValue = React.useMemo(() => ({
-    ...state,
-    toggleModal,
-  }), [state])
-
+  const providerValue = React.useMemo(
+    () => ({
+      ...state,
+      toggleModal,
+    }),
+    [state],
+  );
 
   return (
     <ConfirmationContext.Provider value={providerValue}>
@@ -57,17 +58,19 @@ export const ConfirmationProvider: React.FC<{children: JSX.Element}> = ({childre
           {state.title}
         </DialogTitle>
         <DialogContent sx={{ mt: 2, minHeight: 100, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <Typography align='center' fontSize='22px'>
+          <Typography align="center" fontSize="22px">
             {state.element}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant='contained' color='error' onClick={handleCancel}>Cancelar</Button>
-          <Button variant='contained' color='secondary' onClick={handleOk} autoFocus>
+          <Button variant="contained" color="error" onClick={handleCancel}>
+            Cancelar
+          </Button>
+          <Button variant="contained" color="info" onClick={handleOk} autoFocus>
             Aceptar
           </Button>
         </DialogActions>
       </Dialog>
     </ConfirmationContext.Provider>
-  )
-}
+  );
+};

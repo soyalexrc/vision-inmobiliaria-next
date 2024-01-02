@@ -1,4 +1,5 @@
 export interface Property {
+  id?: any;
   attributes: PropertyAttribute[];
   clientData: PropertyClientData;
   files: PropertyFile[];
@@ -11,7 +12,7 @@ export interface Property {
 export interface PropertyAttribute {
   category: string;
   form_type: string;
-  id: number
+  id: number;
   label: string;
   placeholder: string;
   property_type: string;
@@ -22,8 +23,6 @@ export interface PropertyAttribute {
 
 interface PropertyClientData {
   finalPrice: string | null;
-  price: string;
-  minimunNegotiation: string | null;
   attorneyCellPhone: string;
   attorneyEmail: string;
   attorneyFirstName: string;
@@ -44,7 +43,6 @@ interface PropertyClientData {
   lastName: string;
   mainLivingPlace: string;
   mortgage: string;
-  observations: string;
   partOfPayment: string;
   power: string;
   powerCondition: string;
@@ -52,14 +50,16 @@ interface PropertyClientData {
 }
 
 export interface PropertyFile {
-  id: string,
-  imageData: string | null,
-  imageType: string | null,
-  label: string,
-  type: string,
-  values: string,
-  value: string,
-  name: string
+  id: string;
+  imageData: string | null;
+  imageType: string | null;
+  title: string;
+  data: any[];
+  label: string;
+  type: string;
+  values: string;
+  value: string;
+  name: string;
 }
 
 interface PropertyLocation {
@@ -86,7 +86,14 @@ interface PropertyLocation {
 
 interface PropertyGeneralData {
   code: string;
+  adviser: any;
+  owner: any;
+  ally: any;
+  price: string;
+  nomenclature: string;
+  distributionComments: string;
   commisionRentalType: string | null;
+  minimunNegotiation: string | null;
   commisionRentalTypeSeller: string | null;
   commisionRoyalty: string | null;
   commisionRoyaltySeller: string | null;
@@ -106,6 +113,7 @@ interface PropertyGeneralData {
   propertyType: string;
   property_status: string;
   sellerId: string | null;
+  observations: string;
   userId: number;
 }
 
@@ -115,13 +123,11 @@ interface PublicationSourceData {
   tiktok: boolean;
   mercadolibre: boolean;
   conlallave: boolean;
-  whatsapp: boolean
-
+  whatsapp: boolean;
 }
 
 interface PropertyImage {
   id: string;
   imageData: string;
   imageType: string;
-
 }

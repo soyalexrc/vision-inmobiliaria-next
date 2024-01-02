@@ -4,9 +4,9 @@
   "display": "fullscreen",
   "scope": "/",
   "start_url": "/",
-  "name": "Vision inmobiliaria admin",
-  "short_name": "Vision inmobiliaria admin",
-  "description": "Panel administrativo de vision inmobiliaria",
+  "name": "Vision inmobiliaria",
+  "short_name": "Vision inmobiliaria",
+  "description": "Sitio web de vision inmobiliaria",
   "icons": [
     {
       "src": "/icon-192x192.png",

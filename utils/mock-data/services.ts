@@ -21,10 +21,10 @@ export const SERVICES_DATA = [
   },
   {
     img: '/images/services/sociedades-de-inversion.png',
-    title: 'Remodelación'
+    title: 'Remodelación',
   },
   {
     img: '/images/services/sociedades-de-inversion.png',
     title: 'Mantenimiento de inmuebles',
-  }
-]
+  },
+];

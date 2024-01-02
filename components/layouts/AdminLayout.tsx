@@ -1,24 +1,26 @@
 import React from 'react';
-import {Box, useMediaQuery} from "@mui/material";
-import Head from "next/head";
-import {Footer, Navbar, Sidebar} from "../ui/client";
-import {AdminSidebar, AdminNavbar} from "../ui/admin";
-import {UIContext} from "../../context/ui";
-import {AuthContext} from "../../context/auth";
-import {useRouter} from "next/router";
+import { Box, useMediaQuery } from '@mui/material';
+import Head from 'next/head';
+import { Footer, Navbar, Sidebar } from '../ui/client';
+import { AdminSidebar, AdminNavbar } from '../ui/admin';
+import { UIContext } from '../../context/ui';
+import { AuthContext } from '../../context/auth';
+import { useRouter } from 'next/router';
+import { AttributesCreadeUpdateDrawer } from '../ui/admin/properties/drawers';
+import { PreviewFileModal } from '../ui/admin/properties';
 
 interface AdminLayoutProps {
   title?: string;
-  children: JSX.Element
+  children: JSX.Element;
 }
-export  function AdminLayout({title = 'Admin - Vision Inmobiliaria', children}: AdminLayoutProps) {
-  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const {currentUser} = React.useContext(AuthContext)
-  const router = useRouter()
+export function AdminLayout({ title = 'Admin - Vision Inmobiliaria', children }: AdminLayoutProps) {
+  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
+  const { currentUser } = React.useContext(AuthContext);
+  const router = useRouter();
 
   React.useEffect(() => {
-    if (!currentUser) router.replace('/autenticacion/login')
-  }, [])
+    if (!currentUser) router.replace('/autenticacion/login');
+  }, []);
 
   return (
     <Box sx={{ flexFlow: 1, marginTop: 10 }}>
@@ -31,11 +33,11 @@ export  function AdminLayout({title = 'Admin - Vision Inmobiliaria', children}: 
 
       <AdminNavbar />
       <AdminSidebar />
-
-      <Box sx={{ marginLeft: largeScreen ? '300px' : '0px', p: 2 }}>
-        {children}
-      </Box>
+      {/*Attributes Update / Create */}
+      <AttributesCreadeUpdateDrawer />
+      <PreviewFileModal />
+      <Box sx={{ marginLeft: largeScreen ? '300px' : '0px', p: 2 }}>{children}</Box>
       {/*<Footer />*/}
     </Box>
-  )
+  );
 }

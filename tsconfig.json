@@ -19,6 +19,14 @@
       "@/*": ["./src/*"]
     }
   },
+  "skipDefaultLibCheck": true,
+  "strictNullChecks": false,
+  "noImplicitAny": true,
+  "strictBindCallApply": false,
+  "declaration": true,
+  "removeComments": true,
+  "noFallthroughCasesInSwitch": false,
+  "allowSyntheticDefaultImports": true,
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

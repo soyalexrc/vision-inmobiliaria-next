@@ -31,5 +31,4 @@ export interface User {
   state: string;
   user_type: string;
   username: string;
-
 }

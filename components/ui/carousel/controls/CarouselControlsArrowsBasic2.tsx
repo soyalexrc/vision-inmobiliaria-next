@@ -14,7 +14,7 @@ const SIZE = 40;
 
 const ICON_SIZE = {
   width: 20,
-  height: 20
+  height: 20,
 };
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -27,7 +27,7 @@ const RootStyle = styled(Box)(({ theme }) => ({
   display: 'flex',
   position: 'absolute',
   padding: theme.spacing(0, 2),
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }));
 
 const ArrowStyle = styled(IconButton)(({ theme }) => ({
@@ -43,16 +43,16 @@ const ArrowStyle = styled(IconButton)(({ theme }) => ({
   transition: theme.transitions.create('opacity'),
   '&:hover': {
     opacity: 1,
-    background: theme.palette.grey[900]
-  }
+    background: theme.palette.grey[900],
+  },
 }));
 
 // ----------------------------------------------------------------------
 
 interface CarouselControlsArrowsBasic2Props {
-  arrowLine: boolean,
-  onNext: () => void,
-  onPrevious: () => void
+  arrowLine: boolean;
+  onNext: () => void;
+  onPrevious: () => void;
 }
 
 export default function CarouselControlsArrowsBasic2({ arrowLine, onNext, onPrevious, ...other }: CarouselControlsArrowsBasic2Props) {
