@@ -1,6 +1,4 @@
-import {Formatclients, FormatCashFlow, FormatCommissionCalculation} from "../../interfaces";
-
-
+import { Formatclients, FormatCashFlow, FormatCommissionCalculation } from '../../interfaces';
 
 export const FORMAT_CLIENTS: Formatclients[] = [
   {
@@ -17,7 +15,8 @@ export const FORMAT_CLIENTS: Formatclients[] = [
     date_to_collect_lease_fee: '01 al 05',
     next_adjustment: '2/8/2023',
     next_subcription: '8/8/2023',
-    observations: 'Pagos 8 Dias de noviembre // pendiente por ajustar fecha de contrato, y en proxima suscripcion, usar esa fecha// FIRMA ACLARATORIA E-06 y verificar doc de arendamiento que se firmo para alcaldia',
+    observations:
+      'Pagos 8 Dias de noviembre // pendiente por ajustar fecha de contrato, y en proxima suscripcion, usar esa fecha// FIRMA ACLARATORIA E-06 y verificar doc de arendamiento que se firmo para alcaldia',
     // Consulta en esta tabla los meses seran dinamicos o no cambiaran ?? no comprendi en el excel...
     january: '',
     february: '',
@@ -31,9 +30,8 @@ export const FORMAT_CLIENTS: Formatclients[] = [
     october: '',
     november: '',
     december: '',
-  }
-]
-
+  },
+];
 
 export const FORMAT_COMMISSION_CALCULATION: FormatCommissionCalculation[] = [
   {
@@ -52,8 +50,8 @@ export const FORMAT_COMMISSION_CALCULATION: FormatCommissionCalculation[] = [
     expenses: 2,
     lawyer_calculation_20: 0,
     lawyer_calculation_30: 0,
-    lawyer_calculation_40: 31.20,
-    adviser_calculation_10: 7.80,
+    lawyer_calculation_40: 31.2,
+    adviser_calculation_10: 7.8,
     company_profit: 39,
     stationary: 2,
     total_paid_lawyer: 31.19,
@@ -63,6 +61,6 @@ export const FORMAT_COMMISSION_CALCULATION: FormatCommissionCalculation[] = [
     total_paid_adviser: 0,
     total_due_adviser: 0.01,
     payment_date_adviser: null,
-    status_adviser: null
-  }
-]
+    status_adviser: null,
+  },
+];

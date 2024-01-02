@@ -1,1 +1,1 @@
-export * from './AlliesTable'
+export * from './AlliesTable';

@@ -12,7 +12,7 @@ export interface Property {
 export interface PropertyAttribute {
   category: string;
   form_type: string;
-  id: number
+  id: number;
   label: string;
   placeholder: string;
   property_type: string;
@@ -50,16 +50,16 @@ interface PropertyClientData {
 }
 
 export interface PropertyFile {
-  id: string,
-  imageData: string | null,
-  imageType: string | null,
-  title: string,
-  data: any[]
-  label: string,
-  type: string,
-  values: string,
-  value: string,
-  name: string
+  id: string;
+  imageData: string | null;
+  imageType: string | null;
+  title: string;
+  data: any[];
+  label: string;
+  type: string;
+  values: string;
+  value: string;
+  name: string;
 }
 
 interface PropertyLocation {
@@ -123,13 +123,11 @@ interface PublicationSourceData {
   tiktok: boolean;
   mercadolibre: boolean;
   conlallave: boolean;
-  whatsapp: boolean
-
+  whatsapp: boolean;
 }
 
 interface PropertyImage {
   id: string;
   imageData: string;
   imageType: string;
-
 }

@@ -1,1 +1,1 @@
-export * from './AttributesCreadeUpdateDrawer'
+export * from './AttributesCreadeUpdateDrawer';

@@ -1,15 +1,15 @@
 import React from 'react';
-import {AuthContext, authReducer} from "./";
-import {User} from '../../interfaces';
-import {axiosInstance} from "../../utils";
-import Cookie from 'js-cookie'
-import {useRouter} from 'next/router';
-import {useSnackbar} from "notistack";
-import {encryptValue, masterCryptoKey, decryptValue} from '../../utils'
+import { AuthContext, authReducer } from './';
+import { User } from '../../interfaces';
+import { axiosInstance } from '../../utils';
+import Cookie from 'js-cookie';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import { encryptValue, masterCryptoKey, decryptValue } from '../../utils';
 
 export interface AuthState {
   isAuthenticated: boolean;
-  currentUser: User ;
+  currentUser: User;
   loading: boolean;
 }
 
@@ -38,67 +38,63 @@ const AUTH_INITIAL_STATE: AuthState = {
     user_type: '',
     username: '',
   },
-  loading: false
-}
+  loading: false,
+};
 
-export const AuthProvider: React.FC<{children: JSX.Element}> = ({children}) => {
+export const AuthProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const router = useRouter();
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [state, dispatch] = React.useReducer(authReducer, AUTH_INITIAL_STATE)
+  const [state, dispatch] = React.useReducer(authReducer, AUTH_INITIAL_STATE);
 
-  const login = async (loginData: {email: string, password: string}) => {
-    Cookie.set('isAuthenticated', 'true')
+  const login = async (loginData: { email: string; password: string }) => {
+    Cookie.set('isAuthenticated', 'true');
 
     try {
-      dispatch({type: 'Auth - Loading State', payload: true})
+      dispatch({ type: 'Auth - Loading State', payload: true });
 
-      const {data} = await axiosInstance.get(`/user/login?email=${loginData.email}`)
+      const { data } = await axiosInstance.get(`/user/login?email=${loginData.email}`);
       if (data.recordset.length > 0) {
         const password = encryptValue(masterCryptoKey, loginData.password);
         if (data.recordset[0].password === password) {
-          dispatch({type: 'Auth - Login', payload: data?.recordset[0]})
-          localStorage.setItem('vi-currentUser', JSON.stringify(data?.recordset[0]))
-          localStorage.setItem('vi-token', JSON.stringify(data?.recordset[0]))
-          Cookie.set('isAuthenticated', 'true')
-          await router.push('/admin')
-          await enqueueSnackbar(`Bienvenido/a ${data.recordset[0].username}`, {variant: 'success'})
-        }  else {
-          enqueueSnackbar('Contraseñas no coinciden...', {variant: 'warning'})
+          dispatch({ type: 'Auth - Login', payload: data?.recordset[0] });
+          localStorage.setItem('vi-currentUser', JSON.stringify(data?.recordset[0]));
+          localStorage.setItem('vi-token', JSON.stringify(data?.recordset[0]));
+          Cookie.set('isAuthenticated', 'true');
+          await router.push('/admin');
+          await enqueueSnackbar(`Bienvenido/a ${data.recordset[0].username}`, { variant: 'success' });
+        } else {
+          enqueueSnackbar('Contraseñas no coinciden...', { variant: 'warning' });
         }
       } else {
-        enqueueSnackbar('Usuario no encontrado...', {variant: 'error'})
+        enqueueSnackbar('Usuario no encontrado...', { variant: 'error' });
       }
-
     } catch (e) {
     } finally {
-      dispatch({type: 'Auth - Loading State', payload: false})
+      dispatch({ type: 'Auth - Loading State', payload: false });
     }
-  }
+  };
 
   const logout = async () => {
-    dispatch({type: 'Auth - Logout'})
-    await router.push('/autenticacion/login')
-    localStorage.removeItem('vi-currentUser')
-    localStorage.removeItem('vi-token')
-    Cookie.remove('isAuthenticated')
-  }
+    dispatch({ type: 'Auth - Logout' });
+    await router.push('/autenticacion/login');
+    localStorage.removeItem('vi-currentUser');
+    localStorage.removeItem('vi-token');
+    Cookie.remove('isAuthenticated');
+  };
 
-
-
-  const providerValue = React.useMemo(() => ({
-    ...state,
-    login,
-    logout
-  }), [state])
+  const providerValue = React.useMemo(
+    () => ({
+      ...state,
+      login,
+      logout,
+    }),
+    [state],
+  );
 
   React.useEffect(() => {
-    dispatch({type: 'Auth - Set User', payload: JSON.parse(localStorage.getItem('vi-currentUser') ?? '{}')})
-  }, [])
+    dispatch({ type: 'Auth - Set User', payload: JSON.parse(localStorage.getItem('vi-currentUser') ?? '{}') });
+  }, []);
 
-  return (
-    <AuthContext.Provider value={providerValue}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+  return <AuthContext.Provider value={providerValue}>{children}</AuthContext.Provider>;
+};

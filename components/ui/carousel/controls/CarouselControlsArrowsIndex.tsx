@@ -12,7 +12,7 @@ import { Typography, Box, IconButton } from '@mui/material';
 
 const ICON_SIZE = {
   width: 20,
-  height: 20
+  height: 20,
 };
 
 const RootStyle = styled(Box)(({ theme }) => ({
@@ -24,29 +24,35 @@ const RootStyle = styled(Box)(({ theme }) => ({
   right: theme.spacing(2),
   color: theme.palette.common.white,
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.grey[900], 0.48)
+  backgroundColor: alpha(theme.palette.grey[900], 0.48),
 }));
 
 const ArrowStyle = styled(IconButton)(({ theme }) => ({
   padding: 6,
   opacity: 0.48,
   color: theme.palette.common.white,
-  '&:hover': { opacity: 1 }
+  '&:hover': { opacity: 1 },
 }));
 
 // ----------------------------------------------------------------------
 
-
 interface CarouselControlsArrowsIndexProps {
-  index?: number,
-  total?: number,
-  arrowLine?: boolean,
-  onNext?: () => void,
-  onPrevious?: () => void,
-  sx?: any
+  index?: number;
+  total?: number;
+  arrowLine?: boolean;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  sx?: any;
 }
 
-export default function CarouselControlsArrowsIndex({ arrowLine, index = 0, total, onNext, onPrevious, sx }: CarouselControlsArrowsIndexProps) {
+export default function CarouselControlsArrowsIndex({
+  arrowLine,
+  index = 0,
+  total,
+  onNext,
+  onPrevious,
+  sx,
+}: CarouselControlsArrowsIndexProps) {
   const theme = useTheme();
   const isRTL = theme.direction === 'rtl';
 

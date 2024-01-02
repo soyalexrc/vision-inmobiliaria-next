@@ -1,84 +1,84 @@
 import React from 'react';
-import {UIState} from "./";
+import { UIState } from './';
 
 type UIActionType =
   | { type: 'UI - Open Sidebar' }
   | { type: 'UI - Close Sidebar' }
   | { type: 'UI - Open Admin Sidebar' }
   | { type: 'UI - Close Admin Sidebar' }
-  | { type: 'UI - Set IsAddingEntry', payload: boolean }
+  | { type: 'UI - Set IsAddingEntry'; payload: boolean }
   | { type: 'UI - Start Dragging' }
   | { type: 'UI - End Dragging' }
-  | { type: 'UI - Set Admin Panel Name', payload: string }
+  | { type: 'UI - Set Admin Panel Name'; payload: string }
   | { type: 'UI - Create Attributes Panel' }
   | { type: 'UI - Close Attributes Panel' }
-  | { type: 'UI - Emit Refresh', payload: number  }
-  | { type: 'UI - Update Attributes Panel', payload: any }
-  | { type: 'UI - Open Preview Modal', payload: string }
-  | { type: 'UI - Close Preview Modal' }
+  | { type: 'UI - Emit Refresh'; payload: number }
+  | { type: 'UI - Update Attributes Panel'; payload: any }
+  | { type: 'UI - Open Preview Modal'; payload: string }
+  | { type: 'UI - Close Preview Modal' };
 
 export const uiReducer = (state: UIState, action: UIActionType): UIState => {
   switch (action.type) {
     case 'UI - Open Sidebar':
       return {
         ...state,
-        sideMenuOpen: true
-      }
+        sideMenuOpen: true,
+      };
     case 'UI - Open Admin Sidebar':
       return {
         ...state,
-        adminMenuOpen: true
-      }
+        adminMenuOpen: true,
+      };
 
     case 'UI - Close Admin Sidebar':
       return {
         ...state,
-        adminMenuOpen: false
-      }
+        adminMenuOpen: false,
+      };
 
     case 'UI - Open Preview Modal':
       return {
         ...state,
         currentFile: action.payload,
-        isPreviewModal: true
-      }
+        isPreviewModal: true,
+      };
 
     case 'UI - Close Preview Modal':
       return {
         ...state,
         currentFile: '',
-        isPreviewModal: false
-      }
+        isPreviewModal: false,
+      };
 
     case 'UI - Close Sidebar':
       return {
         ...state,
-        sideMenuOpen: false
-      }
+        sideMenuOpen: false,
+      };
 
     case 'UI - Set IsAddingEntry':
       return {
         ...state,
-        isAddingEntry: action.payload
-      }
+        isAddingEntry: action.payload,
+      };
 
     case 'UI - Start Dragging':
       return {
         ...state,
-        isDragging: true
-      }
+        isDragging: true,
+      };
 
     case 'UI - End Dragging':
       return {
         ...state,
-        isDragging: false
-      }
+        isDragging: false,
+      };
 
     case 'UI - Set Admin Panel Name':
       return {
         ...state,
-        adminPanelOpen: action.payload
-      }
+        adminPanelOpen: action.payload,
+      };
 
     case 'UI - Create Attributes Panel':
       return {
@@ -89,32 +89,32 @@ export const uiReducer = (state: UIState, action: UIActionType): UIState => {
           label: '',
           placeholder: '',
           property_type: '',
-          property_values: ''
+          property_values: '',
         },
         attributesTypeAction: 'Crear',
-        attributesPanelOpen: true
-      }
+        attributesPanelOpen: true,
+      };
 
     case 'UI - Update Attributes Panel':
       return {
         ...state,
         attributesPanelData: action.payload,
         attributesTypeAction: 'Editar',
-        attributesPanelOpen: true
-      }
+        attributesPanelOpen: true,
+      };
 
     case 'UI - Close Attributes Panel':
       return {
         ...state,
-        attributesPanelOpen: false
-      }
+        attributesPanelOpen: false,
+      };
     case 'UI - Emit Refresh':
       return {
         ...state,
         refreshListener: action.payload,
-      }
+      };
 
     default:
       return state;
   }
-}
+};

@@ -1,6 +1,5 @@
-
-import { grey } from "@mui/material/colors";
-import {TypographyOptions} from "@mui/material/styles/createTypography";
+import { grey } from '@mui/material/colors';
+import { TypographyOptions } from '@mui/material/styles/createTypography';
 
 // ----------------------------------------------------------------------
 
@@ -8,20 +7,19 @@ function pxToRem(value: number) {
   return `${value / 16}rem`;
 }
 
-function responsiveFontSizes({ sm, md, lg }: {sm: number, md: number, lg: number}) {
+function responsiveFontSizes({ sm, md, lg }: { sm: number; md: number; lg: number }) {
   return {
-    "@media (min-width:600px)": {
+    '@media (min-width:600px)': {
       fontSize: pxToRem(sm),
     },
-    "@media (min-width:900px)": {
+    '@media (min-width:900px)': {
       fontSize: pxToRem(md),
     },
-    "@media (min-width:1200px)": {
+    '@media (min-width:1200px)': {
       fontSize: pxToRem(lg),
     },
   };
 }
-
 
 const typography: TypographyOptions = {
   fontWeightRegular: 400,
@@ -97,12 +95,12 @@ const typography: TypographyOptions = {
     lineHeight: 1.5,
     fontSize: pxToRem(12),
     letterSpacing: 1.1,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   button: {
     fontWeight: 200,
     fontSize: pxToRem(16),
-    textTransform: "capitalize",
+    textTransform: 'capitalize',
   },
 };
 

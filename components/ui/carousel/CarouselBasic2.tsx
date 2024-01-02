@@ -10,9 +10,8 @@ import { CarouselControlsArrowsIndex } from './controls';
 
 // ----------------------------------------------------------------------
 
-
 CarouselItem.propTypes = {
-  item: PropTypes.object
+  item: PropTypes.object,
 };
 
 function CarouselItem({ item }: any) {
@@ -63,11 +62,11 @@ export default function CarouselBasic2() {
 
   return (
     <Card>
-      <Slider  {...settings}>
+      <Slider {...settings}>
         {[].map((item: any) => (
           // <CarouselItem key={item.title} item={item} />
           <Box key={item}>
-            <Box component='img' src={item.image} />
+            <Box component="img" src={item.image} />
           </Box>
         ))}
       </Slider>

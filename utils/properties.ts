@@ -10,7 +10,7 @@ export const TYPE_OF_PROPERTY = [
   'Fondo de Comercio',
   'VIP',
   'Otro',
-]
+];
 
 export const SERVICE_OPTIONS = [
   'Inmobiliario',
@@ -20,15 +20,11 @@ export const SERVICE_OPTIONS = [
   'Administración Empresas',
   'Limpieza (Ama de Llaves)',
   'Remodelación/ Acondicionamiento de Espacios',
-  'Mantenimiento de Equipos Domésticos e Industriales'
-]
+  'Mantenimiento de Equipos Domésticos e Industriales',
+];
 
 export const SERVICE_TYPE_OPTIONS = {
-  inmueble: [
-    'Alquiler',
-    'Venta',
-    'Traspaso de negocio'
-  ],
+  inmueble: ['Alquiler', 'Venta', 'Traspaso de negocio'],
   legal: [
     'Contrato de Arrendamiento Privado',
     'Contrato de Arrendamiento Notariado',
@@ -58,12 +54,9 @@ export const SERVICE_TYPE_OPTIONS = {
     'Liberación de Enajenación Tribunales',
     'Título Supletorio',
     'Registro de Marca SAPI Caracas',
-    'Inscripción Parafiscales'
+    'Inscripción Parafiscales',
   ],
-  propertiesAdministration: [
-    'Cobranza a Inquilino ',
-    'Pago a Propietario '
-  ],
+  propertiesAdministration: ['Cobranza a Inquilino ', 'Pago a Propietario '],
   accounting: [
     'Contabilidad-Seniat',
     'Contabilidad-Seniat-Parafiscales',
@@ -79,13 +72,8 @@ export const SERVICE_TYPE_OPTIONS = {
     'Estados Financieros Historicos',
     'Estados Financieros Reexpresados',
     'Certificacion de ingresos',
-  ] ,
-  companyAdministration: [
-    'Básica',
-    'Sistémica',
-    'Básica/Sistémica',
-    'Tiempo completo'
   ],
+  companyAdministration: ['Básica', 'Sistémica', 'Básica/Sistémica', 'Tiempo completo'],
   cleanliness: [
     ' Limpieza Inmueble vacacional',
     ' Limpieza Inmueble No vacacional',
@@ -100,8 +88,5 @@ export const SERVICE_TYPE_OPTIONS = {
     ' Jardinería',
   ],
   remodeling: [''],
-  maintenance: [
-    'Electromésticos',
-    'Plantas Eléctricas'
-  ]
-}
+  maintenance: ['Electromésticos', 'Plantas Eléctricas'],
+};

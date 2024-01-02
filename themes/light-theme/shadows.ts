@@ -1,8 +1,6 @@
 // material
-import {alpha, Shadows} from '@mui/material/styles';
-import {PRIMARY, SUCCESS, SECONDARY, palette, INFO, ERROR, WARNING, GREY} from './palette';
-
-
+import { alpha, Shadows } from '@mui/material/styles';
+import { PRIMARY, SUCCESS, SECONDARY, palette, INFO, ERROR, WARNING, GREY } from './palette';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +36,7 @@ const createShadow = (color: string): Shadows => {
     `0px 10px 13px -6px ${transparent1},0px 21px 33px 3px ${transparent2},0px 8px 40px 7px ${transparent3}`,
     `0px 10px 14px -6px ${transparent1},0px 22px 35px 3px ${transparent2},0px 8px 42px 7px ${transparent3}`,
     `0px 11px 14px -7px ${transparent1},0px 23px 36px 3px ${transparent2},0px 9px 44px 8px ${transparent3}`,
-    `0px 11px 15px -7px ${transparent1},0px 24px 38px 3px ${transparent2},0px 9px 46px 8px ${transparent3}`
+    `0px 11px 15px -7px ${transparent1},0px 24px 38px 3px ${transparent2},0px 9px 46px 8px ${transparent3}`,
   ];
 };
 
@@ -57,11 +55,10 @@ const createCustomShadow = (color: string) => {
     info: `0 8px 16px 0 ${alpha(INFO.main, 0.24)}`,
     success: `0 8px 16px 0 ${alpha(SUCCESS.main, 0.24)}`,
     warning: `0 8px 16px 0 ${alpha(WARNING.main, 0.24)}`,
-    error: `0 8px 16px 0 ${alpha(ERROR.main, 0.24)}`
+    error: `0 8px 16px 0 ${alpha(ERROR.main, 0.24)}`,
   };
 };
 
 export const customShadows: string[] | any = createCustomShadow(LIGHT_MODE);
 
-export const shadows: Shadows =  createShadow(LIGHT_MODE);
-
+export const shadows: Shadows = createShadow(LIGHT_MODE);

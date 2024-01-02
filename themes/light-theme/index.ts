@@ -1,12 +1,12 @@
-import {createTheme} from "@mui/material";
-import {palette} from './palette'
-import {shadows} from './shadows'
-import shape from './shape'
-import typography from "./typography";
-import breakpoints from "../breakpoints";
+import { createTheme } from '@mui/material';
+import { palette } from './palette';
+import { shadows } from './shadows';
+import shape from './shape';
+import typography from './typography';
+import breakpoints from '../breakpoints';
 
 export const lightTheme = createTheme({
-  palette: {...palette},
+  palette: { ...palette },
   shadows: shadows,
   shape: shape,
   typography: typography,
@@ -16,14 +16,14 @@ export const lightTheme = createTheme({
       defaultProps: {
         // elevation: 0
       },
-      styleOverrides: {}
+      styleOverrides: {},
     },
     MuiTabs: {
       styleOverrides: {
         flexContainer: {
-          marginTop: '1rem'
-        }
-      }
-    }
-  }
-})
+          marginTop: '1rem',
+        },
+      },
+    },
+  },
+});

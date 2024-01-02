@@ -1,1 +1,1 @@
-export * from './OwnersTable'
+export * from './OwnersTable';

@@ -1,2 +1,2 @@
-export * from './layout'
-export * from './properties'
+export * from './layout';
+export * from './properties';

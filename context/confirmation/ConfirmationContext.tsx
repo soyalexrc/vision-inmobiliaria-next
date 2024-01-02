@@ -4,4 +4,4 @@ interface ConfirmationContextProps {
   toggleModal: (title: string, element: string) => Promise<any>;
 }
 
-export const ConfirmationContext = React.createContext({} as ConfirmationContextProps)
+export const ConfirmationContext = React.createContext({} as ConfirmationContextProps);

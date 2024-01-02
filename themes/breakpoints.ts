@@ -1,4 +1,4 @@
-import {BreakpointsOptions} from "@mui/system";
+import { BreakpointsOptions } from '@mui/system';
 
 const breakpoints: BreakpointsOptions = {
   values: {
@@ -6,8 +6,8 @@ const breakpoints: BreakpointsOptions = {
     sm: 600,
     md: 900, // OLD 960
     lg: 1200, // OLD 1280
-    xl: 1536 // OLD 1920
-  }
+    xl: 1536, // OLD 1920
+  },
 };
 
 export default breakpoints;

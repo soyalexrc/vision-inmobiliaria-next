@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------
 
-import {Shape} from "@mui/system";
+import { Shape } from '@mui/system';
 
 const shape: Partial<Shape> = {
   borderRadius: 8,

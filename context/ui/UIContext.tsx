@@ -21,12 +21,11 @@ interface UIContextProps {
 
   attributesPanelOpen: boolean;
   attributesPanelData: any;
-  handleAttributesPanel: (action: string, data?: any) => void
-  handleCloseAttributesPanel: () => void
+  handleAttributesPanel: (action: string, data?: any) => void;
+  handleCloseAttributesPanel: () => void;
   attributesTypeAction: string;
   refreshListener: any;
   onRefresh: () => void;
-
 }
 
-export const UIContext = React.createContext({} as UIContextProps)
+export const UIContext = React.createContext({} as UIContextProps);

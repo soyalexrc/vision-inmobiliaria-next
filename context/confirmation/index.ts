@@ -1,3 +1,3 @@
-export * from './ConfirmationProvider'
-export * from './confirmationReducer'
-export * from './ConfirmationContext'
+export * from './ConfirmationProvider';
+export * from './confirmationReducer';
+export * from './ConfirmationContext';

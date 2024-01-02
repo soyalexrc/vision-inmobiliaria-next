@@ -6,8 +6,9 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '85',
     rooms: 3,
     bathrooms: 1,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
-    price: '135.000'
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    price: '135.000',
   },
   {
     img: '/images/latestElements/latest-2.jpg',
@@ -16,8 +17,9 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '180',
     rooms: 4,
     bathrooms: 2,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
-    price: '295.000'
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    price: '295.000',
   },
   {
     img: '/images/latestElements/latest-3.jpg',
@@ -26,8 +28,9 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '82',
     rooms: 3,
     bathrooms: 1,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
-    price: '139.900'
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    price: '139.900',
   },
   {
     img: '/images/latestElements/latest-4.jpg',
@@ -36,7 +39,8 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '189',
     rooms: 3,
     bathrooms: 2,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
     price: '249.000',
   },
   {
@@ -46,7 +50,8 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '227',
     rooms: 3,
     bathrooms: 3,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
     price: '309.000',
   },
   {
@@ -56,8 +61,8 @@ export const LATEST_ELEMENTS_DATA = [
     meters: '173',
     rooms: 4,
     bathrooms: 2,
-    fullDescription: 'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
+    fullDescription:
+      'Induo alquila este fantástico local comercial en Guadalajara, totalmente acondicionado, cuenta con tres grandes escaparates y dos baños. Está situado en una de las calles más comerciales de la ciudad. Llámenos y solicite información.',
     price: '320.000',
   },
-
-]
+];

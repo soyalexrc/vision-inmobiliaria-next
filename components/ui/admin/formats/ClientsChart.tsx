@@ -1,7 +1,6 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-
 const data = [
   {
     name: 'Page A',
@@ -47,7 +46,6 @@ const data = [
   },
 ];
 
-
 export function ClientsChart() {
   return (
     <div style={{ width: '100%', height: '500px' }}>
@@ -73,5 +71,5 @@ export function ClientsChart() {
         </LineChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }

@@ -1,42 +1,41 @@
 import React from 'react';
-import {AppBar, Toolbar, IconButton, Box, useMediaQuery, Badge, Menu, MenuItem} from "@mui/material";
-import {MENU_ITEMS, MenuChild, MenuElement} from "../../../utils/mock-data";
-import {styled} from "@mui/material/styles";
-import CloseIcon from '@mui/icons-material/Close'
+import { AppBar, Toolbar, IconButton, Box, useMediaQuery, Badge, Menu, MenuItem } from '@mui/material';
+import { MENU_ITEMS, MenuChild, MenuElement } from '../../../utils/mock-data';
+import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
-import NextLink from "next/link";
-import Image from "next/image";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import styles from "@/styles/navbar.module.css";
-import {useRouter} from "next/router";
-import {UIContext} from "../../../context/ui";
-import {SystemProps, Theme} from "@mui/system";
-import {SearchInput} from "./";
-import {AuthContext} from "../../../context/auth";
+import NextLink from 'next/link';
+import Image from 'next/image';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import styles from '@/styles/navbar.module.css';
+import { useRouter } from 'next/router';
+import { UIContext } from '../../../context/ui';
+import { SystemProps, Theme } from '@mui/system';
+import { SearchInput } from './';
+import { AuthContext } from '../../../context/auth';
 
 export function AdminNavbar() {
-  const router = useRouter()
-  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'))
-  const {openAdminMenu} = React.useContext(UIContext)
-  const {logout} = React.useContext(AuthContext)
+  const router = useRouter();
+  const largeScreen = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
+  const { openAdminMenu } = React.useContext(UIContext);
+  const { logout } = React.useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMatchPath = (link: MenuElement): boolean => {
-    const partialRoute = router.asPath.split('/')[1]
+    const partialRoute = router.asPath.split('/')[1];
     if (link.path === '/') {
       return router.pathname === link.path;
     }
-    return partialRoute === link.path!.split('/')[1] || router.pathname === link.path
+    return partialRoute === link.path!.split('/')[1] || router.pathname === link.path;
   };
 
   const handleMatchSubPath = (link: MenuChild): boolean => {
-    return router.asPath === link.path
-  }
-
+    return router.asPath === link.path;
+  };
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -70,37 +69,32 @@ export function AdminNavbar() {
     </Menu>
   );
 
-
   return (
-    <AppBar position='fixed' sx={{backgroundColor: 'primary.main'}}>
-      <Toolbar sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}>
-        <Box display='flex' alignItems='center' sx={{ paddingLeft: largeScreen ? '300px' : '0px' }}>
-          {
-            !largeScreen &&
-            <IconButton onClick={openAdminMenu} size='large' edge='start'>
-              <MenuOutlinedIcon  sx={{ color: '#fff' }} />
+    <AppBar position="fixed" sx={{ backgroundColor: 'primary.main' }}>
+      <Toolbar
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box display="flex" alignItems="center" sx={{ paddingLeft: largeScreen ? '300px' : '0px' }}>
+          {!largeScreen && (
+            <IconButton onClick={openAdminMenu} size="large" edge="start">
+              <MenuOutlinedIcon sx={{ color: '#fff' }} />
             </IconButton>
-          }
-          <SearchInput/>
+          )}
+          <SearchInput />
         </Box>
 
-
-        <Box sx={{display: 'flex'}}>
+        <Box sx={{ display: 'flex' }}>
           <IconButton size="large" aria-label="show 4 new mails" color="inherit">
             <Badge badgeContent={4} color="error">
-              <MailIcon sx={{color: '#fff'}}/>
+              <MailIcon sx={{ color: '#fff' }} />
             </Badge>
           </IconButton>
-          <IconButton
-            size="large"
-            aria-label="show 17 new notifications"
-            color="inherit"
-          >
+          <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
             <Badge badgeContent={17} color="error">
-              <NotificationsIcon sx={{color: '#fff'}}/>
+              <NotificationsIcon sx={{ color: '#fff' }} />
             </Badge>
           </IconButton>
           <IconButton
@@ -112,11 +106,11 @@ export function AdminNavbar() {
             onClick={handleProfileMenuOpen}
             color="inherit"
           >
-            <AccountCircle sx={{color: '#fff'}}/>
+            <AccountCircle sx={{ color: '#fff' }} />
           </IconButton>
         </Box>
         {renderMenu}
       </Toolbar>
     </AppBar>
-  )
+  );
 }

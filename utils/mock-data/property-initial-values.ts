@@ -1,4 +1,3 @@
-
 export const PROPERTY_FILES_INITIAL_VALUE = [
   {
     id: null,
@@ -8,7 +7,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     value: null,
-    name: 'title'
+    name: 'title',
   },
   {
     id: null,
@@ -17,7 +16,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     value: null,
     type: 'text',
     label: 'Cedula catastral',
-    name: 'catastralIdentification'
+    name: 'catastralIdentification',
   },
   {
     id: null,
@@ -26,7 +25,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     value: null,
     type: 'text',
     label: 'Impuesto municipal',
-    name: 'municipalityTax'
+    name: 'municipalityTax',
   },
   {
     id: null,
@@ -36,7 +35,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Documento de propiedad registrado ',
-    name: 'propertyDocumentRegister'
+    name: 'propertyDocumentRegister',
   },
   {
     id: null,
@@ -46,7 +45,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Cedula de propietario',
-    name: 'ownerIdentification'
+    name: 'ownerIdentification',
   },
   {
     id: null,
@@ -56,7 +55,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Cedula de apoderado',
-    name: 'attorneyIdentification'
+    name: 'attorneyIdentification',
   },
   {
     id: null,
@@ -66,7 +65,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Declaracion sucesorial',
-    name: 'successionDeclaration'
+    name: 'successionDeclaration',
   },
   {
     id: null,
@@ -76,7 +75,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Hipoteca',
-    name: 'mortgage'
+    name: 'mortgage',
   },
   {
     id: null,
@@ -86,7 +85,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Liberacion de hipoteca',
-    name: 'mortgageRelease'
+    name: 'mortgageRelease',
   },
   {
     id: null,
@@ -96,7 +95,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Medida de prohibición para enajenar y gravar',
-    name: 'prohibitionMeasureToAlienateAndEncumber'
+    name: 'prohibitionMeasureToAlienateAndEncumber',
   },
 
   {
@@ -107,7 +106,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Poder',
-    name: 'power'
+    name: 'power',
   },
   {
     id: null,
@@ -117,7 +116,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Firma de conyuge',
-    name: 'spouseSignature'
+    name: 'spouseSignature',
   },
   {
     id: null,
@@ -127,7 +126,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Firma de conyuge',
-    name: 'spouseSignature'
+    name: 'spouseSignature',
   },
   {
     id: null,
@@ -137,7 +136,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Solvencia de condominio',
-    name: 'condoSolvency'
+    name: 'condoSolvency',
   },
   {
     id: null,
@@ -147,7 +146,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Solvencia de servicios',
-    name: 'solvencyOfServices'
+    name: 'solvencyOfServices',
   },
   {
     id: null,
@@ -157,7 +156,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Ficha tecnica',
-    name: 'tecnicalData'
+    name: 'tecnicalData',
   },
   {
     id: null,
@@ -167,7 +166,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Propietario presente para la firma?',
-    name: 'isOwnerPresentToSign'
+    name: 'isOwnerPresentToSign',
   },
   {
     id: null,
@@ -177,7 +176,7 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'select',
     values: 'Si#No',
     label: 'Es vivienda principal?',
-    name: 'isMainProperty'
+    name: 'isMainProperty',
   },
   {
     id: null,
@@ -186,6 +185,6 @@ export const PROPERTY_FILES_INITIAL_VALUE = [
     type: 'text',
     value: null,
     label: 'Otro',
-    name: 'other'
+    name: 'other',
   },
-]
+];

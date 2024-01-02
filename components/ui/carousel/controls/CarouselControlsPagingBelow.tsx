@@ -9,7 +9,7 @@ const RootStyle = styled('ul')({
   listStyle: 'none',
   justifyContent: 'center',
   zIndex: 9,
-  width:'100%',
+  width: '100%',
   '& li': {
     width: 24,
     height: 24,
@@ -19,10 +19,10 @@ const RootStyle = styled('ul')({
       opacity: 1,
       '& .dotActive': {
         width: 18,
-        borderRadius: 8
-      }
-    }
-  }
+        borderRadius: 8,
+      },
+    },
+  },
 });
 
 const DotStyle = styled('span')(({ theme }) => ({
@@ -31,14 +31,14 @@ const DotStyle = styled('span')(({ theme }) => ({
   borderRadius: '50%',
   transition: theme.transitions.create('all', {
     easing: theme.transitions.easing.easeInOut,
-    duration: 360
-  })
+    duration: 360,
+  }),
 }));
 
 // ----------------------------------------------------------------------
 interface CarouselControlsPaging2Props {
-  color?: string,
-  sx?: any
+  color?: string;
+  sx?: any;
 }
 
 export default function CarouselControlsPaging2({ color, sx }: CarouselControlsPaging2Props) {
@@ -61,10 +61,10 @@ export default function CarouselControlsPaging2({ color, sx }: CarouselControlsP
         <DotStyle
           className="dotActive"
           sx={{
-            bgcolor: color || 'primary.main'
+            bgcolor: color || 'primary.main',
           }}
         />
       </Box>
-    )
+    ),
   };
 }

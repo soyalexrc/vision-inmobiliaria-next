@@ -22,5 +22,5 @@ export const states: string[] = [
   'Tachira',
   'Trujillo',
   'Yaracuy',
-  'Zulia'
+  'Zulia',
 ];
